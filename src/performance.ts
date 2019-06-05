@@ -46,7 +46,9 @@ interface Iexec {
   timing_exec: TimingArr;
 }
 
-interface Iperformance extends Itiming, Isource, Iexec {}
+interface Iperformance extends Itiming, Isource, Iexec {
+  memory?: number;
+}
 
 export const getTiming = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -210,8 +212,11 @@ export const getPerformanceData = (function () {
     const timings = getTiming() || {}
     const sources = getSource(config) || {}
     const execTiming = getExecTiming() || {}
+    const memo = (window.performance as any).memory
+    const memoRatio = memo ? memo.usedJSHeapSize / memo.totalJSHeapSize : 0
 
     return {
+      memory: memoRatio ? parseInt(memoRatio as any) : 'N/A',
       ...timings,
       ...sources,
       ...execTiming

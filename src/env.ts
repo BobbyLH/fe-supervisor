@@ -1,4 +1,5 @@
 export interface IenvInfo {
+  ts: number;
   os: string;
   browser: string;
   screen_size: string;
@@ -21,6 +22,7 @@ export const getEnvInfo = (function () {
     const referer = document.referrer
 
     const info = {
+      ts: +Date.now(),
       os: '',
       browser: '',
       screen_size: (scr.width || 0) + 'x' + (scr.height || 0),
