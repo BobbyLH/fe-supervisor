@@ -1,4 +1,4 @@
-const presets = []
+const presets = ['@babel/preset-typescript']
 
 const plugins = [
   [
@@ -20,11 +20,7 @@ const plugins = [
   ], [
     '@babel/plugin-transform-parameters'
   ], [
-    '@babel/plugin-transform-instanceof'
-  ], [
     '@babel/plugin-transform-property-mutators'
-  ], [
-    '@babel/plugin-transform-block-scoping'
   ], [
     '@babel/plugin-transform-runtime',
     {
