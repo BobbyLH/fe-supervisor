@@ -1,5 +1,7 @@
 build/
 dist/
 test/
+demo/
 
+babel.config.js
 node_modules/

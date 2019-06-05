@@ -12,8 +12,12 @@
     "build_version": "node build/version",
     "build_version_beta": "node build/version beta",
     "build_git": "node build/git.js master",
-    "build_rollup": "rollup -c build/rollup.config.js"
+    "build_rollup": "rollup -c build/rollup.config.js",
+    "lint": "eslint --ext .ts src/"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "keywords": [
     "frontend",
     "monitor",

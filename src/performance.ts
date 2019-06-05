@@ -19,7 +19,7 @@ interface Iconfig {
   sources?: Isources | string[] | string;
 }
 
-export interface Itiming {
+interface Itiming {
   timing_wscreen: Timing;
   timing_fscreen: Timing;
   timing_network: Timing;
@@ -33,18 +33,18 @@ export interface Itiming {
   timing_render_load: Timing;
 }
 
-export interface Isource {
+interface Isource {
   timing_api_random: TimingArr;
   timing_api_appoint: TimingArr;
   timing_source_random: TimingArr;
   timing_source_appoint: TimingArr;
 }
 
-export interface Iexec {
+interface Iexec {
   timing_exec: TimingArr;
 }
 
-export interface Iperformance extends Itiming, Isource, Iexec {}
+interface Iperformance extends Itiming, Isource, Iexec {}
 
 export const getTiming = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
