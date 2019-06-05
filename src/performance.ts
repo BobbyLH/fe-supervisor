@@ -35,8 +35,10 @@ interface Itiming {
 
 interface Isource {
   timing_api_random: TimingArr;
+  timing_api_timeout: TimingArr;
   timing_api_appoint: TimingArr;
   timing_source_random: TimingArr;
+  timing_source_timeout: TimingArr;
   timing_source_appoint: TimingArr;
 }
 
@@ -102,22 +104,29 @@ export const getSource = (function () {
   
     // 接口请求随机上报
     const timing_api_random: TimingArr = []
+    // 接口请求超时上报
+    const timing_api_timeout: TimingArr = []
     // 接口请求指定上报
     const timing_api_appoint: TimingArr = []
     // 资源请求随机上报
     const timing_source_random: TimingArr = []
+    // 资源请求超时上报
+    const timing_source_timeout: TimingArr = []
     // 资源请求指定上报
     const timing_source_appoint: TimingArr = []
-  
+    // 超时门槛值 2000毫秒
+    const threshold = 2000
+
     s.forEach(item => {
       const type = (item as any).initiatorType || ''
       const data = {
         name: item.name,
-        duration: Number.prototype.toFixed.call(item.duration, 2),
+        duration: +Number.prototype.toFixed.call(item.duration, 2),
         type
       }
       if (type === 'xmlhttprequest' || type === 'fetchrequest') {
         randomRatio(apiRatio) && timing_api_random.push(data)
+        data.duration >= threshold && timing_api_timeout.push(data)
         if (getType(apis) === 'string') {
           data.name === apis && timing_api_appoint.push(data)
         } else if (getType(apis) === 'array') {
@@ -132,6 +141,7 @@ export const getSource = (function () {
         }
       } else {
         randomRatio(sourceRatio) && timing_source_random.push(data)
+        data.duration >= threshold && timing_source_timeout.push(data)
         if (getType(sources) === 'string') {
           type === sources && timing_source_appoint.push(data)
         } else if (getType(sources) === 'array') {
@@ -162,8 +172,10 @@ export const getSource = (function () {
   
     return {
       timing_api_random,
+      timing_api_timeout,
       timing_api_appoint,
       timing_source_random,
+      timing_source_timeout,
       timing_source_appoint
     }
   }
@@ -228,6 +240,18 @@ export const mark = (function () {
       console.warn(`Cannot repeat tag the mark: ${tag}`)
     }
   }
+})
+
+export const clear = (function () {
+  if (typeof window === 'undefined' || !window.performance) return notSupport
+
+  const p = window.performance
+  performance.clearMarks()
+  performance.clearMeasures()
+  performance.clearResourceTimings()
+
+  marks.splice(0)
+  measures.splice(0)
 })
 
 function timingFilter (timing: number): number | NA {
