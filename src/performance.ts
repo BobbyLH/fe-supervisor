@@ -1,4 +1,6 @@
 import { getType } from './utils/getType'
+import { notSupport } from './utils/notSupport'
+import { timeslice } from './utils/timeslice'
 
 type NA = 'N/A'
 type Timing = number | NA
@@ -80,50 +82,50 @@ export const getTiming = (function () {
   return function (): Itiming {
     const p = window.performance
     const t = p.timing
-  
-     // 白屏时长
-     const timing_wscreen = timingFilter(t.responseStart - t.navigationStart)
-     // 首屏时长
-     const timing_fscreen = timingFilter(t.loadEventEnd - t.navigationStart)
-     // 网络总时长
-     const timing_network = timingFilter(t.responseEnd - t.navigationStart)
-     // 上一个页面unload时长
-     const timing_network_prev = timingFilter(t.fetchStart - t.navigationStart)
-     // 从定向时长
-     const timing_network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
-     // DNS解析时长
-     const timing_network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
-     // tcp时长
-     const timing_network_tcp = timingFilter(t.connectEnd - t.connectStart)
-     // 请求耗时
-     const timing_network_request = timingFilter(t.responseEnd - t.requestStart)
-     // 渲染时长
-     const timing_render = timingFilter(t.responseStart - t.navigationStart)
-     // DOM 从解析到可交互的时长
-     const timing_render_load = timingFilter(t.loadEventEnd - t.navigationStart)
-     // DOM 完全解析完毕时长
-     const timing_render_ready = timingFilter(t.domComplete - t.responseEnd)
-  
-     return {
-      timing_wscreen,
-      timing_fscreen,
-      timing_network,
-      timing_network_prev,
-      timing_network_redirect,
-      timing_network_dns,
-      timing_network_tcp,
-      timing_network_request,
-      timing_render,
-      timing_render_load,
-      timing_render_ready
-    }
+      
+    // 白屏时长
+    const timing_wscreen = timingFilter(t.responseStart - t.navigationStart)
+    // 首屏时长
+    const timing_fscreen = timingFilter(t.loadEventEnd - t.navigationStart)
+    // 网络总时长
+    const timing_network = timingFilter(t.responseEnd - t.navigationStart)
+    // 上一个页面unload时长
+    const timing_network_prev = timingFilter(t.fetchStart - t.navigationStart)
+    // 从定向时长
+    const timing_network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
+    // DNS解析时长
+    const timing_network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
+    // tcp时长
+    const timing_network_tcp = timingFilter(t.connectEnd - t.connectStart)
+    // 请求耗时
+    const timing_network_request = timingFilter(t.responseEnd - t.requestStart)
+    // 渲染时长
+    const timing_render = timingFilter(t.responseStart - t.navigationStart)
+    // DOM 从解析到可交互的时长
+    const timing_render_load = timingFilter(t.loadEventEnd - t.navigationStart)
+    // DOM 完全解析完毕时长
+    const timing_render_ready = timingFilter(t.domComplete - t.responseEnd)
+
+    return {
+    timing_wscreen,
+    timing_fscreen,
+    timing_network,
+    timing_network_prev,
+    timing_network_redirect,
+    timing_network_dns,
+    timing_network_tcp,
+    timing_network_request,
+    timing_render,
+    timing_render_load,
+    timing_render_ready
+  }
   }
 })()
 
 export const getSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  return function (config?: Iconfig): Isource {
+  return async function (config?: Iconfig): Promise<Isource> {
     const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '' } = config || {}
     const p = window.performance
     const s = p.getEntriesByType('resource')
@@ -143,59 +145,68 @@ export const getSource = (function () {
     // 超时门槛值 2000毫秒
     const threshold = 2000
 
-    s.forEach(item => {
-      const type = (item as any).initiatorType || ''
-      const data = {
-        name: item.name,
-        duration: +Number.prototype.toFixed.call(item.duration, 2),
-        type
-      }
-      if (type === 'xmlhttprequest' || type === 'fetchrequest') {
-        randomRatio(apiRatio) && timing_api_random.push(data)
-        data.duration >= threshold && timing_api_timeout.push(data)
-        if (getType(apis) === 'string') {
-          data.name === apis && timing_api_appoint.push(data)
-        } else if (getType(apis) === 'array') {
-          (apis as Array<string>).some(v => {
-            if (v === data.name) {
-              timing_api_appoint.push(data)
-              // break the iteration
-              return true
-            }
-            return false
-          })
+    function* gen (): IterableIterator<void> {
+      const len = s.length
+
+      for (let i = 0; i < len; i++) {
+        const item = s[i]
+        const type = (item as any).initiatorType || ''
+        const data = {
+          name: item.name,
+          duration: +Number.prototype.toFixed.call(item.duration, 2),
+          type
         }
-      } else {
-        randomRatio(sourceRatio) && timing_source_random.push(data)
-        data.duration >= threshold && timing_source_timeout.push(data)
-        if (getType(sources) === 'string') {
-          type === sources && timing_source_appoint.push(data)
-        } else if (getType(sources) === 'array') {
-          (sources as Array<string>).some(v => {
-            if (v === type) {
-              timing_source_appoint.push(data)
-              // break the iteration
-              return true
-            }
-            return false
-          })
-        } else if (getType(sources) === 'object') {
-          for (const k in <Isources>sources) {
-            if (k === type) {
-              (<Isources>sources)[k].some(v => {
-                if (v === data.name) {
-                  timing_source_appoint.push(data)
-                  // break the iteration
-                  return true
-                }
-                return false
-              })
+        if (type === 'xmlhttprequest' || type === 'fetchrequest') {
+          randomRatio(apiRatio) && timing_api_random.push(data)
+          data.duration >= threshold && timing_api_timeout.push(data)
+          if (getType(apis) === 'string') {
+            data.name === apis && timing_api_appoint.push(data)
+          } else if (getType(apis) === 'array') {
+            (apis as Array<string>).some(v => {
+              if (v === data.name) {
+                timing_api_appoint.push(data)
+                // break the iteration
+                return true
+              }
+              return false
+            })
+          }
+        } else {
+          randomRatio(sourceRatio) && timing_source_random.push(data)
+          data.duration >= threshold && timing_source_timeout.push(data)
+          if (getType(sources) === 'string') {
+            type === sources && timing_source_appoint.push(data)
+          } else if (getType(sources) === 'array') {
+            (sources as Array<string>).some(v => {
+              if (v === type) {
+                timing_source_appoint.push(data)
+                // break the iteration
+                return true
+              }
+              return false
+            })
+          } else if (getType(sources) === 'object') {
+            for (const k in <Isources>sources) {
+              if (k === type) {
+                (<Isources>sources)[k].some(v => {
+                  if (v === data.name) {
+                    timing_source_appoint.push(data)
+                    // break the iteration
+                    return true
+                  }
+                  return false
+                })
+              }
             }
           }
         }
+
+        yield
       }
-    })
-  
+    }
+
+    await timeslice(gen as any)
+
     return {
       timing_api_random,
       timing_api_timeout,
@@ -210,18 +221,27 @@ export const getSource = (function () {
 export const getExecTiming  = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  return function (): Iexec {
+  return async function (): Promise<Iexec> {
     const p = window.performance
     const measures = p.getEntriesByType('measure')
   
     // 代码块执行时长
     const timing_exec: TimingArr = []
-    measures.forEach(item => {
-      timing_exec.push({
-        name: item.name,
-        duration: item.duration
-      })
-    })
+
+    function* gen () {
+      const len = measures.length
+      for (let i = 0; i < len; i++) {
+        const item = measures[i];
+        timing_exec.push({
+          name: item.name,
+          duration: item.duration
+        })
+      }
+
+      yield
+    }
+    
+    await timeslice(gen as any)
 
     return {
       timing_exec
@@ -232,12 +252,14 @@ export const getExecTiming  = (function () {
 export const getPerformanceData = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  return function (config?: Iconfig): Iperformance | IAnyObj {
-    const memo = getMemory() || {}
+  return async function (config?: Iconfig): Promise<Iperformance | IAnyObj> {
+    // 简单的同步任务
+    const memo = getMemory()
     const { memory } = memo as Imemory
-    const timings = getTiming() || {}
-    const sources = getSource(config) || {}
-    const execTiming = getExecTiming() || {}
+    const timings = getTiming()
+    // 耗时的异步任务
+    const sources = await (getSource(config) as Promise<Isource>).then(data => data)
+    const execTiming = await (getExecTiming() as Promise<Iexec>).then(data => data)
 
     return {
       memory: memory || 'N/A',
@@ -292,10 +314,5 @@ function timingFilter (timing: number): number | NA {
 function randomRatio (ratio: number) {
   if (Math.random() <= ratio) return true
 
-  return false
-}
-
-function notSupport (): false {
-  console.warn('Your browser not support the [Performance] API!')
   return false
 }
