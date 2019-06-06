@@ -5,16 +5,16 @@
  * @param {boolean} useCapture bubble or capture
  */
 export const addListener: Function = (function () {
-  if (typeof window === 'undefined') return function () {}
+  if (typeof window === 'undefined') return function (): void {}
 
   if (!window.addEventListener) {
-    return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement) {
+    return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement): void {
       const eventDOM: any = dom || window
       eventDOM.attachEvent(`on${event}`, fn)
     }
   }
 
-  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, useCapture: boolean = false) {
+  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, useCapture: boolean = false): void {
     const eventDOM = dom || window
     eventDOM.addEventListener(event, fn, useCapture)
   }

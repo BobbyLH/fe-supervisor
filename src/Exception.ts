@@ -47,7 +47,7 @@ export class Exception {
     return errors
   }
 
-  public setErrors (error: IErrObj) {
+  public setErrors (error: IErrObj): void {
     const { type } = error
     const typeIndex = ExceptionTypes[type]
 

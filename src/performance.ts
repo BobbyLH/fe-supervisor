@@ -19,6 +19,12 @@ interface Iconfig {
   sources?: Isources | string[] | string;
 }
 
+interface Imemory {
+  memory: number | NA;
+  used: number;
+  total: number;
+}
+
 interface Itiming {
   timing_wscreen: Timing;
   timing_fscreen: Timing;
@@ -47,8 +53,26 @@ interface Iexec {
 }
 
 interface Iperformance extends Itiming, Isource, Iexec {
-  memory?: number;
+  memory: number | NA;
 }
+
+export const getMemory = (function () {
+  if (typeof window === 'undefined' || !window.performance) return notSupport
+
+  return function (): Imemory {
+    const p = window.performance
+    const m = (p as any).memory
+    const used = m.usedJSHeapSize || 0
+    const total = m.totalJSHeapSize || 1
+    const usedRatio = used / total
+
+    return {
+      memory: usedRatio || 'N/A',
+      used,
+      total
+    }
+  }
+})()
 
 export const getTiming = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -209,14 +233,14 @@ export const getPerformanceData = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
   return function (config?: Iconfig): Iperformance | IAnyObj {
+    const memo = getMemory() || {}
+    const { memory } = memo as Imemory
     const timings = getTiming() || {}
     const sources = getSource(config) || {}
     const execTiming = getExecTiming() || {}
-    const memo = (window.performance as any).memory
-    const memoRatio = memo ? memo.usedJSHeapSize / memo.totalJSHeapSize : 0
 
     return {
-      memory: memoRatio ? parseInt(memoRatio as any) : 'N/A',
+      memory: memory || 'N/A',
       ...timings,
       ...sources,
       ...execTiming
