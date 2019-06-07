@@ -1,46 +1,74 @@
 import { addListener } from './utils/addListener'
-import { Exception, ExceptionType, IErrArr, IErrTotalObj } from './Exception'
+import { HandleException, ExceptionType, IErrObj, IErrArr, IErrTotalObj } from './Exception'
 
 (function () {
   if (typeof window === 'undefined') return
 
-  const exception = new Exception()
+  addListener('error', function (e: ErrorEvent) {
+    const { filename, message, error } = e
 
-
-  window.onerror = function (msg, url, row, col, error) {
-    exception.setErrors({
+    HandleException.setErrors({
       type: 'js',
-      url: url || '',
-      msg,
+      url: filename || '',
+      msg: message,
       error
     })
-  }
-
-  addListener('error', function (e: ErrorEvent) {
-    // console.log(e)
   }, window)
 
   addListener('DOMContentLoaded', function (e: Event) {
-    const imgs = transArray(document.getElementsByTagName('img'))
-    const links = transArray(document.getElementsByTagName('link'))
-    const scripts = transArray(document.getElementsByTagName('script'))
+    const imgs = transArray(document.querySelectorAll('img'))
 
     imgs.forEach(img => addListener('error', function (e: ErrorEvent) {
-      // console.log('img', e)
+      const sourceType = 'img'
+      const url = (e as any).target.src
+      HandleException.setErrors({
+        type: 'source',
+        sourceType,
+        url
+      })
     }, img))
-  
-    links.forEach(link => addListener('error', function (e: ErrorEvent) {
-      // console.log('link', e)
-    }, link))
-  
-    scripts.forEach(script => addListener('error', function (e: ErrorEvent) {
-      // console.log('script', e)
-    }, script))
   }, window)
 })()
 
 export function getError (type: ExceptionType | undefined): IErrArr | IErrTotalObj {
-  return Exception.getErrors(type)
+  return HandleException.getErrors(type)
+}
+
+export function setError (err: IErrObj): void {
+  HandleException.setErrors(err)
+}
+
+export function observeError (target: HTMLElement, observeDom?: string | string[]) {
+  const observer = new MutationObserver(function (doms, observer) {
+    const observeList = (observeDom && typeof observeDom === 'string' ? [observeDom] : observeDom) || ['img']
+    handleError(doms)
+
+    function handleError (doms: MutationRecord[] | NodeList): void {
+      const len = doms.length
+      for (let i = 0; i < len; i++) {
+        const item: any = ((doms[i] as any).addedNodes && (doms[i] as any).addedNodes[0]) || doms[i]
+        const nodeName = item.nodeName || ''
+        const sourceType = nodeName.toLowerCase()
+        if (~observeList.indexOf(sourceType)) {
+          addListener('error', function (e: ErrorEvent) {
+            const url = (e as any).target.src
+            HandleException.setErrors({
+              type: 'source',
+              sourceType,
+              url
+            })
+          }, item)
+        } else if (item.children.length > 0) {
+          return handleError(item.children)
+        }
+      }
+    }
+  })
+
+  observer.observe(target, {
+    'childList': true,
+    'attributes':true
+  })
 }
 
 function transArray (arrayLike: ArrayLike<HTMLElement>) {

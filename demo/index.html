@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Performance Demo</title>
+    <script type='text/javascript' src='../dist/fronted-monitor.js'></script>
+    <script type='text/javascript' src='../dist/main.js'></script>
+    <link rel="stylesheet" href="./assets/main.css">
+    <link rel="stylesheet" href="./assets/test.css">
   </head>
-  <script src='../dist/fronted-monitor.js'></script>
   <body>
     <div>
       图片1
@@ -27,11 +30,46 @@
       图片4
       <img src="http://cdn.himalaya.com/de6f28f0637f480297f90ca11ed2bddd.png?auth_key=4102416000-1234-0-ddae5ef02baf29dd7463f122353bdbd1" alt="">
     </div>
+
+    <div>
+      <button onclick="addImg()">点我加图</button>
+    </div>
+
+    <div>
+      <button onclick="execErr()">点我js出错</button>
+    </div>
+
+    <div id='pool'></div>
   </body>
   <script type='text/javascript'>
-    {
-      typeof test === 'number' && console.log(123)
-      let test = 1
+    function addImg() {
+      const pool = document.querySelector('#pool')
+      Monitor.observeError(pool)
+      const img = new Image()
+      img.src = './assets/5.png'
+
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = './assets/empty.css'
+
+      const div = document.createElement('div')
+      div.appendChild(img)
+
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = './assets/empty.js'
+
+      pool.appendChild(div)
+      pool.appendChild(link)
+      pool.appendChild(script)
     }
+
+    function execErr () {
+      {
+        typeof test === 'number' && console.log(123)
+        let test = 1
+      }
+    }
+
   </script>
 </html>

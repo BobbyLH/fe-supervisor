@@ -25,8 +25,8 @@ const jsErrors: IErrArr = []
 const apiErrors: IErrArr = []
 const sourceErrors: IErrArr = []
 
-export class Exception {
-  public static getErrors (type: ExceptionType | undefined): IErrArr | IErrTotalObj {
+export const HandleException = {
+  getErrors (type: ExceptionType | undefined): IErrArr | IErrTotalObj {
     const typeIndex = type ? ExceptionTypes[type] : undefined
 
     let errors
@@ -45,9 +45,9 @@ export class Exception {
     }
 
     return errors
-  }
+  },
 
-  public setErrors (error: IErrObj): void {
+  setErrors (error: IErrObj): void {
     const { type } = error
     const typeIndex = ExceptionTypes[type]
 
@@ -65,4 +65,4 @@ export class Exception {
   }
 }
 
-export default Exception
+export default HandleException
