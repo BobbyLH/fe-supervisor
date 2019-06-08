@@ -11,7 +11,7 @@ export interface IenvInfo {
 
 export const getEnvInfo = (function () {
   if (typeof window === 'undefined') return function (): void {
-    console.warn('Please use in browser environment')
+    console.warn('Please call in browser environment')
     return
   }
 

@@ -4,7 +4,7 @@
   "description": "The frontend monitor project",
   "main": "dist/front-monitor.js",
   "scripts": {
-    "dev": "npm run build_rollup && nodemon demo/server.js",
+    "dev": "npm run build_rollup && supervisor demo/server.js",
     "build": "npm run build_branch && npm run build_version && npm run build_git",
     "build:beta": "npm run build_branch && npm run build_version_beta && npm run build_git",
     "build_test": "karma start --single-run",
@@ -61,6 +61,7 @@
     "rollup-plugin-uglify": "^6.0.2",
     "shelljs": "^0.8.3",
     "simple-git": "^1.113.0",
+    "supervisor": "^0.12.0",
     "tslib": "^1.9.3",
     "typescript": "^3.5.1"
   }

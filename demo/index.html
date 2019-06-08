@@ -44,7 +44,8 @@
   <script type='text/javascript'>
     function addImg() {
       const pool = document.querySelector('#pool')
-      Monitor.observeError(pool)
+      new Monitor.ObserveError(pool)
+
       const img = new Image()
       img.src = './assets/5.png'
 
@@ -52,12 +53,24 @@
       link.rel = 'stylesheet'
       link.href = './assets/empty.css'
 
-      const div = document.createElement('div')
-      div.appendChild(img)
-
       const script = document.createElement('script')
       script.type = 'text/javascript'
       script.src = './assets/empty.js'
+
+      const span = document.createElement('span')
+      span.innerText = 'Span 标签'
+
+      const btn = document.createElement('button')
+      btn.innerText = '点我加图'
+      btn.onclick = function () {
+        img.src = './assets/6.png'
+        div.appendChild(img)
+      }
+
+      const div = document.createElement('div')
+      div.appendChild(img)
+      div.appendChild(span)
+      div.appendChild(btn)
 
       pool.appendChild(div)
       pool.appendChild(link)

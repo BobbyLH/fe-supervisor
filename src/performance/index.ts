@@ -1,6 +1,4 @@
-import { getType } from './utils/getType'
-import { notSupport } from './utils/notSupport'
-import { timeslice } from './utils/timeslice'
+import { getType, notSupport, timeslice } from '../utils'
 
 type NA = 'N/A'
 type Timing = number | NA
