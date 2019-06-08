@@ -22,6 +22,8 @@ const plugins = [
   ], [
     '@babel/plugin-transform-property-mutators'
   ], [
+    '@babel/plugin-proposal-class-properties'
+  ], [
     '@babel/plugin-transform-runtime',
     {
       'corejs': 2,
