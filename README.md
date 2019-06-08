@@ -13,14 +13,14 @@ Several options to get up and running:
 ```html
 <script src='pathTo/dist/fe-supervisor.min.js' ></script>
 <script>
-    console.log($sv.getPerformanceData())
+    console.log($sv.getTiming())
 </script>
 ```
 
 ```javascript
 import sv from 'fe-supervisor'
 
-console.log($sv.getPerformanceData())
+console.log(sv.getMemory())
 ```
 
 
@@ -32,6 +32,11 @@ $sv
 ### Methods
 #### getPerformanceData(config)
 Get the all performance data.
+```javascript
+import sv from 'fe-supervisor'
+
+sv.getPerformanceData().then(data => console.log(data))
+```
 ```typescript
 interface config {
   apiRatio?: number;
@@ -49,6 +54,11 @@ Get performance timing.
 
 #### getSource(config)
 Get source timing.
+```javascript
+import sv from 'fe-supervisor'
+
+sv.getSource().then(data => console.log(data))
+```
 ```typescript
 interface config {
   apiRatio?: number;

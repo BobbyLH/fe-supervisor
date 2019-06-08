@@ -6,7 +6,7 @@ const route = require('./helper/route')
 
 const server = http.createServer((req, res) => {
   const url = req.url
-  const isJS = url === '/dist/fronted-monitor.js'
+  const isJS = url === '/dist/fe-supervisor.min.js'
   const filePath = path.join(__dirname, isJS ? '../' : './', url)
 
   if (url === '/') {
