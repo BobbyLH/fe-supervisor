@@ -1,8 +1,8 @@
 {
-  "name": "frontend-monitor",
+  "name": "fe-supervisor",
   "version": "0.0.1",
   "description": "The frontend monitor project",
-  "main": "dist/front-monitor.js",
+  "main": "dist/fe-supervisor.min.js",
   "scripts": {
     "dev": "npm run build_rollup && supervisor demo/server.js",
     "build": "npm run build_branch && npm run build_version && npm run build_git",
@@ -19,10 +19,11 @@
     "lint"
   ],
   "keywords": [
+    "performance",
+    "error",
     "frontend",
     "monitor",
-    "typescript",
-    "performance"
+    "typescript"
   ],
   "author": "bobby.li",
   "license": "MIT",

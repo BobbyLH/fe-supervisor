@@ -26,7 +26,7 @@ const apiErrors: IErrArr = []
 const sourceErrors: IErrArr = []
 
 export const HandleException = {
-  getErrors (type: ExceptionType | undefined): IErrArr | IErrTotalObj {
+  getErrors (type?: ExceptionType): IErrArr | IErrTotalObj {
     const typeIndex = type ? ExceptionTypes[type] : undefined
 
     let errors

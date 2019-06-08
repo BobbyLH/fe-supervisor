@@ -30,7 +30,7 @@ import { HandleException, ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '
   }, window)
 })()
 
-export function getError (type: ExceptionType | undefined): IErrArr | IErrTotalObj {
+export function getError (type?: ExceptionType): IErrArr | IErrTotalObj {
   return HandleException.getErrors(type)
 }
 

@@ -291,7 +291,7 @@ export const mark = (function () {
   }
 })
 
-export const clear = (function () {
+export const clearPerformance = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
   const p = window.performance
