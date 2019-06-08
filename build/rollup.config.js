@@ -9,7 +9,7 @@ module.exports = [
   {
     input: 'src/index.ts',
     output: {
-      file: 'dist/fe-supervisor.min.js',
+      file: 'dist/fe-supervisor.sdk.js',
       format: 'umd',
       name: '$sv',
       exports: 'named',
@@ -18,7 +18,15 @@ module.exports = [
     plugins: [
       resolve({ extensions }),
       commonjs(),
-      typescript(),
+      typescript({
+        target: 'es5',
+        lib: ["es5", "es6", "es2015", "es2016", "dom"]
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
+        runtimeHelpers: true
+      }),
       uglify()
     ]
   },
@@ -26,9 +34,7 @@ module.exports = [
     input: 'src/index.ts',
     output: {
       file: 'dist/fe-supervisor.js',
-      format: 'umd',
-      name: '$sv',
-      exports: 'named',
+      format: 'esm',
       compact: true,
       banner: '/* fe-supervisor.js */',
       footer: '/* Copyright (c) 2019-2019 Bobby.li \n* MIT License \n*/'
@@ -36,12 +42,12 @@ module.exports = [
     plugins: [
       resolve({ extensions }),
       commonjs(),
-      typescript()
-      // babel({
-      //   exclude: 'node_modules/**',
-      //   extensions,
-      //   runtimeHelpers: true
-      // })
+      typescript(),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
+        runtimeHelpers: true
+      })
     ]
   }
 ]

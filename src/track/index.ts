@@ -6,7 +6,7 @@ interface Iprops {
   info: any;
 }
 
-interface ItrackInfo {
+export interface ItrackInfo {
   general: IenvInfo | void;
   props: Iprops;
 }

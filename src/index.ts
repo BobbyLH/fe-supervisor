@@ -1,9 +1,9 @@
 import { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance } from './performance'
-import { IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance } from './performance'
+import { IAnyObj, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance } from './performance'
 import { getEnvInfo, IenvInfo } from './env'
 import { getError, setError, ObserveError } from './error'
-import { makeTrackInfo } from './track'
-import { Class } from 'estree';
+import { ExceptionType, IErrObj, IErrTotalObj } from './error/Exception'
+import { makeTrackInfo, ItrackInfo } from './track'
 
 export { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance } from './performance'
 export { getEnvInfo } from './env'
@@ -19,12 +19,12 @@ interface ISupervisor {
   getSource: notSupportFn | ((config?: Iconfig) => Promise<Isource>);
   getExecTiming: notSupportFn | (() => Promise<Iexec>);
   mark: notSupportFn | ((tag: string) => void);
-  clearPerformance: Function;
+  clearPerformance: notSupportFn | (() => boolean);
   getEnvInfo: () => void | (() => IenvInfo);
-  getError: Function;
-  setError: Function;
-  ObserveError: Function;
-  makeTrackInfo: Function;
+  getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
+  setError: (err: IErrObj) => void;
+  ObserveError: typeof ObserveError;
+  makeTrackInfo: (type: string, info: any) => ItrackInfo;
 }
 
 const Supervisor: ISupervisor = {

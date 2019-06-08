@@ -294,20 +294,22 @@ export const mark = (function () {
 export const clearPerformance = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  try {
-    const p = window.performance
-    p.clearMarks()
-    p.clearMeasures()
-    p.clearResourceTimings()
-  
-    marks.splice(0)
-    measures.splice(0)
-    return true
-  } catch (err) {
-    logger(err)
-    return false
+  return function () {
+    try {
+      const p = window.performance
+      p.clearMarks()
+      p.clearMeasures()
+      p.clearResourceTimings()
+    
+      marks.splice(0)
+      measures.splice(0)
+      return true
+    } catch (err) {
+      logger(err)
+      return false
+    }
   }
-})
+})()
 
 function timingFilter (timing: number): number | NA {
   if (isNaN(timing)) return 'N/A'
