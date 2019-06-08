@@ -1,6 +1,6 @@
 {
   "name": "fe-supervisor",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.min.js",
   "scripts": {

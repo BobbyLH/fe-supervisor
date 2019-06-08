@@ -1,31 +1,31 @@
-import { getType, notSupport, timeslice } from '../utils'
+import { getType, notSupport, timeslice, logger } from '../utils'
 
 type NA = 'N/A'
 type Timing = number | NA
 type TimingArr = Array<IAnyObj>
 
-interface IAnyObj {
+export interface IAnyObj {
   [propName: string]: any;
 }
 
-interface Isources {
+export interface Isources {
   [propName: string]: string[];
 }
 
-interface Iconfig {
+export interface Iconfig {
   apiRatio?: number;
   sourceRatio?: number;
   apis?: string[] | string;
   sources?: Isources | string[] | string;
 }
 
-interface Imemory {
+export interface Imemory {
   memory: number | NA;
   used: number;
   total: number;
 }
 
-interface Itiming {
+export interface Itiming {
   timing_wscreen: Timing;
   timing_fscreen: Timing;
   timing_network: Timing;
@@ -39,7 +39,7 @@ interface Itiming {
   timing_render_load: Timing;
 }
 
-interface Isource {
+export interface Isource {
   timing_api_random: TimingArr;
   timing_api_timeout: TimingArr;
   timing_api_appoint: TimingArr;
@@ -48,11 +48,11 @@ interface Isource {
   timing_source_appoint: TimingArr;
 }
 
-interface Iexec {
+export interface Iexec {
   timing_exec: TimingArr;
 }
 
-interface Iperformance extends Itiming, Isource, Iexec {
+export interface Iperformance extends Itiming, Isource, Iexec {
   memory: number | NA;
 }
 
@@ -294,13 +294,19 @@ export const mark = (function () {
 export const clearPerformance = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  const p = window.performance
-  performance.clearMarks()
-  performance.clearMeasures()
-  performance.clearResourceTimings()
-
-  marks.splice(0)
-  measures.splice(0)
+  try {
+    const p = window.performance
+    p.clearMarks()
+    p.clearMeasures()
+    p.clearResourceTimings()
+  
+    marks.splice(0)
+    measures.splice(0)
+    return true
+  } catch (err) {
+    logger(err)
+    return false
+  }
 })
 
 function timingFilter (timing: number): number | NA {
