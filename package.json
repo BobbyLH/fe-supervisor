@@ -1,11 +1,11 @@
 {
   "name": "fe-supervisor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.min.js",
   "scripts": {
-    "dev": "npm run build_rollup && supervisor demo/server.js",
-    "build": "npm run build_branch && npm run build_version && npm run build_git",
+    "dev": "supervisor -w demo,dist demo/server.js",
+    "build": "npm run lint && npm run build_branch && npm run build_version && npm run build_git",
     "build:beta": "npm run build_branch && npm run build_version_beta && npm run build_git",
     "build_test": "karma start --single-run",
     "build_branch": "node build/branch",

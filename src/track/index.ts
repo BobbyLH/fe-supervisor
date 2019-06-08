@@ -1,7 +1,17 @@
-import { getEnvInfo } from '../env'
+import { getEnvInfo, IenvInfo } from '../env'
 import { uuid, storage } from '../utils'
 
-export function makeTrackInfo (type: string, info: any) {
+interface Iprops {
+  type: string;
+  info: any;
+}
+
+interface ItrackInfo {
+  general: IenvInfo | void;
+  props: Iprops;
+}
+
+export function makeTrackInfo (type: string, info: any): ItrackInfo {
   const envInfo = getEnvInfo()
   if (type === 'pv') {
     const guid = storage.get('uuid', 'cookie')

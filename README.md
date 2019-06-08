@@ -73,6 +73,11 @@ Marking a tag in the code.
 
 #### getExecTiming()
 Get tagged code execution timing.
+```javascript
+import sv from 'fe-supervisor'
+
+sv.getExecTiming().then(data => console.log(data))
+```
 
 #### clearPerformance()
 Clear performance data.
