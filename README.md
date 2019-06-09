@@ -82,6 +82,15 @@ sv.getExecTiming().then(data => console.log(data))
 #### clearPerformance()
 Clear performance data.
 
+#### getSourceByDom()
+get source timing information by refer dom.
+```javascript
+import sv from 'fe-supervisor'
+
+const sec = document.querySelect('section')
+sv.getSourceByDom(sec, 'img').then(data => console.log(data))
+```
+
 #### getEnvInfo()
 Get browser environment information.
 
@@ -106,6 +115,43 @@ Making a track infomation.
 
 #### new ObserveError(target, observeDom?)
 Obersevation appoint target's children error.
+```javascript
+import sv from 'fe-supervisor'
+import React from 'react'
+
+
+
+export default class Detail extends React.PureComponent{
+  constructor (props) {
+    super(props)
+    this.pool = React.createRef()
+  }
+  addImg () {
+    // observer DOM
+    new sv.ObserveError(this.pool.current)
+    // api request
+    this.setState({
+      Imgs: data
+    })
+  }
+
+  getError () {
+    const errObj = sv.getError('source')
+    console.log(errObj)
+  }
+
+  render () {
+    const { Imgs = null } = this.state
+    return (
+      <div ref={this.pool}>
+        <button onClick={this.addImg.bind(this)}>点击加图</button>
+        { Imgs }
+        <button onClick={this.getError.bind(this)}>获取错误信息</button>
+      </div>
+    )
+  }
+}
+```
 ```typescript
 type target = HTMLElement
 type observeDom = string | string[]
