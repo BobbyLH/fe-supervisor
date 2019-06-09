@@ -20,7 +20,7 @@ interface ISupervisor {
   getExecTiming: notSupportFn | (() => Promise<Iexec>);
   mark: notSupportFn | ((tag: string) => void);
   clearPerformance: notSupportFn | (() => boolean);
-  getSourceByDom: notSupportFn | ((target: HTMLElement, sourceType: string) => Promise<IAnyObj[]>);
+  getSourceByDom: notSupportFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>);
   getEnvInfo: () => void | (() => IenvInfo);
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;

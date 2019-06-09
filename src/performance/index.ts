@@ -56,6 +56,11 @@ export interface Iperformance extends Itiming, Isource, Iexec {
   memory: number | NA;
 }
 
+export interface IGeneratorFn extends GeneratorFunction {
+  [Symbol.toStringTag]: 'GeneratorFunction';
+  (): IterableIterator<any>;
+}
+
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
@@ -203,7 +208,7 @@ export const getSource = (function () {
       }
     }
 
-    await timeslice(gen as any)
+    await timeslice(gen as IGeneratorFn)
 
     return {
       timing_api_random,
@@ -239,7 +244,7 @@ export const getExecTiming  = (function () {
       yield
     }
     
-    await timeslice(gen as any)
+    await timeslice(gen as IGeneratorFn)
 
     return {
       timing_exec
@@ -324,11 +329,11 @@ export const getSourceByDom = (function () {
     }
     const doms = target.children
     if (doms.length > 0) {
-      await timeslice(iterationDOM(doms) as any)
+      await timeslice(iterationDOM(doms) as IGeneratorFn)
     }
 
     function iterationDOM (doms: HTMLCollection) {
-      return function* (): IterableIterator<Promise<() => void> | any> {
+      return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
         const len = doms.length
         for (let i = 0; i < len; i++) {
           const item = doms[i]
@@ -344,7 +349,7 @@ export const getSourceByDom = (function () {
           }
 
           if (item.children.length > 0) {
-            yield timeslice(iterationDOM(item.children) as any)
+            yield timeslice(iterationDOM(item.children) as IGeneratorFn)
           }
 
           yield
