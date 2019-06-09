@@ -12,7 +12,7 @@ async function autoGit () {
   let gitStatus = null
   try {
     gitStatus = await git.add('../*')
-    gitStatus = await git.commit(`[Roar]: ${message}`)
+    gitStatus = await git.commit(`[FE - SUPERVISOR]: ${message}`)
     gitStatus = await git.push('origin', branch)
     console.log(`[git - status]: ${chalk.green(gitStatus || 'success')}`)
   } catch (e) {
