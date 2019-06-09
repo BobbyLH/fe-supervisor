@@ -1,11 +1,11 @@
-import { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance } from './performance'
+import { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance, getSourceByDom } from './performance'
 import { IAnyObj, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance } from './performance'
 import { getEnvInfo, IenvInfo } from './env'
 import { getError, setError, ObserveError } from './error'
 import { ExceptionType, IErrObj, IErrTotalObj } from './error/Exception'
 import { makeTrackInfo, ItrackInfo } from './track'
 
-export { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance } from './performance'
+export { getPerformanceData, getMemory, getTiming, getSource, getExecTiming, mark, clearPerformance, getSourceByDom } from './performance'
 export { getEnvInfo } from './env'
 export { getError, setError, ObserveError } from './error'
 export { makeTrackInfo } from './track'
@@ -20,6 +20,7 @@ interface ISupervisor {
   getExecTiming: notSupportFn | (() => Promise<Iexec>);
   mark: notSupportFn | ((tag: string) => void);
   clearPerformance: notSupportFn | (() => boolean);
+  getSourceByDom: notSupportFn | ((target: HTMLElement, sourceType: string) => Promise<IAnyObj[]>);
   getEnvInfo: () => void | (() => IenvInfo);
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
@@ -35,6 +36,7 @@ const Supervisor: ISupervisor = {
   getExecTiming,
   mark,
   clearPerformance,
+  getSourceByDom,
   getEnvInfo,
   getError,
   setError,

@@ -11,26 +11,46 @@
     <link rel="stylesheet" href="./assets/test.css">
   </head>
   <body>
-    <div>
-      图片1
-      <img src="./assets/1.png" alt="">
-    </div>
+    <section>
+      <div>
+        图片1
+        <img src="./assets/1.png" alt="">
+      </div>
+  
+      <div>
+        图片3
+        <img src="./assets/3.png" alt="">
+      </div>
+  
+      <div>
+        图片4
+        <img src="http://cdn.himalaya.com/de6f28f0637f480297f90ca11ed2bddd.png?auth_key=4102416000-1234-0-ddae5ef02baf29dd7463f122353bdbd1" alt="">
+      </div>
 
+      <div>
+        图片5
+        <img src="https://s1.himalaya.com/images/logo_dc4fce7.png" alt="">
+      </div>
+
+      <div>
+        图片6
+        <img src="https://is2-ssl.mzstatic.com/image/thumb/Music123/v4/ff/6b/70/ff6b70e8-dd1d-a058-f22d-c31ed548195a/source/600x600bb.jpg" alt="">
+      </div>
+
+      <div>
+        图片7
+        <img src="https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/33/0a/15/330a1563-f88e-9897-c0a9-a7d4c086bb72/source/600x600bb.jpg" alt="">
+      </div>
+
+      <div>
+        图片8
+        <img src="https://is3-ssl.mzstatic.com/image/thumb/Music113/v4/a0/6b/d7/a06bd787-e07c-5afb-ec4b-33efd7e78f72/source/600x600bb.jpg" alt="">
+      </div>
+    </section>
     <div>
       图片2
       <img src="./assets/2.png" alt="">
     </div>
-
-    <div>
-      图片3
-      <img src="./assets/3.png" alt="">
-    </div>
-
-    <div>
-      图片4
-      <img src="http://cdn.himalaya.com/de6f28f0637f480297f90ca11ed2bddd.png?auth_key=4102416000-1234-0-ddae5ef02baf29dd7463f122353bdbd1" alt="">
-    </div>
-
     <div>
       <button onclick="addImg()">点我加图</button>
     </div>
@@ -44,7 +64,7 @@
   <script type='text/javascript'>
     function addImg() {
       const pool = document.querySelector('#pool')
-      new Monitor.ObserveError(pool)
+      new $sv.ObserveError(pool)
 
       const img = new Image()
       img.src = './assets/5.png'

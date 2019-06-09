@@ -311,6 +311,57 @@ export const clearPerformance = (function () {
   }
 })()
 
+export const getSourceByDom = (function () {
+  if (typeof window === 'undefined' || !window.performance) return notSupport
+
+  return async function (target: HTMLElement, sourceType?: string) {
+    sourceType = sourceType ? sourceType.toLowerCase() : 'img'
+    const sourceArr = []
+
+    if (target.nodeName.toLowerCase() === sourceType) {
+      const sourceSrc = (<HTMLLinkElement>target).href || (<HTMLImageElement | HTMLScriptElement>target).src
+      sourceArr.push(sourceSrc)
+    }
+    const doms = target.children
+    if (doms.length > 0) {
+      await timeslice(iterationDOM(doms) as any)
+    }
+
+    function iterationDOM (doms: HTMLCollection) {
+      return function* (): IterableIterator<Promise<() => void> | any> {
+        const len = doms.length
+        for (let i = 0; i < len; i++) {
+          const item = doms[i]
+          const type = item.nodeName.toLowerCase()
+          if (sourceType === type) {
+            let sourceSrc
+            if (type === 'link') {
+              sourceSrc = (<HTMLLinkElement>item).href
+            } else {
+              sourceSrc = (<HTMLImageElement | HTMLScriptElement>item).src
+            }
+            sourceArr.push(sourceSrc)
+          }
+
+          if (item.children.length > 0) {
+            yield timeslice(iterationDOM(item.children) as any)
+          }
+
+          yield
+        }
+      }
+    }
+
+    const data = await (<Promise<Isource>>getSource({
+      apiRatio: 0,
+      sourceRatio: 0,
+      sources: {[sourceType]: sourceArr}
+    })).then(data => data.timing_source_appoint)
+
+    return data
+  }
+})()
+
 function timingFilter (timing: number): number | NA {
   if (isNaN(timing)) return 'N/A'
 
