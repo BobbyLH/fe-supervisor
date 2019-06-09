@@ -1,7 +1,7 @@
 export { addListener } from './addListener'
 export { removeListener } from './removeListener'
 export { getType } from './getType'
-export { notSupport } from './notSupport'
+export { notSupport, notSupportPromisify } from './notSupport'
 export { timeslice } from './timeslice'
 export { parseUrl } from './parseUrl'
 export { storage } from './storage'

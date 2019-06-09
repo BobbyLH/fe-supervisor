@@ -1,24 +1,9 @@
-export type ExceptionType = 'js' | 'api' | 'source'
+import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
 
 enum ExceptionTypes {
   'js',
   'api',
   'source'
-}
-
-export interface IErrObj {
-  type: ExceptionType;
-  sourceType?: string;
-  url: string;
-  [propName: string]: any;
-}
-
-export type IErrArr = IErrObj[]
-
-export interface IErrTotalObj {
-  jsErrors: IErrArr;
-  apiErrors: IErrArr;
-  sourceErrors: IErrArr;
 }
 
 const jsErrors: IErrArr = []

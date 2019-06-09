@@ -1,13 +1,4 @@
-export interface IenvInfo {
-  ts: number;
-  os: string;
-  browser: string;
-  screen_size: string;
-  referer: string;
-  page_url: string;
-  device: string;
-  ua: string;
-}
+import { IenvInfo } from '../index.d'
 
 export const getEnvInfo = (function () {
   if (typeof window === 'undefined') return function (): void {

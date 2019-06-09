@@ -1,15 +1,6 @@
-import { getEnvInfo, IenvInfo } from '../env'
+import { ItrackInfo } from '../index.d'
+import { getEnvInfo } from '../env'
 import { uuid, storage } from '../utils'
-
-interface Iprops {
-  type: string;
-  info: any;
-}
-
-export interface ItrackInfo {
-  general: IenvInfo | void;
-  props: Iprops;
-}
 
 export function makeTrackInfo (type: string, info: any): ItrackInfo {
   const envInfo = getEnvInfo()

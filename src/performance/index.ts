@@ -1,65 +1,5 @@
-import { getType, notSupport, timeslice, logger } from '../utils'
-
-type NA = 'N/A'
-type Timing = number | NA
-type TimingArr = Array<IAnyObj>
-
-export interface IAnyObj {
-  [propName: string]: any;
-}
-
-export interface Isources {
-  [propName: string]: string[];
-}
-
-export interface Iconfig {
-  apiRatio?: number;
-  sourceRatio?: number;
-  apis?: string[] | string;
-  sources?: Isources | string[] | string;
-}
-
-export interface Imemory {
-  memory: number | NA;
-  used: number;
-  total: number;
-}
-
-export interface Itiming {
-  timing_wscreen: Timing;
-  timing_fscreen: Timing;
-  timing_network: Timing;
-  timing_network_prev: Timing;
-  timing_network_redirect: Timing;
-  timing_network_dns: Timing;
-  timing_network_tcp: Timing;
-  timing_network_request: Timing;
-  timing_render: Timing;
-  timing_render_ready: Timing;
-  timing_render_load: Timing;
-}
-
-export interface Isource {
-  timing_api_random: TimingArr;
-  timing_api_timeout: TimingArr;
-  timing_api_appoint: TimingArr;
-  timing_source_random: TimingArr;
-  timing_source_timeout: TimingArr;
-  timing_source_appoint: TimingArr;
-}
-
-export interface Iexec {
-  timing_exec: TimingArr;
-}
-
-export interface Iperformance extends Itiming, Isource, Iexec {
-  memory: number | NA;
-}
-
-export interface IGeneratorFn extends GeneratorFunction {
-  [Symbol.toStringTag]: 'GeneratorFunction';
-  (): IterableIterator<any>;
-}
+import { NA, TimingArr, IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn } from '../index.d'
+import { getType, notSupport, notSupportPromisify, timeslice, logger } from '../utils'
 
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -126,7 +66,7 @@ export const getTiming = (function () {
 })()
 
 export const getSource = (function () {
-  if (typeof window === 'undefined' || !window.performance) return notSupport
+  if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (config?: Iconfig): Promise<Isource> {
     const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '' } = config || {}
@@ -222,7 +162,7 @@ export const getSource = (function () {
 })()
 
 export const getExecTiming  = (function () {
-  if (typeof window === 'undefined' || !window.performance) return notSupport
+  if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (): Promise<Iexec> {
     const p = window.performance
@@ -253,7 +193,7 @@ export const getExecTiming  = (function () {
 })()
 
 export const getPerformanceData = (function () {
-  if (typeof window === 'undefined' || !window.performance) return notSupport
+  if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (config?: Iconfig): Promise<Iperformance | IAnyObj> {
     // 简单的同步任务
@@ -317,7 +257,7 @@ export const clearPerformance = (function () {
 })()
 
 export const getSourceByDom = (function () {
-  if (typeof window === 'undefined' || !window.performance) return notSupport
+  if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (target: HTMLElement, sourceType?: string) {
     sourceType = sourceType ? sourceType.toLowerCase() : 'img'

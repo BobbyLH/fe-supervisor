@@ -1,5 +1,6 @@
+import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
 import { addListener } from '../utils/addListener'
-import { HandleException, ExceptionType, IErrObj, IErrArr, IErrTotalObj } from './Exception'
+import { HandleException } from './Exception'
 
 (function () {
   if (typeof window === 'undefined') return
