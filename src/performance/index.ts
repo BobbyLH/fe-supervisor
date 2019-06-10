@@ -29,7 +29,7 @@ export const getTiming = (function () {
     // 白屏时长
     const timing_wscreen = timingFilter(t.responseStart - t.navigationStart)
     // 首屏时长
-    const timing_fscreen = timingFilter(t.domComplete - t.navigationStart)
+    const timing_fscreen = timingFilter(t.domContentLoadedEventStart - t.navigationStart)
     // 网络总时长
     const timing_network = timingFilter(t.responseEnd - t.navigationStart)
     // 上一个页面unload时长
@@ -42,12 +42,12 @@ export const getTiming = (function () {
     const timing_network_tcp = timingFilter(t.connectEnd - t.connectStart)
     // 请求耗时
     const timing_network_request = timingFilter(t.responseEnd - t.requestStart)
-    // 渲染时长
-    const timing_render = timingFilter(t.responseStart - t.navigationStart)
-    // 页面从开始到加载完毕时长
-    const timing_render_load = timingFilter(t.loadEventEnd - t.navigationStart)
-    // 页面从开始到可交互的时长
-    const timing_render_ready = timingFilter(t.domContentLoadedEventEnd - t.navigationStart)
+    // 页面从开始进入到完全渲染时长
+    const timing_render = timingFilter(t.loadEventEnd - t.navigationStart)
+    // DOM从开始解析到加载完毕时长
+    const timing_render_load = timingFilter(t.loadEventEnd - t.domLoading)
+    // DOM从开始解析到可交互的时长
+    const timing_render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
 
     return {
     timing_wscreen,
