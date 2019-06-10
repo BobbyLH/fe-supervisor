@@ -133,6 +133,19 @@ export interface ISupervisor {
   makeTrackInfo: (type: string, info: any) => ItrackInfo;
 }
 
+declare const getPerformanceData: notSupportPromisify | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
+declare const getMemory: notSupportFn | (() => Imemory)
+declare const getTiming: notSupportFn | (() => Itiming)
+declare const getSource: notSupportPromisify | ((config?: Iconfig) => Promise<Isource>)
+declare const getExecTiming: notSupportPromisify | (() => Promise<Iexec>)
+declare const mark: notSupportFn | ((tag: string) => void)
+declare const clearPerformance: notSupportFn | (() => boolean)
+declare const getSourceByDom: notSupportPromisify | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
+declare const getEnvInfo: () => void | (() => IenvInfo)
+declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
+declare const setError: (err: IErrObj) => void
+declare const makeTrackInfo: (type: string, info: any) => ItrackInfo
+
 declare namespace $sv {
   const getPerformanceData: notSupportPromisify | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
   const getMemory: notSupportFn | (() => Imemory)
@@ -152,40 +165,10 @@ declare namespace $sv {
   }
   const makeTrackInfo: (type: string, info: any) => ItrackInfo
 }
-export as namespace $sv
 
 declare module 'fe-supervisor' {
-  const getPerformanceData: notSupportPromisify | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
-  const getMemory: notSupportFn | (() => Imemory)
-  const getTiming: notSupportFn | (() => Itiming)
-  const getSource: notSupportPromisify | ((config?: Iconfig) => Promise<Isource>)
-  const getExecTiming: notSupportPromisify | (() => Promise<Iexec>)
-  const mark: notSupportFn | ((tag: string) => void)
-  const clearPerformance: notSupportFn | (() => boolean)
-  const getSourceByDom: notSupportPromisify | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-  const getEnvInfo: () => void | (() => IenvInfo)
-  const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-  const setError: (err: IErrObj) => void
-  class ObserveError {
-    public constructor (target: HTMLElement, observeDom?: string | string[])
-    public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
-    public cancel (): void
-  }
-  const makeTrackInfo: (type: string, info: any) => ItrackInfo
+  export default $sv
 }
-
-declare const getPerformanceData: notSupportPromisify | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
-declare const getMemory: notSupportFn | (() => Imemory)
-declare const getTiming: notSupportFn | (() => Itiming)
-declare const getSource: notSupportPromisify | ((config?: Iconfig) => Promise<Isource>)
-declare const getExecTiming: notSupportPromisify | (() => Promise<Iexec>)
-declare const mark: notSupportFn | ((tag: string) => void)
-declare const clearPerformance: notSupportFn | (() => boolean)
-declare const getSourceByDom: notSupportPromisify | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-declare const getEnvInfo: () => void | (() => IenvInfo)
-declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-declare const setError: (err: IErrObj) => void
-declare const makeTrackInfo: (type: string, info: any) => ItrackInfo
 
 export { 
   getPerformanceData,
@@ -199,5 +182,8 @@ export {
   getEnvInfo,
   getError,
   setError,
-  makeTrackInfo
+  makeTrackInfo,
+  $sv
 }
+
+export as namespace $sv
