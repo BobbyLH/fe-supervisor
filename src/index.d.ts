@@ -152,6 +152,7 @@ declare namespace $sv {
   }
   const makeTrackInfo: (type: string, info: any) => ItrackInfo
 }
+export as namespace $sv
 
 declare module 'fe-supervisor' {
   const getPerformanceData: notSupportPromisify | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
