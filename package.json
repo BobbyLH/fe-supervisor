@@ -1,8 +1,9 @@
 {
   "name": "fe-supervisor",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.js",
+  "types": "dist/fe-supervisor.d.js",
   "scripts": {
     "dev": "supervisor -w demo,dist demo/server.js",
     "build": "npm run lint && npm run build_branch && npm run build_rollup && npm run build_copy && npm run build_version && npm run build_git",
