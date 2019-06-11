@@ -115,6 +115,7 @@ declare const getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sou
 declare const getEnvInfo: () => void | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
+declare const clearError: (type?: ExceptionType) => boolean
 declare class ObserveError {
   public constructor (target: HTMLElement, observeDom?: string | string[])
   public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
@@ -134,6 +135,7 @@ export interface ISupervisor {
   getEnvInfo: () => void | IenvInfo;
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
+  clearError: (type?: ExceptionType) => boolean;
   ObserveError: typeof ObserveError;
   makeTrackInfo: (type: string, info: any) => ItrackInfo;
 }
@@ -150,6 +152,7 @@ declare namespace $sv {
   const getEnvInfo: () => void | IenvInfo
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void
+  const clearError: (type?: ExceptionType) => boolean
   class ObserveError {
     public constructor (target: HTMLElement, observeDom?: string | string[])
     public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
@@ -174,6 +177,7 @@ export {
   getEnvInfo,
   getError,
   setError,
+  clearError,
   makeTrackInfo,
   $sv
 }

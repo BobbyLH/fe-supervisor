@@ -43,6 +43,10 @@ export function setError (err: IErrObj): void {
   HandleException.setErrors(err)
 }
 
+export function clearError (type?: ExceptionType): boolean {
+  return HandleException.clearError(type)
+}
+
 export class ObserveError {
   private observer: MutationObserver | void
   public constructor (target: HTMLElement, observeDom?: string | string[]) {

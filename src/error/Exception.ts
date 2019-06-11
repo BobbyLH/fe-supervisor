@@ -47,6 +47,33 @@ export const HandleException = {
         sourceErrors.push(error)
         break
     }
+  },
+
+  clearError (type?: ExceptionType): boolean {
+    const typeIndex = type ? ExceptionTypes[type] : undefined
+
+    let res = true
+    try {
+      switch (typeIndex) {
+        case ExceptionTypes['js']:
+          jsErrors.splice(0)
+          break
+        case ExceptionTypes['api']:
+          apiErrors.splice(0)
+          break
+        case ExceptionTypes['source']:
+          sourceErrors.splice(0)
+          break
+        default:
+          jsErrors.splice(0)
+          apiErrors.splice(0)
+          sourceErrors.splice(0)
+      }
+    } catch (err) {
+      res= false
+    }
+    
+    return res
   }
 }
 
