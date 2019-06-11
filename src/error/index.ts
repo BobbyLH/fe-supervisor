@@ -9,6 +9,7 @@ import { HandleException } from './Exception'
     const { filename, message, error } = e
 
     HandleException.setErrors({
+      ts: +Date.now(),
       type: 'js',
       url: filename || '',
       msg: message,
@@ -23,6 +24,7 @@ import { HandleException } from './Exception'
       const sourceType = 'img'
       const url = (e as any).target.src
       HandleException.setErrors({
+        ts: +Date.now(),
         type: 'source',
         sourceType,
         url
@@ -63,6 +65,7 @@ export class ObserveError {
             addListener('error', function (e: ErrorEvent) {
               const url = (e as any).target.src
               HandleException.setErrors({
+                ts: +Date.now(),
                 type: 'source',
                 sourceType,
                 url

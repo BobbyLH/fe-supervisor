@@ -64,6 +64,7 @@ export interface IGeneratorFn extends GeneratorFunction {
 export type ExceptionType = 'js' | 'api' | 'source'
 
 export interface IErrObj {
+  ts: number;
   type: ExceptionType;
   sourceType?: string;
   url: string;
@@ -91,14 +92,10 @@ export interface IenvInfo {
 }
 
 //track
-export interface Itrackprops {
+export interface ItrackInfo {
+  ts: number;
   type: string;
   info: any;
-}
-
-export interface ItrackInfo {
-  general: IenvInfo | void;
-  props: Itrackprops;
 }
 
 // index

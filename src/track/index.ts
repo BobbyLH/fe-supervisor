@@ -1,9 +1,7 @@
 import { ItrackInfo } from '../index.d'
-import { getEnvInfo } from '../env'
 import { uuid, storage } from '../utils'
 
 export function makeTrackInfo (type: string, info: any): ItrackInfo {
-  const envInfo = getEnvInfo()
   if (type === 'pv') {
     const guid = storage.get('uuid', 'cookie')
     if (!guid) {
@@ -13,10 +11,8 @@ export function makeTrackInfo (type: string, info: any): ItrackInfo {
   }
 
   return {
-    general: envInfo,
-    props: {
-      type,
-      info
-    }
+    ts: +Date.now(),
+    type,
+    info
   }
 }
