@@ -31,6 +31,8 @@ import { HandleException } from './Exception'
   }, window)
 })()
 
+export function getError (): IErrTotalObj
+export function getError (type: ExceptionType): IErrObj[]
 export function getError (type?: ExceptionType): IErrArr | IErrTotalObj {
   return HandleException.getErrors(type)
 }
