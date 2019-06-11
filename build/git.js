@@ -8,7 +8,7 @@ async function autoGit () {
   const git = simpleGit(__dirname)
   const { current } = await git.branch()
   const branch = (process.argv && process.argv[2]) || current
-  const message = String.prototype.substr.call(version.toString(), 0, version.length - 1)
+  const message = String.prototype.substr.call(version[0], 0, version[0].length - 1)
   let gitStatus = null
   try {
     gitStatus = await git.add('../*')
