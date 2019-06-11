@@ -121,11 +121,11 @@ export interface ISupervisor {
   mark: notSupportFn | ((tag: string) => void);
   clearPerformance: notSupportFn | (() => boolean);
   getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>);
-  getEnvInfo: () => void | (() => IenvInfo);
-  getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
-  setError: (err: IErrObj) => void;
+  getEnvInfo: (() => void) | (() => IenvInfo);
+  getError: (() => IErrTotalObj) | ((type: ExceptionType) => IErrObj[]);
+  setError: ((err: IErrObj) => void);
   ObserveError: typeof ObserveError;
-  makeTrackInfo: (type: string, info: any) => ItrackInfo;
+  makeTrackInfo: ((type: string, info: any) => ItrackInfo);
 }
 
 declare const getPerformanceData: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
@@ -136,10 +136,10 @@ declare const getExecTiming: notSupportPromisifyFn | (() => Promise<Iexec>)
 declare const mark: notSupportFn | ((tag: string) => void)
 declare const clearPerformance: notSupportFn | (() => boolean)
 declare const getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-declare const getEnvInfo: () => void | (() => IenvInfo)
-declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-declare const setError: (err: IErrObj) => void
-declare const makeTrackInfo: (type: string, info: any) => ItrackInfo
+declare const getEnvInfo: (() => void) | (() => IenvInfo)
+declare const getError: (() => IErrTotalObj) | ((type: ExceptionType) => IErrObj[])
+declare const setError: ((err: IErrObj) => void)
+declare const makeTrackInfo: ((type: string, info: any) => ItrackInfo)
 
 declare namespace $sv {
   const getPerformanceData: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
@@ -150,15 +150,15 @@ declare namespace $sv {
   const mark: notSupportFn | ((tag: string) => void)
   const clearPerformance: notSupportFn | (() => boolean)
   const getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-  const getEnvInfo: () => void | (() => IenvInfo)
-  const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-  const setError: (err: IErrObj) => void
+  const getEnvInfo: (() => void) | (() => IenvInfo)
+  const getError: (() => IErrTotalObj) | ((type: ExceptionType) => IErrObj[])
+  const setError: ((err: IErrObj) => void)
   class ObserveError {
     public constructor (target: HTMLElement, observeDom?: string | string[])
     public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
     public cancel (): void
   }
-  const makeTrackInfo: (type: string, info: any) => ItrackInfo
+  const makeTrackInfo: ((type: string, info: any) => ItrackInfo)
 }
 
 declare module 'fe-supervisor' {
