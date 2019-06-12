@@ -27,40 +27,40 @@ export const getTiming = (function () {
     const t = p.timing
       
     // 白屏时长
-    const timing_wscreen = timingFilter(t.responseStart - t.navigationStart)
+    const wscreen = timingFilter(t.responseStart - t.navigationStart)
     // 首屏时长
-    const timing_fscreen = timingFilter(t.domContentLoadedEventStart - t.navigationStart)
+    const fscreen = timingFilter(t.domContentLoadedEventStart - t.navigationStart)
     // 网络总时长
-    const timing_network = timingFilter(t.responseEnd - t.navigationStart)
+    const network = timingFilter(t.responseEnd - t.navigationStart)
     // 上一个页面unload时长
-    const timing_network_prev = timingFilter(t.fetchStart - t.navigationStart)
+    const network_prev = timingFilter(t.fetchStart - t.navigationStart)
     // 从定向时长
-    const timing_network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
+    const network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
     // DNS解析时长
-    const timing_network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
+    const network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
     // tcp时长
-    const timing_network_tcp = timingFilter(t.connectEnd - t.connectStart)
+    const network_tcp = timingFilter(t.connectEnd - t.connectStart)
     // 请求耗时
-    const timing_network_request = timingFilter(t.responseEnd - t.requestStart)
-    // 页面从开始进入到完全渲染时长
-    const timing_render = timingFilter(t.loadEventEnd - t.navigationStart)
-    // DOM从开始解析到加载完毕时长
-    const timing_render_load = timingFilter(t.loadEventEnd - t.domLoading)
+    const network_request = timingFilter(t.responseEnd - t.requestStart)
     // DOM从开始解析到可交互的时长
-    const timing_render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
+    const render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
+    // DOM从开始解析到加载完毕时长
+    const render_load = timingFilter(t.loadEventEnd - t.domLoading)
+    // 总耗时
+    const total = timingFilter(t.loadEventEnd - t.navigationStart)
 
     return {
-      timing_wscreen,
-      timing_fscreen,
-      timing_network,
-      timing_network_prev,
-      timing_network_redirect,
-      timing_network_dns,
-      timing_network_tcp,
-      timing_network_request,
-      timing_render,
-      timing_render_load,
-      timing_render_ready
+      wscreen,
+      fscreen,
+      network,
+      network_prev,
+      network_redirect,
+      network_dns,
+      network_tcp,
+      network_request,
+      render_ready,
+      render_load,
+      total
     }
   }
 })()
@@ -74,17 +74,17 @@ export const getSource = (function () {
     const s = p.getEntriesByType('resource')
   
     // 接口请求随机上报
-    const timing_api_random: TimingArr = []
+    const api_random: TimingArr = []
     // 接口请求超时上报
-    const timing_api_timeout: TimingArr = []
+    const api_timeout: TimingArr = []
     // 接口请求指定上报
-    const timing_api_appoint: TimingArr = []
+    const api_appoint: TimingArr = []
     // 资源请求随机上报
-    const timing_source_random: TimingArr = []
+    const source_random: TimingArr = []
     // 资源请求超时上报
-    const timing_source_timeout: TimingArr = []
+    const source_timeout: TimingArr = []
     // 资源请求指定上报
-    const timing_source_appoint: TimingArr = []
+    const source_appoint: TimingArr = []
     // 超时门槛值 2000毫秒
     const threshold = 2000
 
@@ -100,14 +100,14 @@ export const getSource = (function () {
           type
         }
         if (type === 'xmlhttprequest' || type === 'fetchrequest') {
-          randomRatio(apiRatio) && timing_api_random.push(data)
-          data.duration >= threshold && timing_api_timeout.push(data)
+          randomRatio(apiRatio) && api_random.push(data)
+          data.duration >= threshold && api_timeout.push(data)
           if (getType(apis) === 'string') {
-            data.name === apis && timing_api_appoint.push(data)
+            data.name === apis && api_appoint.push(data)
           } else if (getType(apis) === 'array') {
             (apis as Array<string>).some(v => {
               if (v === data.name) {
-                timing_api_appoint.push(data)
+                api_appoint.push(data)
                 // break the iteration
                 return true
               }
@@ -115,14 +115,14 @@ export const getSource = (function () {
             })
           }
         } else {
-          randomRatio(sourceRatio) && timing_source_random.push(data)
-          data.duration >= threshold && timing_source_timeout.push(data)
+          randomRatio(sourceRatio) && source_random.push(data)
+          data.duration >= threshold && source_timeout.push(data)
           if (getType(sources) === 'string') {
-            type === sources && timing_source_appoint.push(data)
+            type === sources && source_appoint.push(data)
           } else if (getType(sources) === 'array') {
             (sources as Array<string>).some(v => {
               if (v === type) {
-                timing_source_appoint.push(data)
+                source_appoint.push(data)
                 // break the iteration
                 return true
               }
@@ -133,7 +133,7 @@ export const getSource = (function () {
               if (k === type) {
                 (<Isources>sources)[k].some(v => {
                   if (v === data.name) {
-                    timing_source_appoint.push(data)
+                    source_appoint.push(data)
                     // break the iteration
                     return true
                   }
@@ -151,12 +151,12 @@ export const getSource = (function () {
     await timeslice(gen as IGeneratorFn)
 
     return {
-      timing_api_random,
-      timing_api_timeout,
-      timing_api_appoint,
-      timing_source_random,
-      timing_source_timeout,
-      timing_source_appoint
+      api_random,
+      api_timeout,
+      api_appoint,
+      source_random,
+      source_timeout,
+      source_appoint
     }
   }
 })()
@@ -169,13 +169,13 @@ export const getExecTiming  = (function () {
     const measures = p.getEntriesByType('measure')
   
     // 代码块执行时长
-    const timing_exec: TimingArr = []
+    const exec: TimingArr = []
 
     function* gen () {
       const len = measures.length
       for (let i = 0; i < len; i++) {
         const item = measures[i];
-        timing_exec.push({
+        exec.push({
           name: item.name,
           duration: item.duration
         })
@@ -187,7 +187,7 @@ export const getExecTiming  = (function () {
     await timeslice(gen as IGeneratorFn)
 
     return {
-      timing_exec
+      exec
     }
   }
 })()
@@ -305,7 +305,7 @@ export const getSourceByDom = (function () {
       apiRatio: 0,
       sourceRatio: 0,
       sources: {[sourceType]: sourceArr}
-    })).then(data => data.timing_source_appoint)
+    })).then(data => data.source_appoint)
 
     return data
   }

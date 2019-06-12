@@ -25,30 +25,30 @@ export interface Imemory {
 }
 
 export interface Itiming {
-  timing_wscreen: Timing;
-  timing_fscreen: Timing;
-  timing_network: Timing;
-  timing_network_prev: Timing;
-  timing_network_redirect: Timing;
-  timing_network_dns: Timing;
-  timing_network_tcp: Timing;
-  timing_network_request: Timing;
-  timing_render: Timing;
-  timing_render_ready: Timing;
-  timing_render_load: Timing;
+  wscreen: Timing;
+  fscreen: Timing;
+  network: Timing;
+  network_prev: Timing;
+  network_redirect: Timing;
+  network_dns: Timing;
+  network_tcp: Timing;
+  network_request: Timing;
+  render_ready: Timing;
+  render_load: Timing;
+  total: Timing;
 }
 
 export interface Isource {
-  timing_api_random: TimingArr;
-  timing_api_timeout: TimingArr;
-  timing_api_appoint: TimingArr;
-  timing_source_random: TimingArr;
-  timing_source_timeout: TimingArr;
-  timing_source_appoint: TimingArr;
+  api_random: TimingArr;
+  api_timeout: TimingArr;
+  api_appoint: TimingArr;
+  source_random: TimingArr;
+  source_timeout: TimingArr;
+  source_appoint: TimingArr;
 }
 
 export interface Iexec {
-  timing_exec: TimingArr;
+  exec: TimingArr;
 }
 
 export interface Iperformance extends Itiming, Isource, Iexec {
