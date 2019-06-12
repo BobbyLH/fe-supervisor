@@ -50,18 +50,18 @@ export const getTiming = (function () {
     const timing_render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
 
     return {
-    timing_wscreen,
-    timing_fscreen,
-    timing_network,
-    timing_network_prev,
-    timing_network_redirect,
-    timing_network_dns,
-    timing_network_tcp,
-    timing_network_request,
-    timing_render,
-    timing_render_load,
-    timing_render_ready
-  }
+      timing_wscreen,
+      timing_fscreen,
+      timing_network,
+      timing_network_prev,
+      timing_network_redirect,
+      timing_network_dns,
+      timing_network_tcp,
+      timing_network_request,
+      timing_render,
+      timing_render_load,
+      timing_render_ready
+    }
   }
 })()
 

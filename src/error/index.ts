@@ -17,7 +17,7 @@ import { HandleException } from './Exception'
     })
   }, window, { passive: true} )
 
-  addListener('DOMContentLoaded', function (e: Event) {
+  addListener('DOMContentLoaded', function () {
     const imgs = transArray(document.querySelectorAll('img'))
 
     imgs.forEach(img => addListener('error', function (e: ErrorEvent) {
