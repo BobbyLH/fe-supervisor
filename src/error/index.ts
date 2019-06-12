@@ -15,7 +15,7 @@ import { HandleException } from './Exception'
       msg: message,
       error
     })
-  }, window)
+  }, window, { passive: true} )
 
   addListener('DOMContentLoaded', function (e: Event) {
     const imgs = transArray(document.querySelectorAll('img'))

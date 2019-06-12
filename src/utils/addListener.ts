@@ -1,3 +1,9 @@
+interface listenerOption {
+  capture?: boolean,
+  passive?: boolean,
+  once?: boolean
+}
+
 /**
  * @param {string} event event name
  * @param {function} fn event callback
@@ -14,9 +20,15 @@ export const addListener: Function = (function () {
     }
   }
 
-  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, useCapture: boolean = false): void {
+  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, option: listenerOption = {}): void {
     const eventDOM = dom || window
-    eventDOM.addEventListener(event, fn, useCapture)
+    const { capture = false, passive = false, once = false } = option
+
+    eventDOM.addEventListener(event, fn, {
+      capture,
+      passive,
+      once
+    })
   }
 })()
 
