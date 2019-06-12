@@ -1,9 +1,9 @@
 import { IenvInfo } from '../index.d'
 
 export const getEnvInfo = (function () {
-  if (typeof window === 'undefined') return function (): void {
+  if (typeof window === 'undefined') return function (): false {
     console.warn('Please call in browser environment')
-    return
+    return false
   }
 
   return function (): IenvInfo {

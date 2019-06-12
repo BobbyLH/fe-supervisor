@@ -1,7 +1,7 @@
-interface listenerOption {
-  capture?: boolean,
-  passive?: boolean,
-  once?: boolean
+interface ListenerOption {
+  capture?: boolean;
+  passive?: boolean;
+  once?: boolean;
 }
 
 /**
@@ -20,7 +20,7 @@ export const addListener: Function = (function () {
     }
   }
 
-  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, option: listenerOption = {}): void {
+  return function (event: string, fn: EventListenerOrEventListenerObject, dom: HTMLElement, option: ListenerOption = {}): void {
     const eventDOM = dom || window
     const { capture = false, passive = false, once = false } = option
 

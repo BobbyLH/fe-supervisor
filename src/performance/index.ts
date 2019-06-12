@@ -218,11 +218,12 @@ const measures: string[] = []
 export const mark = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  return function (tag: string): void {
+  return function (tag: string): boolean {
     const p = window.performance
     const mark = p.mark
     const measure = p.measure
 
+    let res = true
     if (!~marks.indexOf(tag)) {
       mark(`${tag}Start`)
       marks.push(tag)
@@ -231,10 +232,13 @@ export const mark = (function () {
       measure(`${tag}`)
       measures.push(tag)
     } else {
+      res = false
       console.warn(`Cannot repeat tag the mark: ${tag}`)
     }
+
+    return res
   }
-})
+})()
 
 export const clearPerformance = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport

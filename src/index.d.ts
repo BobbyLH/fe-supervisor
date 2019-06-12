@@ -63,12 +63,11 @@ export interface IGeneratorFn extends GeneratorFunction {
 // error
 export type ExceptionType = 'js' | 'api' | 'source'
 
-export interface IErrObj {
+export interface IErrObj extends IAnyObj {
   ts: number;
   type: ExceptionType;
   sourceType?: string;
   url: string;
-  [propName: string]: any;
 }
 
 export type IErrArr = IErrObj[]
@@ -95,24 +94,19 @@ export interface IenvInfo {
 export interface ItrackInfo {
   ts: number;
   type: string;
-  info: any;
+  info: object;
 }
 
-// index
-export type notSupportFn = () => false
-export type notSupportPromisify = Promise<false>
-export type notSupportPromisifyFn = () => notSupportPromisify
-
 // declare
-declare const getPerformanceData: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
-declare const getMemory: notSupportFn | (() => Imemory)
-declare const getTiming: notSupportFn | (() => Itiming)
-declare const getSource: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Isource>)
-declare const getExecTiming: notSupportPromisifyFn | (() => Promise<Iexec>)
-declare const mark: notSupportFn | ((tag: string) => void)
-declare const clearPerformance: notSupportFn | (() => boolean)
-declare const getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-declare const getEnvInfo: () => void | IenvInfo
+declare const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>
+declare const getMemory: () => false | Imemory
+declare const getTiming: () => false | Itiming
+declare const getSource: (config?: Iconfig) => Promise<false | Isource>
+declare const getExecTiming: () => Promise<false | Iexec>
+declare const mark: (tag: string) => boolean
+declare const clearPerformance: () => boolean
+declare const getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>
+declare const getEnvInfo: () => false | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
 declare const clearError: (type?: ExceptionType) => boolean
@@ -121,35 +115,35 @@ declare class ObserveError {
   public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
   public cancel (): void
 }
-declare const makeTrackInfo: (type: string, info: any) => ItrackInfo
+declare const makeTrackInfo: (type: string, info: object) => ItrackInfo
 
 export interface ISupervisor {
-  getPerformanceData: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>);
-  getMemory: notSupportFn | (() => Imemory);
-  getTiming: notSupportFn | (() => Itiming);
-  getSource: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Isource>);
-  getExecTiming: notSupportPromisifyFn | (() => Promise<Iexec>);
-  mark: notSupportFn | ((tag: string) => void);
-  clearPerformance: notSupportFn | (() => boolean);
-  getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>);
-  getEnvInfo: () => void | IenvInfo;
+  getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>;
+  getMemory: () => false | Imemory;
+  getTiming: () => false | Itiming;
+  getSource: (config?: Iconfig) => Promise<false | Isource>;
+  getExecTiming: () => Promise<false | Iexec>;
+  mark: (tag: string) => boolean;
+  clearPerformance: () => boolean;
+  getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>;
+  getEnvInfo: () => false | IenvInfo;
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
   clearError: (type?: ExceptionType) => boolean;
   ObserveError: typeof ObserveError;
-  makeTrackInfo: (type: string, info: any) => ItrackInfo;
+  makeTrackInfo: (type: string, info: object) => ItrackInfo;
 }
 
 declare namespace $sv {
-  const getPerformanceData: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Iperformance | IAnyObj>)
-  const getMemory: notSupportFn | (() => Imemory)
-  const getTiming: notSupportFn | (() => Itiming)
-  const getSource: notSupportPromisifyFn | ((config?: Iconfig) => Promise<Isource>)
-  const getExecTiming: notSupportPromisifyFn | (() => Promise<Iexec>)
-  const mark: notSupportFn | ((tag: string) => void)
-  const clearPerformance: notSupportFn | (() => boolean)
-  const getSourceByDom: notSupportPromisifyFn | ((target: HTMLElement, sourceType?: string) => Promise<IAnyObj[]>)
-  const getEnvInfo: () => void | IenvInfo
+  const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>
+  const getMemory: () => false | Imemory
+  const getTiming: () => false | Itiming
+  const getSource: (config?: Iconfig) => Promise<false | Isource>
+  const getExecTiming: () => Promise<false | Iexec>
+  const mark: (tag: string) => boolean
+  const clearPerformance: () => boolean
+  const getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>
+  const getEnvInfo: () => false | IenvInfo
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void
   const clearError: (type?: ExceptionType) => boolean
@@ -158,7 +152,7 @@ declare namespace $sv {
     public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
     public cancel (): void
   }
-  const makeTrackInfo: (type: string, info: any) => ItrackInfo
+  const makeTrackInfo: (type: string, info: object) => ItrackInfo
 }
 
 declare module 'fe-supervisor' {

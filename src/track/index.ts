@@ -1,7 +1,7 @@
 import { ItrackInfo } from '../index.d'
 import { uuid, storage } from '../utils'
 
-export function makeTrackInfo (type: string, info: any): ItrackInfo {
+export function makeTrackInfo (type: string, info: object): ItrackInfo {
   if (type === 'pv') {
     const guid = storage.get('uuid', 'cookie')
     if (!guid) {
