@@ -20,7 +20,9 @@ export class Observer {
   
       observer.observe(target, {
         'childList': true,
-        'subtree':true
+        'subtree':true,
+        'attributes': true,
+        'attributeFilter': ['src', 'href']
       })
     } catch (error) {
       return null
