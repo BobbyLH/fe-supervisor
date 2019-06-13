@@ -1,5 +1,5 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
-import { addListener } from '../utils/addListener'
+import { addListener, Observer } from '../utils'
 import { HandleException } from './Exception'
 
 (function () {
@@ -47,54 +47,52 @@ export function clearError (type?: ExceptionType): boolean {
   return HandleException.clearError(type)
 }
 
-export class ObserveError {
-  private observer: MutationObserver | void
-  public constructor (target: HTMLElement, observeDom?: string | string[]) {
-    this.observer = this.init(target, observeDom)
-  }
+export function observeError (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]): Observer {
+  const observer = new Observer(target, function (doms: MutationRecord[]) {
+    const observeList = (observeDom && typeof observeDom === 'string' ? [observeDom] : observeDom) || ['img']
+    handleError(doms)
 
-  public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void {
-    if (!target) return console.warn('Please pass a vaild HTMLElement')
-    const observer = new MutationObserver(function (doms) {
-      const observeList = (observeDom && typeof observeDom === 'string' ? [observeDom] : observeDom) || ['img']
-      handleError(doms)
-  
-      function handleError (doms: MutationRecord[] | NodeList): void {
-        const len = doms.length
-        for (let i = 0; i < len; i++) {
-          const item: any = ((doms[i] as any).addedNodes && (doms[i] as any).addedNodes[0]) || doms[i]
-          const nodeName = item.nodeName || ''
-          const sourceType = nodeName.toLowerCase()
-          if (~observeList.indexOf(sourceType)) {
-            addListener('error', function (e: ErrorEvent) {
-              const url = (e as any).target.src
-              HandleException.setErrors({
-                ts: +Date.now(),
-                type: 'source',
-                sourceType,
-                url
-              })
-            }, item)
+    function handleError (doms: MutationRecord[] | HTMLCollection): void {
+      const len = doms.length
+      for (let i = 0; i < len; i++) {
+        if ((doms[i] as MutationRecord).addedNodes) {
+          const addedNodes = (doms[i] as MutationRecord).addedNodes
+          const len = (doms[i] as MutationRecord).addedNodes.length
+          for (let k = 0; k < len; k++) {
+            bindError(addedNodes[k])
           }
-  
-          if (item.children.length > 0) {
-            return handleError(item.children)
-          }
+        } else {
+          bindError(doms[i] as Element)
         }
       }
-    })
-  
-    observer.observe(target, {
-      'childList': true,
-      'attributes':true
-    })
-  
-    return observer
-  }
 
-  public cancel () {
-    this.observer && this.observer.disconnect()
-  }
+      function bindError (dom: Node | Element) {
+        const nodeName = dom.nodeName
+        const sourceType = nodeName.toLowerCase()
+        if (~observeList.indexOf(sourceType)) {
+          addListener('error', function (e: ErrorEvent) {
+            const target = e.target
+            const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
+            const errObj: IErrObj = {
+              ts: +Date.now(),
+              type: 'source',
+              sourceType,
+              url
+            }
+            HandleException.setErrors(errObj)
+            callback && callback(errObj)
+          }, dom)
+        }
+
+        const children = (dom as Element).children
+        if (children && children.length > 0) {
+          return handleError(children)
+        }
+      }
+    }
+  })
+
+  return observer
 }
 
 function transArray (arrayLike: ArrayLike<HTMLElement>) {

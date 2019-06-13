@@ -1,5 +1,6 @@
+import { addListener } from './../utils/addListener';
 import { NA, TimingArr, IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn } from '../index.d'
-import { getType, notSupport, notSupportPromisify, timeslice, logger } from '../utils'
+import { getType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
 
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -72,7 +73,6 @@ export const getSource = (function () {
     const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '' } = config || {}
     const p = window.performance
     const s = p.getEntriesByType('resource')
-  
     // 接口请求随机上报
     const api_random: TimingArr = []
     // 接口请求超时上报
@@ -260,54 +260,124 @@ export const clearPerformance = (function () {
   }
 })()
 
-export const getSourceByDom = (function () {
+export const observeSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
-  return async function (target: HTMLElement, sourceType?: string) {
+  return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string): Observer {
     sourceType = sourceType ? sourceType.toLowerCase() : 'img'
-    const sourceArr = []
+    getSourceByDom(target)
 
-    if (target.nodeName.toLowerCase() === sourceType) {
-      const sourceSrc = (<HTMLLinkElement>target).href || (<HTMLImageElement | HTMLScriptElement>target).src
-      sourceArr.push(sourceSrc)
-    }
-    const doms = target.children
-    if (doms.length > 0) {
-      await timeslice(iterationDOM(doms) as IGeneratorFn)
-    }
+    const observer = new Observer(target, function (mutationRecords) {
+      let frequence = 100
+      let tag = 0
+      const tags: number[] = []
 
-    function iterationDOM (doms: HTMLCollection) {
-      return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
+      const len = mutationRecords.length
+      for (let i = 0; i < len; i++) {
+        const item = mutationRecords[i]
+        const addNodes = item.addedNodes
+        iterationDOM(addNodes)
+      }
+      timerQuery()
+
+      function timerQuery () {
+        setTimeout(async function () {
+          if (tags.length === 0) {
+            const sourceData = []
+            for (let k = 0; k < len; k++) {
+              const item = mutationRecords[k]
+              const addNodes = item.addedNodes
+              const len = addNodes.length
+              for (let l = 0; l < len; l++) {
+                sourceData.push(...await getSourceByDom(addNodes[l], true))
+              }
+            }
+            callback && callback(sourceData)
+          } else {
+            if (frequence >= 3000) return // 超过3秒还未加载, 很可能有错误或超时, 停止轮询, 走超时或错误数据
+            frequence += frequence
+            timerQuery()
+          }
+        }, frequence)
+      }
+
+      function iterationDOM (doms: NodeList | HTMLCollection): void {
         const len = doms.length
         for (let i = 0; i < len; i++) {
-          const item = doms[i]
-          const type = item.nodeName.toLowerCase()
-          if (sourceType === type) {
-            let sourceSrc
-            if (type === 'link') {
-              sourceSrc = (<HTMLLinkElement>item).href
-            } else {
-              sourceSrc = (<HTMLImageElement | HTMLScriptElement>item).src
-            }
-            sourceArr.push(sourceSrc)
+          const dom = doms[i]
+          const nodeName = dom.nodeName.toLowerCase()
+          if (nodeName === sourceType) {
+            // load 或者 error 都把tags对应的tag删除
+            addListener('load', (function (tag) {
+              return function () {
+                tags.splice(tags.indexOf(tag), 1)
+              }
+            })(tag), dom)
+            addListener('error', (function (tag) {
+              return function () {
+                tags.splice(tags.indexOf(tag), 1)
+              }
+            })(tag), dom)
+            tags.push(tag++)
           }
 
-          if (item.children.length > 0) {
-            yield timeslice(iterationDOM(item.children) as IGeneratorFn)
+          const children = (dom as any).children
+          const childLen = children ? children.length : 0
+          if (childLen > 0) {
+            return iterationDOM(children)
           }
-
-          yield
         }
       }
+    })
+
+    async function getSourceByDom (dom: HTMLElement | Node, isAsync?: boolean) {
+      const sourceArr = []
+
+      if (dom.nodeName.toLowerCase() === sourceType) {
+        const sourceSrc = (<HTMLLinkElement>dom).href || (<HTMLImageElement | HTMLScriptElement>dom).src
+        sourceArr.push(sourceSrc)
+      }
+      const doms = (dom as HTMLElement).children
+      if (doms && doms.length > 0) {
+        await timeslice(iterationDOM(doms) as IGeneratorFn)
+      }
+  
+      function iterationDOM (doms: HTMLCollection) {
+        return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
+          const len = doms.length
+          for (let i = 0; i < len; i++) {
+            const item = doms[i]
+            const type = item.nodeName.toLowerCase()
+            if (sourceType === type) {
+              let sourceSrc
+              if (type === 'link') {
+                sourceSrc = (<HTMLLinkElement>item).href
+              } else {
+                sourceSrc = (<HTMLImageElement | HTMLScriptElement>item).src
+              }
+              sourceArr.push(sourceSrc)
+            }
+  
+            if (item.children.length > 0) {
+              yield timeslice(iterationDOM(item.children) as IGeneratorFn)
+            }
+  
+            yield
+          }
+        }
+      }
+  
+      const data = await (<Promise<Isource>>getSource({
+        apiRatio: 0,
+        sourceRatio: 0,
+        sources: {[sourceType as string]: sourceArr}
+      })).then(data => data.source_appoint)
+  
+      !isAsync && callback && callback(data)
+      return data
     }
 
-    const data = await (<Promise<Isource>>getSource({
-      apiRatio: 0,
-      sourceRatio: 0,
-      sources: {[sourceType]: sourceArr}
-    })).then(data => data.source_appoint)
-
-    return data
+    return observer
   }
 })()
 

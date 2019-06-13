@@ -82,13 +82,15 @@ sv.getExecTiming().then(data => console.log(data))
 #### clearPerformance()
 Clear performance data.
 
-#### getSourceByDom()
+#### observeSource(target, callback, sourceType?)
 get source timing information by refer dom.
 ```javascript
 import sv from 'fe-supervisor'
 
 const sec = document.querySelect('section')
-sv.getSourceByDom(sec, 'img').then(data => console.log(data))
+sv.observeSource(sec, function (source) {
+  console.log('source', source)
+}, 'img')
 ```
 
 #### getEnvInfo()
@@ -113,8 +115,8 @@ interface error {
 #### makeTrackInfo(type, info)
 Making a track infomation.
 
-#### new ObserveError(target, observeDom?)
-Obersevation appoint target's children error.
+#### observeError(target, callback?, observeDom?)
+obersevation appoint target's children error.
 ```javascript
 import sv from 'fe-supervisor'
 import React from 'react'
@@ -128,7 +130,9 @@ export default class Detail extends React.PureComponent{
   }
   addImg () {
     // observer DOM
-    new sv.ObserveError(this.pool.current)
+    $sv.observeError(pool, function (errObj) {
+      console.log('errObj', errObj)
+    })
     // api request
     this.setState({
       Imgs: data

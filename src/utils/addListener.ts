@@ -8,7 +8,7 @@ interface ListenerOption {
  * @param {string} event event name
  * @param {function} fn event callback
  * @param {object} dom event dom
- * @param {boolean} useCapture bubble or capture
+ * @param {ListenerOption} option option contain captrue, passive, once
  */
 export const addListener: Function = (function () {
   if (typeof window === 'undefined') return function (): void {}

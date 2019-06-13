@@ -64,10 +64,14 @@
   <script type='text/javascript'>
     function addImg() {
       const pool = document.querySelector('#pool')
-      new $sv.ObserveError(pool)
-
+      $sv.observeError(pool, function (errObj) {
+        console.log('errObj', errObj)
+      })
       const img = new Image()
       img.src = './assets/5.png'
+
+      const img1 = new Image()
+      img1.src = 'https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/ad/e0/f5/ade0f59d-b5b0-ef09-19de-d3f77b50083c/source/600x600bb.jpg'
 
       const link = document.createElement('link')
       link.rel = 'stylesheet'
@@ -83,18 +87,34 @@
       const btn = document.createElement('button')
       btn.innerText = '点我加图'
       btn.onclick = function () {
-        img.src = './assets/6.png'
+        const img = new Image()
+        img.src = 'http://cdn.himalaya.com/ffcbed161570481e9c6062cb758eb549.png?auth_key=4102416000-1234-0-1b72a9d5970fc5c1d4f26445887474b1'
+        const img1 = new Image()
+        img1.src = 'https://is4-ssl.mzstatic.com/image/thumb/Music113/v4/48/8c/2b/488c2be3-c5c4-13da-73c5-1f1077662abc/source/300x300bb.jpg'
+        const img2 = new Image()
+        img2.src = './assets/6.png'
+        const div1 = document.createElement('div')
+        div1.appendChild(img1)
+
         div.appendChild(img)
+        div.appendChild(div1)
+        div.appendChild(img2)
       }
 
       const div = document.createElement('div')
       div.appendChild(img)
+      div.appendChild(img1)
       div.appendChild(span)
       div.appendChild(btn)
 
       pool.appendChild(div)
       pool.appendChild(link)
       pool.appendChild(script)
+      setTimeout(() => {
+        $sv.observeSource(pool, function (source) {
+          console.log('source', source)
+        })
+      })
     }
 
     function execErr () {

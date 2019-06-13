@@ -1,3 +1,5 @@
+import { Observer } from './utils'
+
 // performance
 export type NA = 'N/A'
 export type Timing = number | NA
@@ -105,16 +107,12 @@ declare const getSource: (config?: Iconfig) => Promise<false | Isource>
 declare const getExecTiming: () => Promise<false | Iexec>
 declare const mark: (tag: string) => boolean
 declare const clearPerformance: () => boolean
-declare const getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>
+declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer
 declare const getEnvInfo: () => false | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
 declare const clearError: (type?: ExceptionType) => boolean
-declare class ObserveError {
-  public constructor (target: HTMLElement, observeDom?: string | string[])
-  public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
-  public cancel (): void
-}
+declare const observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer
 declare const makeTrackInfo: (type: string, info: object) => ItrackInfo
 
 export interface ISupervisor {
@@ -125,12 +123,12 @@ export interface ISupervisor {
   getExecTiming: () => Promise<false | Iexec>;
   mark: (tag: string) => boolean;
   clearPerformance: () => boolean;
-  getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>;
+  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer;
   getEnvInfo: () => false | IenvInfo;
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
   clearError: (type?: ExceptionType) => boolean;
-  ObserveError: typeof ObserveError;
+  observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer;
   makeTrackInfo: (type: string, info: object) => ItrackInfo;
 }
 
@@ -142,16 +140,12 @@ declare namespace $sv {
   const getExecTiming: () => Promise<false | Iexec>
   const mark: (tag: string) => boolean
   const clearPerformance: () => boolean
-  const getSourceByDom: (target: HTMLElement, sourceType?: string) => Promise<false | IAnyObj[]>
+  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer
   const getEnvInfo: () => false | IenvInfo
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void
   const clearError: (type?: ExceptionType) => boolean
-  class ObserveError {
-    public constructor (target: HTMLElement, observeDom?: string | string[])
-    public init (target: HTMLElement, observeDom?: string | string[]): MutationObserver | void
-    public cancel (): void
-  }
+  const observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer
   const makeTrackInfo: (type: string, info: object) => ItrackInfo
 }
 
@@ -167,7 +161,7 @@ export {
   getExecTiming,
   mark,
   clearPerformance,
-  getSourceByDom,
+  observeSource,
   getEnvInfo,
   getError,
   setError,
