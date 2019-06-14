@@ -267,114 +267,106 @@ export const observeSource = (function () {
     sourceType = sourceType ? sourceType.toLowerCase() : 'img'
     getSourceByDom(target)
 
-    const observer = new Observer(target, function (mutationRecords) {
+    const observer = new Observer(target, async function (mutationRecords) {
       let frequence = 100
-      let tag = 0
-      const tags: number[] = []
 
       const len = mutationRecords.length
+      const sourceAddr: string[] = []
       for (let i = 0; i < len; i++) {
         const item = mutationRecords[i]
-        const addNodes = item.addedNodes
-        iterationDOM(addNodes)
+        const recordType = mutationRecords[i].type
+        switch (recordType) {
+          case 'childList':
+            const addNodes = item.addedNodes
+            await timeslice(iterationDOM(addNodes, sourceAddr) as IGeneratorFn)
+            break
+          case 'attributes':
+            const attrName = item.attributeName
+            const target: any = item.target
+            attrName && sourceAddr.push(target[attrName])
+            break
+        }
       }
       timerQuery()
 
+      /**
+       * 轮询是否所有的资源都执行了onload 或者 onerror
+       * @param hasSource 是否已经获取了source资源的路径 recordType 为 attributes 会发生
+       */
       function timerQuery () {
         setTimeout(async function () {
-          if (tags.length === 0) {
-            const sourceData = []
-            for (let k = 0; k < len; k++) {
-              const item = mutationRecords[k]
-              const addNodes = item.addedNodes
-              const len = addNodes.length
-              for (let l = 0; l < len; l++) {
-                sourceData.push(...await getSourceByDom(addNodes[l], true))
-              }
-            }
-            callback && callback(sourceData)
+          // 超过3秒还未加载, 很可能有错误或超时, 停止轮询, 走超时或错误数据
+          const sourceData = await (<Promise<Isource>>getSource({
+            apiRatio: 0,
+            sourceRatio: 0,
+            sources: {[sourceType as string]: sourceAddr}
+          })).then(data => data.source_appoint)
+          if (sourceData.length === sourceAddr.length || frequence >= 1000) {
+            return callback && callback(sourceData)
           } else {
-            if (frequence >= 3000) return // 超过3秒还未加载, 很可能有错误或超时, 停止轮询, 走超时或错误数据
             frequence += frequence
             timerQuery()
           }
         }, frequence)
       }
-
-      function iterationDOM (doms: NodeList | HTMLCollection): void {
-        const len = doms.length
-        for (let i = 0; i < len; i++) {
-          const dom = doms[i]
-          const nodeName = dom.nodeName.toLowerCase()
-          if (nodeName === sourceType) {
-            // load 或者 error 都把tags对应的tag删除
-            addListener('load', (function (tag) {
-              return function () {
-                tags.splice(tags.indexOf(tag), 1)
-              }
-            })(tag), dom)
-            addListener('error', (function (tag) {
-              return function () {
-                tags.splice(tags.indexOf(tag), 1)
-              }
-            })(tag), dom)
-            tags.push(tag++)
-          }
-
-          const children = (dom as any).children
-          const childLen = children ? children.length : 0
-          if (childLen > 0) {
-            return iterationDOM(children)
-          }
-        }
-      }
     })
 
+    /**
+     * 指定DOM获取其中的资源performance信息
+     * @param dom HTMLElement
+     * @param isAsync 是否异步, true的话则不执行callback
+     */
     async function getSourceByDom (dom: HTMLElement | Node, isAsync?: boolean) {
-      const sourceArr = []
+      const sourceAddr: string[] = []
 
       if (dom.nodeName.toLowerCase() === sourceType) {
         const sourceSrc = (<HTMLLinkElement>dom).href || (<HTMLImageElement | HTMLScriptElement>dom).src
-        sourceArr.push(sourceSrc)
+        sourceAddr.push(sourceSrc)
       }
       const doms = (dom as HTMLElement).children
       if (doms && doms.length > 0) {
-        await timeslice(iterationDOM(doms) as IGeneratorFn)
-      }
-  
-      function iterationDOM (doms: HTMLCollection) {
-        return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
-          const len = doms.length
-          for (let i = 0; i < len; i++) {
-            const item = doms[i]
-            const type = item.nodeName.toLowerCase()
-            if (sourceType === type) {
-              let sourceSrc
-              if (type === 'link') {
-                sourceSrc = (<HTMLLinkElement>item).href
-              } else {
-                sourceSrc = (<HTMLImageElement | HTMLScriptElement>item).src
-              }
-              sourceArr.push(sourceSrc)
-            }
-  
-            if (item.children.length > 0) {
-              yield timeslice(iterationDOM(item.children) as IGeneratorFn)
-            }
-  
-            yield
-          }
-        }
+        await timeslice(iterationDOM(doms, sourceAddr) as IGeneratorFn)
       }
   
       const data = await (<Promise<Isource>>getSource({
         apiRatio: 0,
         sourceRatio: 0,
-        sources: {[sourceType as string]: sourceArr}
+        sources: {[sourceType as string]: sourceAddr}
       })).then(data => data.source_appoint)
   
       !isAsync && callback && callback(data)
       return data
+    }
+
+    /**
+     * 遍历DOM, 筛选出符合条件的DOM
+     * @param doms NodeList | HTMLCollection
+     */
+    function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
+      return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
+        const len = doms.length
+        for (let i = 0; i < len; i++) {
+          const dom = doms[i]
+          const type = dom.nodeName.toLowerCase()
+          if (sourceType === type) {
+            let sourceSrc
+            if (type === 'link') {
+              sourceSrc = (<HTMLLinkElement>dom).href
+            } else {
+              sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src
+            }
+            sourceAddr.push(sourceSrc)
+          }
+
+          const children = (dom as Element).children
+          const childLen = children ? children.length : 0
+          if (childLen > 0) {
+            yield timeslice(iterationDOM(children, sourceAddr) as IGeneratorFn)
+          }
+
+          yield
+        }
+      }
     }
 
     return observer

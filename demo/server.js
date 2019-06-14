@@ -3,6 +3,8 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const route = require('./helper/route')
+const open = require('./helper/open')
+const net = require('./helper/net')
 
 const server = http.createServer((req, res) => {
   const url = req.url
@@ -18,6 +20,9 @@ const server = http.createServer((req, res) => {
   }
 })
 
-server.listen('3401', 'localhost', () => {
-  console.info(`Server started at ${chalk.green('http://localhost:3401')}`)
+const port = 3401
+server.listen(port, 'localhost', () => {
+  const addr = `http://localhost:${port}`
+  console.info(`Server started at ${chalk.green(addr)}`)
+  net(port, () => open(addr))
 })

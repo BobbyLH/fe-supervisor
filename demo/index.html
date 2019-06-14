@@ -59,6 +59,9 @@
       <button onclick="execErr()">点我js出错</button>
     </div>
 
+    <div>
+      <button onclick="changeSrc()">改img的src</button>
+    </div>
     <div id='pool'></div>
   </body>
   <script type='text/javascript'>
@@ -72,6 +75,7 @@
 
       const img1 = new Image()
       img1.src = 'https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/ad/e0/f5/ade0f59d-b5b0-ef09-19de-d3f77b50083c/source/600x600bb.jpg'
+      img1.id = 'change'
 
       const link = document.createElement('link')
       link.rel = 'stylesheet'
@@ -122,6 +126,11 @@
         typeof test === 'number' && console.log(123)
         let test = 1
       }
+    }
+
+    function changeSrc () {
+      const img = document.getElementById('change')
+      img.src = './assets/2.png'
     }
 
   </script>
