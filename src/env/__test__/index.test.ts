@@ -1,8 +1,6 @@
 import 'mocha'
 import { expect } from 'chai'
 import { getEnvInfo } from '../index'
-const argv = process.argv
-console.log(argv, 2222)
 
 describe('getEnvInfo test module', function () {
   it('In node env', function () {
