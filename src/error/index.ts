@@ -1,6 +1,6 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
 import { addListener, Observer } from '../utils'
-import { HandleException } from './Exception'
+import { HandleException, errorTag } from './Exception'
 
 (function () {
   if (typeof window === 'undefined') return
@@ -20,16 +20,21 @@ import { HandleException } from './Exception'
   addListener('DOMContentLoaded', function () {
     const imgs = transArray(document.querySelectorAll('img'))
 
-    imgs.forEach(img => addListener('error', function (e: ErrorEvent) {
-      const sourceType = 'img'
-      const url = (e as any).target.src
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'source',
-        sourceType,
-        url
-      })
-    }, img))
+    imgs.forEach(img => {
+      if (!img.getAttribute(errorTag)) {
+        img.setAttribute(errorTag, 'true')
+        addListener('error', function (e: ErrorEvent) {
+          const sourceType = 'img'
+          const url = (e as any).target.src
+          HandleException.setErrors({
+            ts: +Date.now(),
+            type: 'source',
+            sourceType,
+            url
+          })
+        }, img)
+      }
+    })
   }, window)
 })()
 
@@ -69,7 +74,13 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
       function bindError (dom: Node | Element) {
         const nodeName = dom.nodeName
         const sourceType = nodeName.toLowerCase()
-        if (~observeList.indexOf(sourceType)) {
+        bind: if (~observeList.indexOf(sourceType)) {
+          // Excluding already binding error event situation
+          if ((<Element>dom).getAttribute) {
+            if ((<Element>dom).getAttribute(errorTag)) break bind
+            (<Element>dom).setAttribute(errorTag, 'true')
+          }
+
           addListener('error', function (e: ErrorEvent) {
             const target = e.target
             const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
@@ -81,7 +92,7 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
             }
             HandleException.setErrors(errObj)
             callback && callback(dom, e)
-          }, dom)
+          }, dom, { passive: true })
         }
 
         const children = (dom as Element).children
@@ -95,6 +106,6 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
   return observer
 }
 
-function transArray (arrayLike: ArrayLike<HTMLElement>) {
+function transArray (arrayLike: ArrayLike<HTMLElement>): Array<HTMLElement> {
   return Array.prototype.slice.call(arrayLike)
 }

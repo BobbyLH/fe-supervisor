@@ -10,6 +10,8 @@ const jsErrors: IErrArr = []
 const apiErrors: IErrArr = []
 const sourceErrors: IErrArr = []
 
+export const errorTag: string = 'fe-supervisor-error'
+
 export const HandleException = {
   getErrors (type?: ExceptionType): IErrArr | IErrTotalObj {
     const typeIndex = type ? ExceptionTypes[type] : undefined
