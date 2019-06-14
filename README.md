@@ -11,7 +11,7 @@ Several options to get up and running:
 
 
 ```html
-<script src=`${pathTo}/dist/fe-supervisor.min.js` ></script>
+<script src=`${pathTo}/dist/fe-supervisor.sdk.js` ></script>
 <script>
     console.log($sv.getTiming())
 </script>
