@@ -5,7 +5,7 @@
   "main": "dist/fe-supervisor.js",
   "types": "dist/fe-supervisor.d.ts",
   "scripts": {
-    "dev": "supervisor -w demo,dist demo/server.js",
+    "dev": "supervisor -w demo/server/helper/* demo/server/app.js",
     "build": "npm run lint && npm run build_branch && npm run build_rollup && npm run build_copy && npm run build_version && npm run build_git",
     "build:beta": "npm run build_branch && npm run build_version_beta && npm run build_git",
     "build_test": "karma start --single-run",
@@ -14,8 +14,10 @@
     "build_version": "node build/version",
     "build_version_beta": "node build/version beta",
     "build_git": "node build/git.js master",
-    "build_rollup": "tsc --build tsconfig.json && rollup -c build/rollup.config.js",
-    "lint": "eslint --ext .ts src/"
+    "build_rollup": "rollup -c build/rollup.config.js",
+    "lint": "eslint --ext .ts src/",
+    "test_node": "mocha --opts mocha.opts",
+    "test_browser": "mocha --opts mocha.opts"
   },
   "pre-commit": [
     "lint"
@@ -47,6 +49,8 @@
     "@babel/plugin-transform-spread": "^7.2.2",
     "@babel/plugin-transform-template-literals": "^7.4.4",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.7",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
     "babel-loader": "^8.0.6",
@@ -66,6 +70,7 @@
     "shelljs": "^0.8.3",
     "simple-git": "^1.113.0",
     "supervisor": "^0.12.0",
+    "ts-node": "^8.2.0",
     "tslib": "^1.9.3",
     "typescript": "^3.5.1"
   }

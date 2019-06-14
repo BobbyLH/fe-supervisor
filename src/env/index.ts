@@ -123,3 +123,5 @@ export const getEnvInfo = (function () {
     return info
   }
 })()
+
+export default getEnvInfo

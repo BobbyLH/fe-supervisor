@@ -112,7 +112,7 @@ declare const getEnvInfo: () => false | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
 declare const clearError: (type?: ExceptionType) => boolean
-declare const observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer
+declare const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
 declare const makeTrackInfo: (type: string, info: object) => ItrackInfo
 
 export interface ISupervisor {
@@ -128,7 +128,7 @@ export interface ISupervisor {
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
   clearError: (type?: ExceptionType) => boolean;
-  observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer;
+  observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
   makeTrackInfo: (type: string, info: object) => ItrackInfo;
 }
 
@@ -145,7 +145,7 @@ declare namespace $sv {
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void
   const clearError: (type?: ExceptionType) => boolean
-  const observeError: (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]) => Observer
+  const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
   const makeTrackInfo: (type: string, info: object) => ItrackInfo
 }
 

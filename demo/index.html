@@ -67,8 +67,8 @@
   <script type='text/javascript'>
     function addImg() {
       const pool = document.querySelector('#pool')
-      $sv.observeError(pool, function (errObj) {
-        console.log('errObj', errObj)
+      $sv.observeError(pool, function (dom, e) {
+        console.log('errObj', dom, e)
       })
       const img = new Image()
       img.src = './assets/5.png'

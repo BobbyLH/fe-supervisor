@@ -10,7 +10,7 @@ export const getMemory = (function () {
     const m = (p as any).memory
     const used = m.usedJSHeapSize || 0
     const total = m.totalJSHeapSize || 1
-    const usedRatio = used / total
+    const usedRatio = +Number.prototype.toFixed.call(used / total, 3)
 
     return {
       memory: usedRatio || 'N/A',

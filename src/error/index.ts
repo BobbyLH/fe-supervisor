@@ -47,7 +47,7 @@ export function clearError (type?: ExceptionType): boolean {
   return HandleException.clearError(type)
 }
 
-export function observeError (target: HTMLElement, callback?: (error: IErrObj) => any, observeDom?: string | string[]): Observer {
+export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]): Observer {
   const observer = new Observer(target, function (doms: MutationRecord[]) {
     const observeList = (observeDom && typeof observeDom === 'string' ? [observeDom] : observeDom) || ['img']
     handleError(doms)
@@ -80,7 +80,7 @@ export function observeError (target: HTMLElement, callback?: (error: IErrObj) =
               url
             }
             HandleException.setErrors(errObj)
-            callback && callback(errObj)
+            callback && callback(dom, e)
           }, dom)
         }
 

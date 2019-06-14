@@ -42,7 +42,10 @@ module.exports = [
     plugins: [
       resolve({ extensions }),
       commonjs(),
-      typescript(),
+      typescript({
+        target: 'ESNEXT',
+        lib: ["es5", "es6", "es2015", "es2016", "dom"]
+      }),
       babel({
         exclude: 'node_modules/**',
         extensions,
