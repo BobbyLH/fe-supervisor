@@ -3,7 +3,9 @@ import { Observer } from './utils'
 // performance
 export type NA = 'N/A'
 export type Timing = number | NA
-export type TimingArr = Array<IAnyObj>
+export type TimingSource = Array<ItimingSource>
+export type TimingExec = Array<ItimingExec>
+
 
 export interface IAnyObj {
   [propName: string]: any;
@@ -18,6 +20,7 @@ export interface Iconfig {
   sourceRatio?: number;
   apis?: string[] | string;
   sources?: Isources | string[] | string;
+  timeout?: number; // timeout threshold(millisecond) - default 2000
 }
 
 export interface Imemory {
@@ -40,17 +43,28 @@ export interface Itiming {
   total: Timing;
 }
 
+export interface ItimingSource {
+  name: string;
+  duration: number;
+  type: string;
+}
+
+export interface ItimingExec {
+  name: string;
+  duration: number;
+}
+
 export interface Isource {
-  api_random: TimingArr;
-  api_timeout: TimingArr;
-  api_appoint: TimingArr;
-  source_random: TimingArr;
-  source_timeout: TimingArr;
-  source_appoint: TimingArr;
+  api_random: TimingSource;
+  api_timeout: TimingSource;
+  api_appoint: TimingSource;
+  source_random: TimingSource;
+  source_timeout: TimingSource;
+  source_appoint: TimingSource;
 }
 
 export interface Iexec {
-  exec: TimingArr;
+  exec: TimingExec;
 }
 
 export interface Iperformance extends Itiming, Isource, Iexec {
@@ -60,6 +74,13 @@ export interface Iperformance extends Itiming, Isource, Iexec {
 export interface IGeneratorFn extends GeneratorFunction {
   readonly [Symbol.toStringTag]: 'GeneratorFunction';
   (): IterableIterator<any>;
+}
+
+export type ClearType = 'source' | 'mark' | 'all'
+
+export interface IobserveSourceOption {
+  sourceType?: string;
+  timeout?: number;
 }
 
 // error
@@ -106,8 +127,8 @@ declare const getTiming: () => false | Itiming
 declare const getSource: (config?: Iconfig) => Promise<false | Isource>
 declare const getExecTiming: () => Promise<false | Iexec>
 declare const mark: (tag: string) => boolean
-declare const clearPerformance: () => boolean
-declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer
+declare const clearPerformance: (clearType?: ClearType) => boolean
+declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer
 declare const getEnvInfo: () => false | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
@@ -122,8 +143,8 @@ export interface ISupervisor {
   getSource: (config?: Iconfig) => Promise<false | Isource>;
   getExecTiming: () => Promise<false | Iexec>;
   mark: (tag: string) => boolean;
-  clearPerformance: () => boolean;
-  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer;
+  clearPerformance: (clearType?: ClearType) => boolean;
+  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer;
   getEnvInfo: () => false | IenvInfo;
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
@@ -139,8 +160,8 @@ declare namespace $sv {
   const getSource: (config?: Iconfig) => Promise<false | Isource>
   const getExecTiming: () => Promise<false | Iexec>
   const mark: (tag: string) => boolean
-  const clearPerformance: () => boolean
-  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string) => Promise<false> | Observer
+  const clearPerformance: (clearType?: ClearType) => boolean
+  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer
   const getEnvInfo: () => false | IenvInfo
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void

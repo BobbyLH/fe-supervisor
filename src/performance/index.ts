@@ -1,5 +1,4 @@
-import { addListener } from './../utils/addListener';
-import { NA, TimingArr, IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn } from '../index.d'
+import { NA, TimingSource, TimingExec, IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
 import { getType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
 
 export const getMemory = (function () {
@@ -70,23 +69,23 @@ export const getSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (config?: Iconfig): Promise<Isource> {
-    const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '' } = config || {}
+    const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '', timeout = 2000 } = config || {}
     const p = window.performance
     const s = p.getEntriesByType('resource')
     // 接口请求随机上报
-    const api_random: TimingArr = []
+    const api_random: TimingSource = []
     // 接口请求超时上报
-    const api_timeout: TimingArr = []
+    const api_timeout: TimingSource = []
     // 接口请求指定上报
-    const api_appoint: TimingArr = []
+    const api_appoint: TimingSource = []
     // 资源请求随机上报
-    const source_random: TimingArr = []
+    const source_random: TimingSource = []
     // 资源请求超时上报
-    const source_timeout: TimingArr = []
+    const source_timeout: TimingSource = []
     // 资源请求指定上报
-    const source_appoint: TimingArr = []
-    // 超时门槛值 2000毫秒
-    const threshold = 2000
+    const source_appoint: TimingSource = []
+    // 超时门槛值 默认值2000毫秒
+    const threshold = timeout
 
     function* gen (): IterableIterator<void> {
       const len = s.length
@@ -169,7 +168,7 @@ export const getExecTiming  = (function () {
     const measures = p.getEntriesByType('measure')
   
     // 代码块执行时长
-    const exec: TimingArr = []
+    const exec: TimingExec = []
 
     function* gen () {
       const len = measures.length
@@ -243,15 +242,17 @@ export const mark = (function () {
 export const clearPerformance = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
-  return function () {
+  return function (clearType?: ClearType) {
     try {
+      const isClearSource = !clearType || clearType === 'source' || clearType === 'all'
+      const isClearMark = !clearType || clearType === 'mark' || clearType === 'all'
       const p = window.performance
-      p.clearMarks()
-      p.clearMeasures()
-      p.clearResourceTimings()
+      isClearMark && p.clearMarks()
+      isClearMark && p.clearMeasures()
+      isClearSource && p.clearResourceTimings()
     
-      marks.splice(0)
-      measures.splice(0)
+      isClearMark && marks.splice(0)
+      isClearMark && measures.splice(0)
       return true
     } catch (err) {
       logger(err)
@@ -263,12 +264,14 @@ export const clearPerformance = (function () {
 export const observeSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
-  return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, sourceType?: string): Observer {
-    sourceType = sourceType ? sourceType.toLowerCase() : 'img'
+  return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer {
+    let { sourceType = 'img', timeout = 2000 } = option || {}
+    sourceType = sourceType.toLowerCase()
     getSourceByDom(target)
 
     const observer = new Observer(target, async function (mutationRecords) {
-      let frequence = 100
+      let spendTime = 0
+      let frequence = 200
 
       const len = mutationRecords.length
       const sourceAddr: string[] = []
@@ -291,7 +294,7 @@ export const observeSource = (function () {
 
       /**
        * 轮询是否所有的资源都执行了onload 或者 onerror
-       * @param hasSource 是否已经获取了source资源的路径 recordType 为 attributes 会发生
+       * @returns {void}
        */
       function timerQuery () {
         setTimeout(async function () {
@@ -301,10 +304,10 @@ export const observeSource = (function () {
             sourceRatio: 0,
             sources: {[sourceType as string]: sourceAddr}
           })).then(data => data.source_appoint)
-          if (sourceData.length === sourceAddr.length || frequence >= 1000) {
+          if (sourceData.length === sourceAddr.length || spendTime >= timeout) {
             return callback && callback(sourceData)
           } else {
-            frequence += frequence
+            spendTime += frequence
             timerQuery()
           }
         }, frequence)
@@ -380,6 +383,7 @@ function timingFilter (timing: number): number | NA {
 }
 
 function randomRatio (ratio: number) {
+  if (ratio === 0) return false
   if (Math.random() <= ratio) return true
 
   return false
