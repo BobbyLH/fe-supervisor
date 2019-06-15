@@ -1,4 +1,4 @@
-import { NA, TimingSource, TimingExec, IAnyObj, Isources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
+import { NA, TimingSource, TimingExec, IAnyObj, IconfigSources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
 import { getType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
 
 export const getMemory = (function () {
@@ -128,9 +128,9 @@ export const getSource = (function () {
               return false
             })
           } else if (getType(sources) === 'object') {
-            for (const k in <Isources>sources) {
+            for (const k in <IconfigSources>sources) {
               if (k === type) {
-                (<Isources>sources)[k].some(v => {
+                (<IconfigSources>sources)[k].some(v => {
                   if (v === data.name) {
                     source_appoint.push(data)
                     // break the iteration

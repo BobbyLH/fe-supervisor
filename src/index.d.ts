@@ -11,7 +11,7 @@ export interface IAnyObj {
   [propName: string]: any;
 }
 
-export interface Isources {
+export interface IconfigSources {
   [propName: string]: string[];
 }
 
@@ -19,7 +19,7 @@ export interface Iconfig {
   apiRatio?: number;
   sourceRatio?: number;
   apis?: string[] | string;
-  sources?: Isources | string[] | string;
+  sources?: IconfigSources | string[] | string;
   timeout?: number; // timeout threshold(millisecond) - default 2000
 }
 

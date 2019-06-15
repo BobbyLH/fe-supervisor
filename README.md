@@ -38,11 +38,16 @@ import sv from 'fe-supervisor'
 sv.getPerformanceData().then(data => console.log(data))
 ```
 ```typescript
+interface IconfigSources {
+  [propName: string]: string[];
+}
+
 interface config {
   apiRatio?: number;
   sourceRatio?: number;
   apis?: string[] | string;
-  sources?: Isources | string[] | string;
+  sources?: IconfigSources | string[] | string;
+  timeout?: number; // timeout threshold(millisecond) - default 2000
 }
 ```
 
@@ -60,11 +65,16 @@ import sv from 'fe-supervisor'
 sv.getSource().then(data => console.log(data))
 ```
 ```typescript
+interface IconfigSources {
+  [propName: string]: string[];
+}
+
 interface config {
   apiRatio?: number;
   sourceRatio?: number;
   apis?: string[] | string;
-  sources?: Isources | string[] | string;
+  sources?: IconfigSources | string[] | string;
+  timeout?: number; // timeout threshold(millisecond) - default 2000
 }
 ```
 
