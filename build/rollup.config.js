@@ -10,7 +10,7 @@ const isBeta = !!env.beta
 const pkg = fs.readFileSync('./package.json', 'utf-8')
 const regExp = new RegExp(`version.*(\\d+).(\\d+).(\\d+)${isBeta ? '\\-(beta).(\\d+)' : ''}`, 'g')
 pkg.match(regExp)
-const version = `${RegExp.$1}.${RegExp.$2}.${RegExp.$3}${isBeta ? `-beta.${RegExp.$5}` : ''}`
+const version = `${RegExp.$1}_${RegExp.$2}_${RegExp.$3}${isBeta ? `-beta_${RegExp.$5}` : ''}`
 
 const extensions = ['.ts', '.js']
 module.exports = [
