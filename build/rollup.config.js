@@ -4,6 +4,7 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import babel from 'rollup-plugin-babel'
 import { uglify } from 'rollup-plugin-uglify'
+import del from 'del'
 
 const { env } = process
 const isBeta = !!env.beta
@@ -11,6 +12,12 @@ const pkg = fs.readFileSync('./package.json', 'utf-8')
 const regExp = new RegExp(`version.*(\\d+).(\\d+).(\\d+)${isBeta ? '\\-(beta).(\\d+)' : ''}`, 'g')
 pkg.match(regExp)
 const version = `${RegExp.$1}_${RegExp.$2}_${RegExp.$3}${isBeta ? `-beta_${RegExp.$5}` : ''}`
+
+clearDir()
+
+async function clearDir () {
+  await del.sync('dist/*')
+}
 
 const extensions = ['.ts', '.js']
 module.exports = [
