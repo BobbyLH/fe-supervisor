@@ -219,16 +219,14 @@ export const mark = (function () {
 
   return function (tag: string): boolean {
     const p = window.performance
-    const mark = p.mark
-    const measure = p.measure
 
     let res = true
     if (!~marks.indexOf(tag)) {
-      mark.call(p, `${tag}Start`)
+      p.mark(`${tag}Start`)
       marks.push(tag)
     } else if (!~measures.indexOf(tag)) {
-      mark.call(p, `${tag}End`)
-      measure(`${tag}`)
+      p.mark(`${tag}End`)
+      p.measure(`${tag}`)
       measures.push(tag)
     } else {
       res = false
