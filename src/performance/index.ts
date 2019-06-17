@@ -224,10 +224,10 @@ export const mark = (function () {
 
     let res = true
     if (!~marks.indexOf(tag)) {
-      mark(`${tag}Start`)
+      mark.call(p, `${tag}Start`)
       marks.push(tag)
     } else if (!~measures.indexOf(tag)) {
-      mark(`${tag}End`)
+      mark.call(p, `${tag}End`)
       measure(`${tag}`)
       measures.push(tag)
     } else {
