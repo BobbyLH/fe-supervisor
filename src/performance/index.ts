@@ -176,7 +176,7 @@ export const getExecTiming  = (function () {
         const item = measures[i];
         exec.push({
           name: item.name,
-          duration: item.duration
+          duration: +Number.prototype.toFixed.call(item.duration, 3)
         })
       }
 
