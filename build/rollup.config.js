@@ -1,15 +1,23 @@
+import fs from 'fs'
 import typescript from 'rollup-plugin-typescript'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import babel from 'rollup-plugin-babel'
 import { uglify } from 'rollup-plugin-uglify'
 
+const { env } = process
+const isBeta = !!env.beta
+const pkg = fs.readFileSync('./package.json', 'utf-8')
+const regExp = new RegExp(`version.*(\\d+).(\\d+).(\\d+)${isBeta ? '\\-(beta).(\\d+)' : ''}`, 'g')
+pkg.match(regExp)
+const version = `${RegExp.$1}.${RegExp.$2}.${RegExp.$3}${isBeta ? `-beta.${RegExp.$5}` : ''}`
+
 const extensions = ['.ts', '.js']
 module.exports = [
   {
     input: 'src/index.ts',
     output: {
-      file: 'dist/fe-supervisor.sdk.js',
+      file: `dist/fe-supervisor.sdk.${version}.js`,
       format: 'umd',
       name: '$sv',
       exports: 'named',
