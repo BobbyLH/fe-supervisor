@@ -1,4 +1,5 @@
 import { Observer } from './utils'
+import { SV } from './index'
 
 // performance
 export type NA = 'N/A'
@@ -15,12 +16,18 @@ export interface IconfigSources {
   [propName: string]: string[];
 }
 
+export interface Iwhitelist {
+  api: string[] | string;
+  source: string[] | string;
+}
+
 export interface Iconfig {
   apiRatio?: number;
   sourceRatio?: number;
   apis?: string[] | string;
   sources?: IconfigSources | string[] | string;
   timeout?: number; // timeout threshold(millisecond) - default 2000
+  whitelist?: Iwhitelist;
 }
 
 export interface Imemory {
@@ -151,6 +158,7 @@ export interface ISupervisor {
   clearError: (type?: ExceptionType) => boolean;
   observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
   makeTrackInfo: (type: string, info: object) => ItrackInfo;
+  SV: typeof SV;
 }
 
 declare namespace $sv {
@@ -168,6 +176,17 @@ declare namespace $sv {
   const clearError: (type?: ExceptionType) => boolean
   const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
   const makeTrackInfo: (type: string, info: object) => ItrackInfo
+  class SV {
+    private config: Iconfig
+    public constructor (config?: Iconfig)
+    public getMemory (): false | Imemory
+    public getTiming (): false | Itiming
+    public getSource (): Promise<false | Isource>
+    public getExecTiming(): Promise<false | Iexec>
+    public getPerformanceData (): Promise<false | Iperformance | IAnyObj>
+    public clearPerformance (clearType?: ClearType): boolean
+    public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer
+  }
 }
 
 declare module 'fe-supervisor' {
@@ -188,6 +207,7 @@ export {
   setError,
   clearError,
   makeTrackInfo,
+  SV,
   $sv
 }
 

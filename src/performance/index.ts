@@ -1,5 +1,5 @@
-import { NA, TimingSource, TimingExec, IAnyObj, IconfigSources, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
-import { getType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
+import { NA, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
+import { isType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
 
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -69,7 +69,17 @@ export const getSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (config?: Iconfig): Promise<Isource> {
-    const { apiRatio = 0.1, sourceRatio = 0.1, apis = '', sources = '', timeout = 2000 } = config || {}
+    const {
+      apiRatio = 0.1,
+      sourceRatio = 0.1,
+      apis = '',
+      sources = '',
+      timeout = 2000,
+      whitelist = {}
+    } = config || {}
+    const w_a = (<Iwhitelist>whitelist).api || ''
+    const w_s = (<Iwhitelist>whitelist).source || ''
+
     const p = window.performance
     const s = p.getEntriesByType('resource')
     // 接口请求随机上报
@@ -99,11 +109,23 @@ export const getSource = (function () {
           type
         }
         if (type === 'xmlhttprequest' || type === 'fetchrequest') {
+          // filtered by whitelist
+          if (w_a) {
+            if (isType('string')(w_a)) {
+              if (data.name === w_a) break
+            } else if (isType('array')(w_a)) {
+              const w_a_len = w_a.length
+              for (let j = 0; j < w_a_len; j++) {
+                if (data.name === w_a[j]) break 
+              }
+            }
+          }
+
           randomRatio(apiRatio) && api_random.push(data)
           data.duration >= threshold && api_timeout.push(data)
-          if (getType(apis) === 'string') {
+          if (isType('string')(apis)) {
             data.name === apis && api_appoint.push(data)
-          } else if (getType(apis) === 'array') {
+          } else if (isType('array')(apis)) {
             (apis as Array<string>).some(v => {
               if (v === data.name) {
                 api_appoint.push(data)
@@ -114,11 +136,23 @@ export const getSource = (function () {
             })
           }
         } else {
+          // filtered by whitelist
+          if (w_s) {
+            if (isType('string')(w_s)) {
+              if (data.name === w_s) break
+            } else if (isType('array')(w_s)) {
+              const w_s_len = w_s.length
+              for (let m = 0; m < w_s_len; m++) {
+                if (data.name === w_s[m]) break 
+              }
+            }
+          }
+
           randomRatio(sourceRatio) && source_random.push(data)
           data.duration >= threshold && source_timeout.push(data)
-          if (getType(sources) === 'string') {
+          if (isType('string')(sources)) {
             type === sources && source_appoint.push(data)
-          } else if (getType(sources) === 'array') {
+          } else if (isType('array')(sources)) {
             (sources as Array<string>).some(v => {
               if (v === type) {
                 source_appoint.push(data)
@@ -127,7 +161,7 @@ export const getSource = (function () {
               }
               return false
             })
-          } else if (getType(sources) === 'object') {
+          } else if (isType('object')(sources)) {
             for (const k in <IconfigSources>sources) {
               if (k === type) {
                 (<IconfigSources>sources)[k].some(v => {
