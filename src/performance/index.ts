@@ -256,10 +256,10 @@ export const mark = (function () {
 
     let res = true
     if (!~marks.indexOf(tag)) {
-      p.mark(`${tag}Start`)
+      p.mark(`${tag}_start`)
       marks.push(tag)
     } else if (!~measures.indexOf(tag)) {
-      p.mark(`${tag}End`)
+      p.mark(`${tag}_end`)
       p.measure(`${tag}`)
       measures.push(tag)
     } else {
