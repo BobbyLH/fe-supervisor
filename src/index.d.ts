@@ -98,6 +98,7 @@ export type ClearType = 'source' | 'mark' | 'all'
 export interface IobserveSourceOption {
   sourceType?: string;
   timeout?: number;
+  whitelist?: Iwhitelist;
 }
 
 // error

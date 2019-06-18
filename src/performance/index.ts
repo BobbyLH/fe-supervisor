@@ -297,7 +297,7 @@ export const observeSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer {
-    let { sourceType = 'img', timeout = 2000 } = option || {}
+    let { sourceType = 'img', timeout = 2000, whitelist = {} } = option || {}
     sourceType = sourceType.toLowerCase()
     getSourceByDom(target)
 
@@ -334,7 +334,8 @@ export const observeSource = (function () {
           const sourceData = await (<Promise<Isource>>getSource({
             apiRatio: 0,
             sourceRatio: 0,
-            sources: {[sourceType as string]: sourceAddr}
+            sources: { [sourceType as string]: sourceAddr },
+            whitelist
           })).then(data => data.source_appoint)
           if (sourceData.length === sourceAddr.length || spendTime >= timeout) {
             return callback && callback(sourceData)
@@ -366,7 +367,8 @@ export const observeSource = (function () {
       const data = await (<Promise<Isource>>getSource({
         apiRatio: 0,
         sourceRatio: 0,
-        sources: {[sourceType as string]: sourceAddr}
+        sources: { [sourceType as string]: sourceAddr },
+        whitelist
       })).then(data => data.source_appoint)
   
       !isAsync && callback && callback(data)
