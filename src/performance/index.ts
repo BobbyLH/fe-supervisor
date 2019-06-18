@@ -420,3 +420,44 @@ function randomRatio (ratio: number) {
 
   return false
 }
+
+export class SV {
+  private config: Iconfig | undefined
+  public constructor (config?: Iconfig) {
+    this.config = config
+  }
+
+  public getMemory () {
+    return getMemory()
+  }
+
+  public getTiming () {
+    return getTiming()
+  }
+
+  public async getSource () {
+    return await getSource(this.config)
+  }
+
+  public async getExecTiming () {
+    return await getExecTiming()
+  }
+
+  public async getPerformanceData () {
+    return getPerformanceData(this.config)
+  }
+
+  public clearPerformance (clearType?: ClearType) {
+    return clearPerformance(clearType)
+  }
+
+  public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) {
+    if (this.config && this.config.timeout) {
+      option = { timeout: this.config.timeout, ...option }
+    }
+
+    return observeSource(target, callback, option)
+  }
+}
+
+export default SV

@@ -1,5 +1,5 @@
 import { Observer } from './utils'
-import { SV } from './index'
+import { SV } from './performance'
 
 // performance
 export type NA = 'N/A'
