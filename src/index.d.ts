@@ -25,8 +25,8 @@ export interface IconfigSources {
 }
 
 export interface Iwhitelist {
-  api: string[] | string;
-  source: string[] | string;
+  api?: string[] | string;
+  source?: string[] | string;
 }
 
 export interface Iconfig {
