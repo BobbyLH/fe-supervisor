@@ -1,6 +1,14 @@
 import { Observer } from './utils'
 import { SV } from './performance'
 
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+}
+
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P];
+}
+
 // performance
 export type NA = 'N/A'
 export type Timing = number | NA
@@ -29,6 +37,8 @@ export interface Iconfig {
   timeout?: number; // timeout threshold(millisecond) - default 2000
   whitelist?: Iwhitelist;
 }
+
+export type PIconfig = Partial<Iconfig>
 
 export interface Imemory {
   memory: number | NA;
@@ -179,6 +189,7 @@ declare namespace $sv {
   class SV {
     private config: Iconfig
     public constructor (config?: Iconfig)
+    public updateConfig (newConfig: PIconfig): void
     public getMemory (): false | Imemory
     public getTiming (): false | Itiming
     public getSource (): Promise<false | Isource>

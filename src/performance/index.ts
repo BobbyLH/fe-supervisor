@@ -1,4 +1,4 @@
-import { NA, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
+import { NA, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
 import { isType, notSupport, notSupportPromisify, timeslice, logger, Observer } from '../utils'
 
 export const getMemory = (function () {
@@ -425,6 +425,10 @@ export class SV {
   private config: Iconfig | undefined
   public constructor (config?: Iconfig) {
     this.config = config
+  }
+
+  public updateConfig (newConfig: PIconfig) {
+    this.config = { ...this.config, ...newConfig }
   }
 
   public getMemory () {
