@@ -11,7 +11,7 @@ export const getMemory = (function () {
 
     try {
       const p = window.performance
-      const m = (p as any).memory
+      const m = (p as any).memory || {}
       used = m.usedJSHeapSize || 0
       total = m.totalJSHeapSize || 1
       usedRatio = +Number.prototype.toFixed.call(used / total, 3)
