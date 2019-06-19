@@ -119,7 +119,7 @@ export const getSource = (function () {
       const w_s = (<Iwhitelist>whitelist).source || ''
   
       const p = window.performance
-      const s = p.getEntriesByType('resource')
+      const s = (p.getEntriesByType && p.getEntriesByType('resource')) || p.getEntries()
       // 超时门槛值 默认值2000毫秒
       const threshold = timeout
   
@@ -134,6 +134,7 @@ export const getSource = (function () {
             duration: +Number.prototype.toFixed.call(item.duration, 2),
             type
           }
+
           if (type === 'xmlhttprequest' || type === 'fetchrequest') {
             // filtered by whitelist
             if (w_a) {
@@ -161,7 +162,7 @@ export const getSource = (function () {
                 return false
               })
             }
-          } else {
+          } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link') {
             // filtered by whitelist
             if (w_s) {
               if (isType('string')(w_s)) {
@@ -237,16 +238,18 @@ export const getExecTiming  = (function () {
 
     try {
       const p = window.performance
-      const measures = p.getEntriesByType('measure')
+      const measures = (p.getEntriesByType && p.getEntriesByType('measure')) || p.getEntries()
 
       function* gen () {
         const len = measures.length
         for (let i = 0; i < len; i++) {
-          const item = measures[i];
-          exec.push({
-            name: item.name,
-            duration: +Number.prototype.toFixed.call(item.duration, 3)
-          })
+          const item = measures[i]
+          if (item.entryType === 'measure') {
+            exec.push({
+              name: item.name,
+              duration: +Number.prototype.toFixed.call(item.duration, 3)
+            })
+          }
         }
 
         yield
