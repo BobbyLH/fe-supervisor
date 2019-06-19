@@ -42,8 +42,8 @@ export type PIconfig = Partial<Iconfig>
 
 export interface Imemory {
   memory: number | NA;
-  used: number;
-  total: number;
+  used: number | NA;
+  total: number | NA;
 }
 
 export interface Itiming {

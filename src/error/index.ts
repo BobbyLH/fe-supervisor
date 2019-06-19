@@ -58,46 +58,65 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
     handleError(doms)
 
     function handleError (doms: MutationRecord[] | HTMLCollection): void {
-      const len = doms.length
-      for (let i = 0; i < len; i++) {
-        if ((doms[i] as MutationRecord).addedNodes) {
-          const addedNodes = (doms[i] as MutationRecord).addedNodes
-          const len = (doms[i] as MutationRecord).addedNodes.length
-          for (let k = 0; k < len; k++) {
-            bindError(addedNodes[k])
+      try {
+        const len = doms.length
+        for (let i = 0; i < len; i++) {
+          if ((doms[i] as MutationRecord).addedNodes) {
+            const addedNodes = (doms[i] as MutationRecord).addedNodes
+            const len = (doms[i] as MutationRecord).addedNodes.length
+            for (let k = 0; k < len; k++) {
+              bindError(addedNodes[k])
+            }
+          } else {
+            bindError(doms[i] as Element)
           }
-        } else {
-          bindError(doms[i] as Element)
         }
+      } catch (error) {
+        setError({
+          ts: +Date.now(),
+          type: 'js',
+          url: location.href,
+          msg: `[SV - observeError_handleError]: ${JSON.stringify(error)}`
+        })
       }
 
+
       function bindError (dom: Node | Element) {
-        const nodeName = dom.nodeName
-        const sourceType = nodeName.toLowerCase()
-        bind: if (~observeList.indexOf(sourceType)) {
-          // Excluding already binding error event situation
-          if ((<Element>dom).getAttribute) {
-            if ((<Element>dom).getAttribute(errorTag)) break bind
-            (<Element>dom).setAttribute(errorTag, 'true')
+        try {
+          const nodeName = dom.nodeName
+          const sourceType = nodeName.toLowerCase()
+          bind: if (~observeList.indexOf(sourceType)) {
+            // Excluding already binding error event situation
+            if ((<Element>dom).getAttribute) {
+              if ((<Element>dom).getAttribute(errorTag)) break bind
+              (<Element>dom).setAttribute(errorTag, 'true')
+            }
+
+            addListener('error', function (e: ErrorEvent) {
+              const target = e.target
+              const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
+              const errObj: IErrObj = {
+                ts: +Date.now(),
+                type: 'source',
+                sourceType,
+                url
+              }
+              HandleException.setErrors(errObj)
+              callback && callback(dom, e)
+            }, dom, { passive: true })
           }
 
-          addListener('error', function (e: ErrorEvent) {
-            const target = e.target
-            const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
-            const errObj: IErrObj = {
-              ts: +Date.now(),
-              type: 'source',
-              sourceType,
-              url
-            }
-            HandleException.setErrors(errObj)
-            callback && callback(dom, e)
-          }, dom, { passive: true })
-        }
-
-        const children = (dom as Element).children
-        if (children && children.length > 0) {
-          return handleError(children)
+          const children = (dom as Element).children
+          if (children && children.length > 0) {
+            return handleError(children)
+          }
+        } catch (error) {
+          setError({
+            ts: +Date.now(),
+            type: 'js',
+            url: location.href,
+            msg: `[SV - observeError_bindError]: ${JSON.stringify(error)}`
+          })
         }
       }
     }

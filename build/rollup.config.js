@@ -49,7 +49,8 @@ module.exports = [
     input: 'src/index.ts',
     output: {
       file: 'dist/fe-supervisor.js',
-      format: 'esm',
+      format: 'cjs',
+      exports: 'named',
       compact: true,
       banner: '/* fe-supervisor.js */',
       footer: '/* Copyright (c) 2019-2019 Bobby.li \n* MIT License \n*/'
