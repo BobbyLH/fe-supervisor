@@ -407,7 +407,7 @@ export const observeSource = (function () {
           const sourceData = await (<Promise<Isource>>getSource({
             apiRatio: 0,
             sourceRatio: 0,
-            sources: { [sourceType as string]: sourceAddr },
+            sources: { [`${sourceType}`]: sourceAddr },
             whitelist
           })).then(data => data.source_appoint)
           if (sourceData.length === sourceAddr.length || spendTime >= timeout) {
@@ -431,8 +431,8 @@ export const observeSource = (function () {
       try {
         const sourceAddr: string[] = []
         if (dom.nodeName.toLowerCase() === sourceType) {
-          const sourceSrc = (<HTMLLinkElement>dom).href || (<HTMLImageElement | HTMLScriptElement>dom).src
-          sourceAddr.push(sourceSrc)
+          const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
+          sourceSrc && sourceAddr.push(sourceSrc)
         }
         const doms = (dom as HTMLElement).children
         if (doms && doms.length > 0) {
@@ -442,7 +442,7 @@ export const observeSource = (function () {
         data = await (<Promise<Isource>>getSource({
           apiRatio: 0,
           sourceRatio: 0,
-          sources: { [sourceType as string]: sourceAddr },
+          sources: { [`${sourceType}`]: sourceAddr },
           whitelist
         })).then(data => data.source_appoint)
     
@@ -471,13 +471,8 @@ export const observeSource = (function () {
             const dom = doms[i]
             const type = dom.nodeName.toLowerCase()
             if (sourceType === type) {
-              let sourceSrc
-              if (type === 'link') {
-                sourceSrc = (<HTMLLinkElement>dom).href
-              } else {
-                sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src
-              }
-              sourceAddr.push(sourceSrc)
+              const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
+              sourceSrc && sourceAddr.push(sourceSrc)
             }
 
             const children = (dom as Element).children

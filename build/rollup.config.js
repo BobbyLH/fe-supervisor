@@ -59,14 +59,15 @@ module.exports = [
       resolve({ extensions }),
       commonjs(),
       typescript({
-        target: 'ESNEXT',
+        target: 'es5',
         lib: ["es5", "es6", "es2015", "es2016", "dom"]
       }),
       babel({
         exclude: 'node_modules/**',
         extensions,
         runtimeHelpers: true
-      })
+      }),
+      uglify()
     ]
   }
 ]
