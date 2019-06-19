@@ -40,8 +40,8 @@ export const getTiming = (function () {
     wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = render_ready = render_load = total = 'N/A'
     try {
       const p = window.performance
-      const t = p.timing
-        
+      const t = p.timing || {}
+
       // 白屏时长
       wscreen = timingFilter(t.responseStart - t.navigationStart)
       // 首屏时长
@@ -119,7 +119,7 @@ export const getSource = (function () {
       const w_s = (<Iwhitelist>whitelist).source || ''
   
       const p = window.performance
-      const s = (p.getEntriesByType && p.getEntriesByType('resource')) || p.getEntries()
+      const s = (p.getEntriesByType && p.getEntriesByType('resource')) || (p.getEntries && p.getEntries()) || []
       // 超时门槛值 默认值2000毫秒
       const threshold = timeout
   
@@ -238,7 +238,7 @@ export const getExecTiming  = (function () {
 
     try {
       const p = window.performance
-      const measures = (p.getEntriesByType && p.getEntriesByType('measure')) || p.getEntries()
+      const measures = (p.getEntriesByType && p.getEntriesByType('measure')) || (p.getEntries && p.getEntries()) || []
 
       function* gen () {
         const len = measures.length
@@ -350,9 +350,9 @@ export const clearPerformance = (function () {
       const isClearSource = !clearType || clearType === 'source' || clearType === 'all'
       const isClearMark = !clearType || clearType === 'mark' || clearType === 'all'
       const p = window.performance
-      isClearMark && p.clearMarks()
-      isClearMark && p.clearMeasures()
-      isClearSource && p.clearResourceTimings()
+      isClearMark && p.clearMarks && p.clearMarks()
+      isClearMark && p.clearMeasures && p.clearMeasures()
+      isClearSource && p.clearResourceTimings && p.clearResourceTimings()
     
       isClearMark && marks.splice(0)
       isClearMark && measures.splice(0)
