@@ -18,7 +18,7 @@ import { HandleException, errorTag } from './Exception'
   }, window, { passive: true} )
 
   addListener('DOMContentLoaded', function () {
-    const imgs = transArray(document.querySelectorAll('img'))
+    const imgs = transArray(document.getElementsByTagName('img'))
     const len = imgs.length
 
     for (let i = 0; i < len; i++) {
