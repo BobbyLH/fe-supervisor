@@ -32,7 +32,8 @@ import { HandleException, errorTag } from './Exception'
             ts: +Date.now(),
             type: 'source',
             sourceType,
-            url
+            url,
+            msg: JSON.stringify(e)
           })
         }, img)
       }
@@ -101,7 +102,8 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
                 ts: +Date.now(),
                 type: 'source',
                 sourceType,
-                url
+                url,
+                msg: JSON.stringify(e)
               }
               HandleException.setErrors(errObj)
               callback && callback(dom, e)

@@ -332,7 +332,7 @@ const markCache: MarkCache[] = []
 const measureCache: MeasureCache[] = []
 
 function compatibleMark (tag: string) {
-  const ts = (('performance' in window) && window.performance.now()) || +Date.now()
+  const ts = +((window.performance.now && ('' + window.performance.now())) || Date.now())
   markCache.push({ tag, ts })
 }
 
