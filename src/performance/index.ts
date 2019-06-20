@@ -36,8 +36,9 @@ export const getTiming = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
   return function (): Itiming {
-    let wscreen: Timing, fscreen: Timing, network: Timing, network_prev: Timing, network_redirect: Timing, network_dns: Timing, network_tcp: Timing, network_request: Timing, render_ready: Timing, render_load: Timing, total: Timing;
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = render_ready = render_load = total = 'N/A'
+    let wscreen: Timing, fscreen: Timing, network: Timing, network_prev: Timing, network_redirect: Timing, network_dns: Timing, network_tcp: Timing, network_request: Timing, render_ready: Timing, render_load: Timing, js_complete: Timing, dom_complete: Timing, total: Timing;
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = render_ready = render_load = js_complete = dom_complete = total = 'N/A'
+
     try {
       const p = window.performance
       const t = p.timing || {}
@@ -58,10 +59,14 @@ export const getTiming = (function () {
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
       // 请求耗时
       network_request = timingFilter(t.responseEnd - t.requestStart)
-      // DOM从开始解析到可交互的时长
+      // 渲染至可交互时长(DOM从开始解析到可交互的时长)
       render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
-      // DOM从开始解析到加载完毕时长
+      // 整体渲染完毕时长(DOM从开始解析到加载完毕时长)
       render_load = timingFilter(t.loadEventEnd - t.domLoading)
+      // 所需要的脚本执行完成时长
+      js_complete = timingFilter(t.domContentLoadedEventEnd - t.navigationStart)
+      // DOM完全挂载完毕时长
+      dom_complete = timingFilter(t.domComplete - t.navigationStart)
       // 总耗时
       total = timingFilter(t.loadEventEnd - t.navigationStart)
     } catch (error) {
@@ -83,6 +88,8 @@ export const getTiming = (function () {
         network_request,
         render_ready,
         render_load,
+        js_complete,
+        dom_complete,
         total
       }
     }
@@ -238,7 +245,12 @@ export const getExecTiming  = (function () {
 
     try {
       const p = window.performance
-      const measures = (p.getEntriesByType && p.getEntriesByType('measure')) || (p.getEntries && p.getEntries()) || []
+      let measures: PerformanceEntry[] | MeasureCache[] = []
+      if (p.mark && p.measure) {
+        measures = (p.getEntriesByType && p.getEntriesByType('measure')) || (p.getEntries && p.getEntries()) || []
+      } else {
+        measures = measureCache
+      }
 
       function* gen () {
         const len = measures.length
@@ -306,6 +318,38 @@ export const getPerformanceData = (function () {
   }
 })()
 
+
+interface MarkCache {
+  tag: string;
+  ts: number;
+}
+interface MeasureCache {
+  entryType: 'measure';
+  name: string;
+  duration: number;
+}
+const markCache: MarkCache[] = []
+const measureCache: MeasureCache[] = []
+
+function compatibleMark (tag: string) {
+  const ts = (('performance' in window) && window.performance.now()) || +Date.now()
+  markCache.push({ tag, ts })
+}
+
+function compatibleMeasure (tag: string, tagStart: string, tagEnd: string) {
+  const len = markCache.length
+
+  let startTime = 0
+  let endTime = 0
+  for (let i = 0; i < len; i++) {
+    const item = markCache[i]
+    if (item.tag === tagStart) startTime = item.ts
+    if (item.tag === tagEnd) endTime = item.ts
+  }
+
+  measureCache.push({ entryType: 'measure', name: tag, duration: Math.abs(endTime - startTime) })
+}
+
 const marks: string[] = []
 const measures: string[] = []
 export const mark = (function () {
@@ -316,13 +360,24 @@ export const mark = (function () {
 
     try {
       const p = window.performance
+      const tagS = `${tag}_start`
+      const tagE = `${tag}_end`
 
       if (!~marks.indexOf(tag)) {
-        p.mark(`${tag}_start`)
+        if (p.mark) {
+          p.mark(tagS)
+        } else {
+          compatibleMark(tagS)
+        }
         marks.push(tag)
       } else if (!~measures.indexOf(tag)) {
-        p.mark(`${tag}_end`)
-        p.measure(`${tag}`)
+        if (p.mark && p.measure) {
+          p.mark(tagE)
+          p.measure(`${tag}`, tagS, tagE)
+        } else {
+          compatibleMark(tagE)
+          compatibleMeasure(`${tag}`, tagS, tagE)
+        }
         measures.push(tag)
       } else {
         res = false
@@ -350,19 +405,24 @@ export const clearPerformance = (function () {
       const isClearSource = !clearType || clearType === 'source' || clearType === 'all'
       const isClearMark = !clearType || clearType === 'mark' || clearType === 'all'
       const p = window.performance
-      isClearMark && p.clearMarks && p.clearMarks()
-      isClearMark && p.clearMeasures && p.clearMeasures()
+      if (isClearMark) {
+        p.clearMarks && p.clearMarks()
+        p.clearMeasures && p.clearMeasures()
+        marks.splice(0)
+        measures.splice(0)
+        markCache.splice(0)
+        measureCache.splice(0)
+      }
+
       isClearSource && p.clearResourceTimings && p.clearResourceTimings()
-    
-      isClearMark && marks.splice(0)
-      isClearMark && measures.splice(0)
+
       return true
     } catch (error) {
       setError({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
-        msg: `[SV - mark]: ${JSON.stringify(error)}`
+        msg: `[SV - clearPerformance]: ${JSON.stringify(error)}`
       })
       return false
     }

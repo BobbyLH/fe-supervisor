@@ -57,6 +57,8 @@ export interface Itiming {
   network_request: Timing;
   render_ready: Timing;
   render_load: Timing;
+  js_complete: Timing;
+  dom_complete: Timing;
   total: Timing;
 }
 
