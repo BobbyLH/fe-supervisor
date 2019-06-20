@@ -19,8 +19,10 @@ import { HandleException, errorTag } from './Exception'
 
   addListener('DOMContentLoaded', function () {
     const imgs = transArray(document.querySelectorAll('img'))
+    const len = imgs.length
 
-    imgs.forEach(img => {
+    for (let i = 0; i < len; i++) {
+      const img = imgs[i]
       if (!img.getAttribute(errorTag)) {
         img.setAttribute(errorTag, 'true')
         addListener('error', function (e: ErrorEvent) {
@@ -34,7 +36,7 @@ import { HandleException, errorTag } from './Exception'
           })
         }, img)
       }
-    })
+    }
   }, window)
 })()
 
@@ -126,5 +128,8 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
 }
 
 function transArray (arrayLike: ArrayLike<HTMLElement>): Array<HTMLElement> {
+  if (Array.from) {
+    return Array.from(arrayLike)
+  }
   return Array.prototype.slice.call(arrayLike)
 }
