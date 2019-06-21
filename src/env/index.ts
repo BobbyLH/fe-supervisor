@@ -72,98 +72,57 @@ export const getEnvInfo = (function () {
     if (UA.isMobile()) {
       if (UA.isAndroid()) {
         info.os = 'android'
-      }
-  
-      if (UA.isIOS()) {
+      } else if (UA.isIOS()) {
         info.os = 'ios'
       }
-  
-      if (UA.isWeixin()) {
-        info.browser = 'weixin'
-      }
-  
-      if (UA.isSinaWeibo()) {
-        info.browser = 'sinaBlog'
-      }
-  
-      if (UA.isQQ()) {
-        info.browser = 'qq'
-      }
-  
-      if (UA.isQQWeibo()) {
-        info.browser = 'qqBlog'
-      }
-
-      if (UA.isFacebook()) {
-        info.browser = 'facebook'
-      }
-  
-      if (UA.isTwitter()) {
-        info.browser = 'twitter'
-      }
-  
-      if (UA.isInstagram()) {
-        info.browser = 'instagram'
-      }
-
     } else {
       if (UA.isWindows()) {
         info.os = 'windows'
-      }
-  
-      if (UA.isMac()) {
+      } else if (UA.isMac()) {
         info.os = 'mac'
-      }
-  
-      if (UA.isChrome()) {
-        info.browser = 'chrome'
-      }
-  
-      if (UA.isFirefox() || UA.isGecko()) {
-        info.browser = 'firefox'
-      }
-  
-      if (UA.isIE()) {
-        info.browser = 'ie'
-      }
-
-      if (UA.isEdge()) {
-        info.browser = 'edge'
-      }
-      
-      if (UA.isOpera()) {
-        info.browser = 'opera'
-      }
-  
-      if (UA.isSafari()) {
-        info.browser = 'safari'
-      }
-  
-      if (UA.is360se()) {
-        info.browser = '360'
-      }
-
-      if (UA.isQQ()) {
-        info.browser = 'qq'
-      }
-
-      if (UA.isUCBrowser()) {
-        info.browser = 'uc'
-      }
-
-      if (UA.isBaiduBrowser()) {
-        info.browser = 'baidu'
-      }
-
-      if (UA.isSougouBrowser()) {
-        info.browser = 'sougou'
-      }
-
-      if (UA.isLiebaoBrowser()) {
-        info.browser = 'liebao'
       }
     }
 
+    if (UA.isWeixin()) {
+      info.browser = 'weixin'
+    } else if (UA.isSinaWeibo()) {
+      info.browser = 'sinaBlog'
+    } else if (UA.isQQ()) {
+      info.browser = 'qq'
+    } else if (UA.isQQWeibo()) {
+      info.browser = 'qqBlog'
+    } else if (UA.isFacebook()) {
+      info.browser = 'facebook'
+    } else if (UA.isTwitter()) {
+      info.browser = 'twitter'
+    } else if (UA.isInstagram()) {
+      info.browser = 'instagram'
+    } else if (UA.isChrome()) {
+      info.browser = 'chrome'
+    } else if (UA.isFirefox() || UA.isGecko()) {
+      info.browser = 'firefox'
+    } else if (UA.isIE()) {
+      info.browser = 'ie'
+    } else if (UA.isEdge()) {
+      info.browser = 'edge'
+    } else if (UA.isOpera()) {
+      info.browser = 'opera'
+    } else if (UA.isSafari()) {
+      info.browser = 'safari'
+    } else if (UA.is360se()) {
+      info.browser = '360'
+    } else if (UA.isQQ()) {
+      info.browser = 'qq'
+    } else if (UA.isUCBrowser()) {
+      info.browser = 'uc'
+    } else if (UA.isBaiduBrowser()) {
+      info.browser = 'baidu'
+    } else if (UA.isSougouBrowser()) {
+      info.browser = 'sougou'
+    } else if (UA.isLiebaoBrowser()) {
+      info.browser = 'liebao'
+    }
+  
     return info
   }
 })()
