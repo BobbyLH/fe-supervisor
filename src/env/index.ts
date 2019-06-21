@@ -51,14 +51,22 @@ export const getEnvInfo = (function () {
       isEdge: check(/\bEdge\b/i),
       isOpera: check(/opera.*\Wpresto\W|OPR/i),
       isSafari: check(/webkit\W(?!.*chrome).*safari\W/i),
-  
+      isUCBrowser: check(/ucbrowser/i),
+      isBaiduBrowser: check(/bidubrowser/i),
+      isSougouBrowser: check(/metasr/i),
+      isLiebaoBrowser: check(/lbbrowser/i),
+
       isMobile: check(/(iphone|ipod|((?:android)?.*?mobile)|blackberry|nokia)/i),
       isWebKit: check(/webkit\W/i),
   
       isWeixin: check(/micromessenger/i),
       isSinaWeibo: check(/weibo/i),
       isQQ: check(/qq/i),
-      isQQWeibo: check(/tencentmicroblog/i)
+      isQQWeibo: check(/tencentmicroblog/i),
+
+      isFacebook: check(/fban/i),
+      isTwitter: check(/twitter/i),
+      isInstagram: check(/instagram/i),
     }
   
     if (UA.isMobile()) {
@@ -85,7 +93,19 @@ export const getEnvInfo = (function () {
       if (UA.isQQWeibo()) {
         info.browser = 'qqBlog'
       }
+
+      if (UA.isFacebook()) {
+        info.browser = 'facebook'
+      }
   
+      if (UA.isTwitter()) {
+        info.browser = 'twitter'
+      }
+  
+      if (UA.isInstagram()) {
+        info.browser = 'instagram'
+      }
+
     } else {
       if (UA.isWindows()) {
         info.os = 'windows'
@@ -99,14 +119,18 @@ export const getEnvInfo = (function () {
         info.browser = 'chrome'
       }
   
-      if (UA.isFirefox()) {
+      if (UA.isFirefox() || UA.isGecko()) {
         info.browser = 'firefox'
       }
   
       if (UA.isIE()) {
         info.browser = 'ie'
       }
-  
+
+      if (UA.isEdge()) {
+        info.browser = 'edge'
+      }
+      
       if (UA.isOpera()) {
         info.browser = 'opera'
       }
@@ -117,6 +141,26 @@ export const getEnvInfo = (function () {
   
       if (UA.is360se()) {
         info.browser = '360'
+      }
+
+      if (UA.isQQ()) {
+        info.browser = 'qq'
+      }
+
+      if (UA.isUCBrowser()) {
+        info.browser = 'uc'
+      }
+
+      if (UA.isBaiduBrowser()) {
+        info.browser = 'baidu'
+      }
+
+      if (UA.isSougouBrowser()) {
+        info.browser = 'sougou'
+      }
+
+      if (UA.isLiebaoBrowser()) {
+        info.browser = 'liebao'
       }
     }
 
