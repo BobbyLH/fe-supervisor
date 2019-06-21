@@ -1,10 +1,12 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
 import { addListener, Observer } from '../utils'
 import { HandleException, errorTag } from './Exception'
+import { mark } from '../performance'
 
 (function () {
   if (typeof window === 'undefined') return
 
+  mark('sv_init')
   addListener('error', function (e: ErrorEvent) {
     const { filename, message, error } = e
 
@@ -38,6 +40,7 @@ import { HandleException, errorTag } from './Exception'
         }, img)
       }
     }
+    mark('sv_init')
   }, window)
 })()
 
