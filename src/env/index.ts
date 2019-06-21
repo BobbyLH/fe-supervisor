@@ -86,11 +86,9 @@ export const getEnvInfo = (function () {
     if (UA.isWeixin()) {
       info.browser = 'weixin'
     } else if (UA.isSinaWeibo()) {
-      info.browser = 'sinaBlog'
-    } else if (UA.isQQ()) {
-      info.browser = 'qq'
+      info.browser = 'weibo_sina'
     } else if (UA.isQQWeibo()) {
-      info.browser = 'qqBlog'
+      info.browser = 'weibo_qq'
     } else if (UA.isFacebook()) {
       info.browser = 'facebook'
     } else if (UA.isTwitter()) {
@@ -121,6 +119,8 @@ export const getEnvInfo = (function () {
       info.browser = 'sougou'
     } else if (UA.isLiebaoBrowser()) {
       info.browser = 'liebao'
+    } else if (UA.isWebKit()) {
+      info.browser = 'webkit'
     }
   
     return info
