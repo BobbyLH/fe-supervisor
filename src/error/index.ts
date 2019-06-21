@@ -20,6 +20,7 @@ import { mark } from '../performance'
   }, window, { passive: true} )
 
   addListener('DOMContentLoaded', function () {
+    mark('sv_init_img_bind')
     const imgs = transArray(document.getElementsByTagName('img'))
     const len = imgs.length
 
@@ -40,8 +41,9 @@ import { mark } from '../performance'
         }, img)
       }
     }
-    mark('sv_init')
+    mark('sv_init_img_bind')
   }, window)
+  mark('sv_init')
 })()
 
 export function getError (): IErrTotalObj
