@@ -1,7 +1,7 @@
 import { ItimingSource } from './../index.d';
 import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
 import { isType, notSupport, notSupportPromisify, timeslice, Observer } from '../utils'
-import { setError } from '../error'
+import { HandleException } from '../error/Exception'
 
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
@@ -16,7 +16,7 @@ export const getMemory = (function () {
       total = m.totalJSHeapSize || 1
       usedRatio = +Number.prototype.toFixed.call(used / total, 3)
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -70,7 +70,7 @@ export const getTiming = (function () {
       // 总耗时
       total = timingFilter(t.loadEventEnd - t.navigationStart)
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -217,7 +217,7 @@ export const getSource = (function () {
   
       await timeslice(gen as IGeneratorFn)
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -269,7 +269,7 @@ export const getExecTiming  = (function () {
       
       await timeslice(gen as IGeneratorFn)
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -300,7 +300,7 @@ export const getPerformanceData = (function () {
 
       
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -385,7 +385,7 @@ export const mark = (function () {
       }
     } catch (error) {
       res = false
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -418,7 +418,7 @@ export const clearPerformance = (function () {
 
       return true
     } catch (error) {
-      setError({
+      HandleException.setErrors({
         ts: +Date.now(),
         type: 'js',
         url: location.href,
@@ -511,7 +511,7 @@ export const observeSource = (function () {
     
         !isAsync && callback && callback(data)
       } catch (error) {
-        setError({
+        HandleException.setErrors({
           ts: +Date.now(),
           type: 'js',
           url: location.href,
@@ -547,7 +547,7 @@ export const observeSource = (function () {
             yield
           }
         } catch (error) {
-          setError({
+          HandleException.setErrors({
             ts: +Date.now(),
             type: 'js',
             url: location.href,
