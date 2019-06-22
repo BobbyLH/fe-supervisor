@@ -111,6 +111,7 @@ export interface IErrObj extends IAnyObj {
   type: ExceptionType;
   sourceType?: string;
   url: string;
+  msg?: string;
 }
 
 export type IErrArr = IErrObj[]
