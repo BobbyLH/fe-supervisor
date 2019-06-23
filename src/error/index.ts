@@ -1,12 +1,10 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
 import { addListener, Observer } from '../utils'
 import { HandleException, errorTag } from './Exception'
-import { mark } from '../performance'
 
 (function () {
   if (typeof window === 'undefined') return
 
-  mark('sv_init')
   addListener('error', function (e: ErrorEvent) {
     const { filename, message, error } = e
 
@@ -20,7 +18,6 @@ import { mark } from '../performance'
   }, window, { passive: true} )
 
   addListener('DOMContentLoaded', function () {
-    mark('sv_init_img_bind')
     const imgs = transArray(document.getElementsByTagName('img'))
     const len = imgs.length
 
@@ -41,9 +38,7 @@ import { mark } from '../performance'
         }, img)
       }
     }
-    mark('sv_init_img_bind')
   }, window)
-  mark('sv_init')
 })()
 
 export function getError (): IErrTotalObj

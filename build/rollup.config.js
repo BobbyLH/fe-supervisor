@@ -24,30 +24,6 @@ module.exports = [
   {
     input: 'src/index.ts',
     output: {
-      file: `dist/fe-supervisor.sdk.${version}.js`,
-      format: 'umd',
-      name: '$sv',
-      exports: 'named',
-      compact: true
-    },
-    plugins: [
-      resolve({ extensions }),
-      commonjs(),
-      typescript({
-        target: 'es5',
-        lib: ["es5", "es6", "es2015", "es2016", "dom"]
-      }),
-      babel({
-        exclude: 'node_modules/**',
-        extensions,
-        runtimeHelpers: true
-      }),
-      uglify()
-    ]
-  },
-  {
-    input: 'src/index.ts',
-    output: {
       file: 'dist/fe-supervisor.js',
       format: 'cjs',
       exports: 'named',
@@ -68,6 +44,46 @@ module.exports = [
         runtimeHelpers: true
       }),
       uglify()
+    ]
+  },{
+    input: 'src/index.ts',
+    output: {
+      file: `dist/fe-supervisor.sdk.${version}.js`,
+      format: 'umd',
+      name: '$sv',
+      exports: 'named',
+      compact: true
+    },
+    plugins: [
+      resolve({ extensions }),
+      commonjs(),
+      typescript({
+        target: 'es5',
+        lib: ["es5", "es6", "es2015", "es2016", "dom"]
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        extensions,
+        runtimeHelpers: true
+      }),
+      uglify()
+    ]
+  },{
+    input: 'src/index.ts',
+    output: {
+      file: `dist/fe-supervisor.sdk.esm.${version}.js`,
+      format: 'umd',
+      name: '$sv',
+      exports: 'named',
+      compact: true
+    },
+    plugins: [
+      resolve({ extensions }),
+      commonjs(),
+      typescript({
+        target: 'ESNEXT',
+        lib: ["es5", "es6", "es2015", "es2016", "dom"]
+      })
     ]
   }
 ]
