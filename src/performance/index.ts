@@ -404,13 +404,18 @@ export const clearPerformance = (function () {
     try {
       const isClearSource = !clearType || clearType === 'source' || clearType === 'all'
       const isClearMark = !clearType || clearType === 'mark' || clearType === 'all'
+      const isClearMeasure = !clearType || clearType === 'measure' || clearType === 'all'
+
       const p = window.performance
       if (isClearMark) {
         p.clearMarks && p.clearMarks()
-        p.clearMeasures && p.clearMeasures()
         marks.splice(0)
-        measures.splice(0)
         markCache.splice(0)
+      }
+
+      if (isClearMeasure) {
+        p.clearMeasures && p.clearMeasures()
+        measures.splice(0)
         measureCache.splice(0)
       }
 

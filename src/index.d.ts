@@ -95,7 +95,7 @@ export interface IGeneratorFn extends GeneratorFunction {
   (): IterableIterator<any>;
 }
 
-export type ClearType = 'source' | 'mark' | 'all'
+export type ClearType = 'source' | 'mark' | 'measure' | 'all'
 
 export interface IobserveSourceOption {
   sourceType?: string;
