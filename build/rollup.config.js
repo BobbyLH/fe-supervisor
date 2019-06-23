@@ -71,7 +71,7 @@ module.exports = [
   },{
     input: 'src/index.ts',
     output: {
-      file: `dist/fe-supervisor.sdk.esm.${version}.js`,
+      file: `dist/fe-supervisor.sdk.next.${version}.js`,
       format: 'umd',
       name: '$sv',
       exports: 'named',
