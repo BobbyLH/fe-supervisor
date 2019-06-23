@@ -98,3 +98,13 @@ describe('Error handles(set, get, clear) test module', function () {
     expect(sourceErr).to.be.an('array').to.have.lengthOf(0)
   })
 })
+
+describe('observeError test module', function () {
+  it('In node env', function () {
+    expect(observeError).to.be.a('function')
+  })
+
+  it('In browser env', function () {
+
+  })
+})
