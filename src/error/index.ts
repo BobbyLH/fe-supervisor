@@ -19,24 +19,14 @@ import { HandleException, errorTag } from './Exception'
 
   addListener('DOMContentLoaded', function () {
     const imgs = transArray(document.getElementsByTagName('img'))
-    const len = imgs.length
+    const links = transArray(document.getElementsByTagName('link'))
+    const scripts = transArray(document.getElementsByTagName('script'))
+    const max_len = (imgs.length, links.length, scripts.length)
 
-    for (let i = 0; i < len; i++) {
-      const img = imgs[i]
-      if (!img.getAttribute(errorTag)) {
-        img.setAttribute(errorTag, 'true')
-        addListener('error', function (e: ErrorEvent) {
-          const sourceType = 'img'
-          const url = (e as any).target.src
-          HandleException.setErrors({
-            ts: +Date.now(),
-            type: 'source',
-            sourceType,
-            url,
-            msg: JSON.stringify(e)
-          })
-        }, img)
-      }
+    for (let i = 0; i < max_len; i++) {
+      imgs[i] && handleError(imgs[i], 'img')
+      links[i] && handleError(links[i], 'link')
+      scripts[i] && handleError(scripts[i], 'script')
     }
   }, window)
 })()
@@ -134,4 +124,20 @@ function transArray (arrayLike: ArrayLike<HTMLElement>): Array<HTMLElement> {
     return Array.from(arrayLike)
   }
   return Array.prototype.slice.call(arrayLike)
+}
+
+function handleError (target: HTMLElement, sourceType: string) {
+  if (!target || target.getAttribute(errorTag)) return
+
+  target.setAttribute(errorTag, 'true')
+  addListener('error', function (e: ErrorEvent) {
+    const url = (e as any).target.src || (e as any).target.href
+    HandleException.setErrors({
+      ts: +Date.now(),
+      type: 'source',
+      sourceType,
+      url,
+      msg: JSON.stringify(e)
+    })
+  }, target)
 }
