@@ -21,7 +21,7 @@ import { HandleException, errorTag } from './Exception'
     const imgs = transArray(document.getElementsByTagName('img'))
     const links = transArray(document.getElementsByTagName('link'))
     const scripts = transArray(document.getElementsByTagName('script'))
-    const max_len = (imgs.length, links.length, scripts.length)
+    const max_len = Math.max(imgs.length, links.length, scripts.length)
 
     for (let i = 0; i < max_len; i++) {
       imgs[i] && handleError(imgs[i], 'img')
