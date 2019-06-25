@@ -21,7 +21,10 @@ import { HandleException, errorTag } from './Exception'
     const imgs = transArray(document.getElementsByTagName('img'))
     const links = transArray(document.getElementsByTagName('link'))
     const scripts = transArray(document.getElementsByTagName('script'))
-    const max_len = Math.max(imgs.length, links.length, scripts.length)
+    const len_img = (imgs && imgs.length) || 0
+    const len_link = (links && links.length) || 0
+    const len_script = (scripts && scripts.length) || 0
+    const max_len = Math.max(len_img, len_link, len_script)
 
     for (let i = 0; i < max_len; i++) {
       imgs[i] && handleError(imgs[i], 'img')
@@ -52,12 +55,12 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
 
     function handleError (doms: MutationRecord[] | HTMLCollection): void {
       try {
-        const len = doms.length
-        for (let i = 0; i < len; i++) {
-          if ((doms[i] as MutationRecord).addedNodes) {
-            const addedNodes = (doms[i] as MutationRecord).addedNodes
-            const len = (doms[i] as MutationRecord).addedNodes.length
-            for (let k = 0; k < len; k++) {
+        const len_doms = (doms && doms.length) || 0
+        for (let i = 0; i < len_doms; i++) {
+          const addedNodes = (doms[i] as MutationRecord).addedNodes
+          if (addedNodes) {
+            const len_added = addedNodes.length || 0
+            for (let k = 0; k < len_added; k++) {
               bindError(addedNodes[k])
             }
           } else {
@@ -93,7 +96,7 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
                 type: 'source',
                 sourceType,
                 url,
-                msg: JSON.stringify(e)
+                msg: JSON.stringify(e, Object.getOwnPropertyNames(e))
               }
               HandleException.setErrors(errObj)
               callback && callback(dom, e)
@@ -137,7 +140,7 @@ function handleError (target: HTMLElement, sourceType: string) {
       type: 'source',
       sourceType,
       url,
-      msg: JSON.stringify(e)
+      msg: JSON.stringify(e, Object.getOwnPropertyNames(e))
     })
   }, target)
 }

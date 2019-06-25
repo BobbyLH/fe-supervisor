@@ -3,6 +3,20 @@ import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhiteli
 import { isType, notSupport, notSupportPromisify, timeslice, Observer } from '../utils'
 import { HandleException } from '../error/Exception'
 
+interface MarkCache {
+  tag: string;
+  ts: number;
+}
+interface MeasureCache {
+  entryType: 'measure';
+  name: string;
+  duration: number;
+}
+const markCache: MarkCache[] = []
+const measureCache: MeasureCache[] = []
+const marks: string[] = []
+const measures: string[] = []
+
 export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
@@ -253,7 +267,7 @@ export const getExecTiming  = (function () {
       }
 
       function* gen () {
-        const len = measures.length
+        const len = (measures && measures.length) || 0
         for (let i = 0; i < len; i++) {
           const item = measures[i]
           if (item.entryType === 'measure') {
@@ -318,40 +332,6 @@ export const getPerformanceData = (function () {
   }
 })()
 
-
-interface MarkCache {
-  tag: string;
-  ts: number;
-}
-interface MeasureCache {
-  entryType: 'measure';
-  name: string;
-  duration: number;
-}
-const markCache: MarkCache[] = []
-const measureCache: MeasureCache[] = []
-
-function compatibleMark (tag: string) {
-  const ts = +((window.performance.now && ('' + window.performance.now())) || Date.now())
-  markCache.push({ tag, ts })
-}
-
-function compatibleMeasure (tag: string, tagStart: string, tagEnd: string) {
-  const len = markCache.length
-
-  let startTime = 0
-  let endTime = 0
-  for (let i = 0; i < len; i++) {
-    const item = markCache[i]
-    if (item.tag === tagStart) startTime = item.ts
-    if (item.tag === tagEnd) endTime = item.ts
-  }
-
-  measureCache.push({ entryType: 'measure', name: tag, duration: Math.abs(endTime - startTime) })
-}
-
-const marks: string[] = []
-const measures: string[] = []
 export const mark = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
@@ -446,7 +426,7 @@ export const observeSource = (function () {
       let spendTime = 0
       let frequence = 200
 
-      const len = mutationRecords.length
+      const len = (mutationRecords && mutationRecords.length) || 0
       const sourceAddr: string[] = []
       for (let i = 0; i < len; i++) {
         const item = mutationRecords[i]
@@ -534,7 +514,7 @@ export const observeSource = (function () {
     function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
       return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
         try {
-          const len = doms.length
+          const len = (doms && doms.length) || 0
           for (let i = 0; i < len; i++) {
             const dom = doms[i]
             const type = dom.nodeName.toLowerCase()
@@ -544,7 +524,7 @@ export const observeSource = (function () {
             }
 
             const children = (dom as Element).children
-            const childLen = children ? children.length : 0
+            const childLen = (children && children.length) || 0
             if (childLen > 0) {
               yield timeslice(iterationDOM(children, sourceAddr) as IGeneratorFn)
             }
@@ -565,6 +545,25 @@ export const observeSource = (function () {
     return observer
   }
 })()
+
+function compatibleMark (tag: string) {
+  const ts = +((window.performance.now && ('' + window.performance.now())) || Date.now())
+  markCache.push({ tag, ts })
+}
+
+function compatibleMeasure (tag: string, tagStart: string, tagEnd: string) {
+  const len = (markCache && markCache.length) || 0
+
+  let startTime = 0
+  let endTime = 0
+  for (let i = 0; i < len; i++) {
+    const item = markCache[i]
+    if (item.tag === tagStart) startTime = item.ts
+    if (item.tag === tagEnd) endTime = item.ts
+  }
+
+  measureCache.push({ entryType: 'measure', name: tag, duration: Math.abs(endTime - startTime) })
+}
 
 function timingFilter (timing: number): number | NA {
   if (timing === null || isNaN(timing)) return 'N/A'
