@@ -58,7 +58,7 @@ export const getTiming = (function () {
       const t = p.timing || {}
 
       // 白屏时长
-      wscreen = timingFilter(t.responseStart - t.navigationStart)
+      wscreen = timingFilter(t.domLoading - t.navigationStart)
       // 首屏时长
       fscreen = timingFilter(t.domContentLoadedEventStart - t.navigationStart)
       // 网络总时长
