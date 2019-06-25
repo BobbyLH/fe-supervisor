@@ -1,6 +1,6 @@
 {
   "name": "fe-supervisor",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.js",
   "types": "dist/fe-supervisor.d.ts",
@@ -21,7 +21,8 @@
     "test_browser": "istanbul cover _mocha --opts mocha.opts"
   },
   "pre-commit": [
-    "lint"
+    "lint",
+    "test_node"
   ],
   "keywords": [
     "performance",
