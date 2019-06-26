@@ -13,3 +13,4 @@ babel.config.js
 yarn.lock
 _config.yml
 .nyc_output
+karma.conf.js
