@@ -12,3 +12,4 @@ babel.config.js
 .gitignore
 yarn.lock
 _config.yml
+.nyc_output

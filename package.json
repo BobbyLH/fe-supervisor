@@ -17,8 +17,8 @@
     "build_rollup": "rollup -c build/rollup.config.js",
     "build_rollup_beta": "rollup -c build/rollup.config.js --environment beta",
     "lint": "eslint --ext .ts src/",
-    "test_node": "mocha --opts mocha.opts",
-    "test_browser": "istanbul cover _mocha --opts mocha.opts"
+    "test_node": "nyc mocha --opts mocha.opts",
+    "test_browser": "nyc mocha --opts mocha.opts"
   },
   "pre-commit": [
     "lint",
@@ -63,6 +63,7 @@
     "eslint": "^5.16.0",
     "istanbul": "^0.4.5",
     "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "ora": "^3.4.0",
     "pre-commit": "^1.2.2",
     "rollup": "^1.13.1",
@@ -77,5 +78,24 @@
     "ts-node": "^8.2.0",
     "tslib": "^1.9.3",
     "typescript": "^3.5.1"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "src/**/*.test.ts",
+      "src/utils/*.ts",
+      "src/index.ts"
+    ],
+    "reporter": [
+      "text"
+    ],
+    "all": true
   }
 }
