@@ -11,6 +11,8 @@ interface IsType {
   symbol: symbol;
   array: any[];
   object: AnyObject;
+  regexp: RegExp;
+  date: Date;
   function: Function;
 }
 
@@ -23,6 +25,8 @@ const typeMap: IsType = {
   symbol: Symbol(1),
   array: [],
   object: {},
+  regexp: /regexp/,
+  date: new Date(),
   function: function () {}
 }
 

@@ -162,7 +162,7 @@ export const getSource = (function () {
               if (isType('string')(w_a)) {
                 if (data.name === w_a) break
               } else if (isType('array')(w_a)) {
-                const w_a_len = w_a.length
+                const w_a_len = (w_a && w_a.length) || 0
                 for (let j = 0; j < w_a_len; j++) {
                   if (data.name === w_a[j]) break 
                 }
@@ -189,7 +189,7 @@ export const getSource = (function () {
               if (isType('string')(w_s)) {
                 if (data.name === w_s) break
               } else if (isType('array')(w_s)) {
-                const w_s_len = w_s.length
+                const w_s_len = (w_s && w_s.length) || 0
                 for (let m = 0; m < w_s_len; m++) {
                   if (data.name === w_s[m]) break 
                 }
@@ -458,7 +458,7 @@ export const observeSource = (function () {
             sources: { [`${sourceType}`]: sourceAddr },
             whitelist
           })).then(data => data.source_appoint)
-          if (sourceData.length === sourceAddr.length || spendTime >= timeout) {
+          if ((sourceData && sourceAddr && sourceData.length === sourceAddr.length) || spendTime >= timeout) {
             return callback && callback(sourceData)
           } else {
             spendTime += frequence
