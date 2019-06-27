@@ -15,7 +15,7 @@ export function compatCheck (type: compatType): boolean {
         Promise.resolve(true)
         break
       case 'async':
-        async function asyncFn () {
+        const asyncFn = async function () {
           const res = await Promise.resolve(true).then(res => res)
           return res
         }

@@ -494,6 +494,25 @@ export const observeSource = (function () {
      * @param doms NodeList | HTMLCollection
      */
     function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
+      function sortDOM (doms: NodeList | HTMLCollection, sourceStore: string[]) {
+        const len = (doms && doms.length) || 0
+        for (let i = 0; i < len; i++) {
+          const dom = doms[i]
+          const type = dom.nodeName.toLowerCase()
+          if (sourceType === type) {
+            const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
+            sourceSrc && sourceStore.push(sourceSrc)
+          }
+
+          const children = (dom as Element).children
+          const childLen = (children && children.length) || 0
+
+          if (childLen > 0) {
+            sortDOM(children, sourceStore)
+          }
+        }
+      }
+
       if (compatCheck('generator')) {
         return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
           try {
@@ -520,24 +539,6 @@ export const observeSource = (function () {
           }
         }
       } else {
-        function sortDOM (doms: NodeList | HTMLCollection, sourceStore: string[]) {
-          const len = (doms && doms.length) || 0
-          for (let i = 0; i < len; i++) {
-            const dom = doms[i]
-            const type = dom.nodeName.toLowerCase()
-            if (sourceType === type) {
-              const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
-              sourceSrc && sourceStore.push(sourceSrc)
-            }
-
-            const children = (dom as Element).children
-            const childLen = (children && children.length) || 0
-
-            if (childLen > 0) {
-              sortDOM(children, sourceStore)
-            }
-          }
-        }
         sortDOM(doms, sourceAddr)
       }
     }
