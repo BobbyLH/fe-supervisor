@@ -1,6 +1,5 @@
 import { ItrackInfo } from '../index.d'
-import { uuid, storage } from '../utils'
-import { setError } from '../error'
+import { uuid, storage, catchError } from '../utils'
 
 export function makeTrackInfo (type: string, info: object): ItrackInfo {
   try {
@@ -12,12 +11,8 @@ export function makeTrackInfo (type: string, info: object): ItrackInfo {
       }
     }
   } catch (error) {
-    setError({
-      ts: +Date.now(),
-      type: 'js',
-      url: location.href,
-      msg: `[SV - makeTrackInfo]: ${JSON.stringify(error)}`
-    })
+    const msg = `[SV - makeTrackInfo]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+    catchError('js', msg)
   } finally {
     return {
       ts: +Date.now(),

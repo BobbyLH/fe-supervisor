@@ -1,7 +1,6 @@
 import { ItimingSource } from './../index.d';
 import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
-import { isType, notSupport, notSupportPromisify, timeslice, Observer } from '../utils'
-import { HandleException } from '../error/Exception'
+import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError } from '../utils'
 
 interface MarkCache {
   tag: string;
@@ -30,12 +29,8 @@ export const getMemory = (function () {
       total = m.totalJSHeapSize || 1
       usedRatio = +Number.prototype.toFixed.call(used / total, 3)
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - getMemory]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - getMemory]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return {
         memory: usedRatio || 'N/A',
@@ -84,12 +79,8 @@ export const getTiming = (function () {
       // 总耗时
       total = timingFilter(t.loadEventEnd - t.navigationStart)
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - getTiming]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - getTiming]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return {
         wscreen,
@@ -231,12 +222,8 @@ export const getSource = (function () {
   
       await timeslice(gen as IGeneratorFn)
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - getSource]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - getSource]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return {
         api_random,
@@ -283,12 +270,8 @@ export const getExecTiming  = (function () {
       
       await timeslice(gen as IGeneratorFn)
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - getExecTiming]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - getExecTiming]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return {
         exec
@@ -314,12 +297,8 @@ export const getPerformanceData = (function () {
 
       
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - getPerformanceData]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - getPerformanceData]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return {
         memory: memory || 'N/A',
@@ -365,12 +344,8 @@ export const mark = (function () {
       }
     } catch (error) {
       res = false
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - mark]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - mark]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
     } finally {
       return res
     }
@@ -403,12 +378,8 @@ export const clearPerformance = (function () {
 
       return true
     } catch (error) {
-      HandleException.setErrors({
-        ts: +Date.now(),
-        type: 'js',
-        url: location.href,
-        msg: `[SV - clearPerformance]: ${JSON.stringify(error)}`
-      })
+      const msg = `[SV - clearPerformance]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+      catchError('js', msg)
       return false
     }
   }
@@ -496,12 +467,8 @@ export const observeSource = (function () {
     
         !isAsync && callback && callback(data)
       } catch (error) {
-        HandleException.setErrors({
-          ts: +Date.now(),
-          type: 'js',
-          url: location.href,
-          msg: `[SV - observeSource_getSourceByDom]: ${JSON.stringify(error)}`
-        })
+        const msg = `[SV - observeSource_getSourceByDom]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+        catchError('js', msg)
       } finally {
         return data
       }
@@ -532,12 +499,8 @@ export const observeSource = (function () {
             yield
           }
         } catch (error) {
-          HandleException.setErrors({
-            ts: +Date.now(),
-            type: 'js',
-            url: location.href,
-            msg: `[SV - observeSource_iterationDOM]: ${JSON.stringify(error)}`
-          })
+          const msg = `[SV - observeSource_iterationDOM]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+          catchError('js', msg)
         }
       }
     }

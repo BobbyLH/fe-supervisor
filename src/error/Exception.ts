@@ -12,27 +12,31 @@ const sourceErrors: IErrArr = []
 
 export const errorTag = 'fe-supervisor-error'
 
+function getErrors (): IErrTotalObj;
+function getErrors (type: ExceptionType): IErrArr;
+function getErrors (type?: ExceptionType): IErrArr | IErrTotalObj {
+  const typeIndex = type ? ExceptionTypes[type] : undefined
+
+  let errors
+  switch (typeIndex) {
+    case ExceptionTypes['js']:
+      errors = jsErrors
+      break
+    case ExceptionTypes['api']:
+      errors = apiErrors
+      break
+    case ExceptionTypes['source']:
+      errors = sourceErrors
+      break
+    default:
+      errors = { jsErrors, apiErrors, sourceErrors }
+  }
+
+  return errors
+}
+
 export const HandleException = {
-  getErrors (type?: ExceptionType): IErrArr | IErrTotalObj {
-    const typeIndex = type ? ExceptionTypes[type] : undefined
-
-    let errors
-    switch (typeIndex) {
-      case ExceptionTypes['js']:
-        errors = jsErrors
-        break
-      case ExceptionTypes['api']:
-        errors = apiErrors
-        break
-      case ExceptionTypes['source']:
-        errors = sourceErrors
-        break
-      default:
-        errors = { jsErrors, apiErrors, sourceErrors }
-    }
-
-    return errors
-  },
+  getErrors,
 
   setErrors (error: IErrObj): void {
     const { type } = error
@@ -76,6 +80,18 @@ export const HandleException = {
     }
     
     return res
+  },
+
+  dupliError (type: ExceptionType, msg: string): boolean {
+    const errs = HandleException.getErrors(type)
+    const len = (errs && errs.length) || 0
+    for (let i = 0; i < len; i++) {
+      const item = errs[i];
+      if (item.msg && item.msg === msg) {
+        return true
+      }
+    }
+    return false
   }
 }
 

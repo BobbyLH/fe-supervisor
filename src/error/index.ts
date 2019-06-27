@@ -1,5 +1,5 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
-import { addListener, Observer } from '../utils'
+import { addListener, Observer, catchError } from '../utils'
 import { HandleException, errorTag } from './Exception'
 
 (function () {
@@ -35,9 +35,9 @@ import { HandleException, errorTag } from './Exception'
 })()
 
 export function getError (): IErrTotalObj
-export function getError (type: ExceptionType): IErrObj[]
+export function getError (type: ExceptionType): IErrArr
 export function getError (type?: ExceptionType): IErrArr | IErrTotalObj {
-  return HandleException.getErrors(type)
+  return type ? HandleException.getErrors(type) : HandleException.getErrors()
 }
 
 export function setError (err: IErrObj): void {
@@ -68,12 +68,8 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
           }
         }
       } catch (error) {
-        setError({
-          ts: +Date.now(),
-          type: 'js',
-          url: location.href,
-          msg: `[SV - observeError_handleError]: ${JSON.stringify(error)}`
-        })
+        const msg = `[SV - observeError_handleError]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+        catchError('js', msg)
       }
 
 
@@ -108,12 +104,8 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
             return handleError(children)
           }
         } catch (error) {
-          setError({
-            ts: +Date.now(),
-            type: 'js',
-            url: location.href,
-            msg: `[SV - observeError_bindError]: ${JSON.stringify(error)}`
-          })
+          const msg = `[SV - observeError_bindError]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+          catchError('js', msg)
         }
       }
     }
