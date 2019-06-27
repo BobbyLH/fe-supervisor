@@ -1,4 +1,5 @@
-import { timeslice, compatCheck } from '../utils'
+import { timeslice } from '../utils/timeslice'
+import { compatCheck } from '../utils/compatCheck'
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj, IGeneratorFn } from '../index.d'
 
 enum ExceptionTypes {
