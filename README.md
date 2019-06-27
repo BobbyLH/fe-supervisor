@@ -6,7 +6,7 @@
 Several options to get up and running:
 
 * Clone the repo: `git clone git@gitlab.hupu.com:frontend/supervisor.git`
-* Install with [npm](https://www.npmjs.com/package/roarjs): `npm install fe-supervisor`
+* Install with [npm](https://www.npmjs.com/package/roarjs): `npm install fe-supervisor -S`
 * Install with [Yarn](https://yarnpkg.com/en/package/roarjs): `yarn add fe-supervisor`
 
 

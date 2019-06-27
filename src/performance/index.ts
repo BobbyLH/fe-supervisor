@@ -1,6 +1,6 @@
 import { ItimingSource } from './../index.d';
 import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
-import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError } from '../utils'
+import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError, compatCheck } from '../utils'
 
 interface MarkCache {
   tag: string;
@@ -135,92 +135,99 @@ export const getSource = (function () {
       // 超时门槛值 默认值2000毫秒
       const threshold = timeout
   
-      function* gen (): IterableIterator<void> {
-        const len = s.length
-  
-        for (let i = 0; i < len; i++) {
-          const item = s[i]
-          const type = (item as any).initiatorType || ''
-          const data = {
-            name: item.name,
-            duration: +Number.prototype.toFixed.call(item.duration, 2),
-            type
+      function sortSource (item: PerformanceEntry) {
+        const type = (item as any).initiatorType || ''
+        const data = {
+          name: item.name,
+          duration: +Number.prototype.toFixed.call(item.duration, 2),
+          type
+        }
+
+        if (type === 'xmlhttprequest' || type === 'fetchrequest') {
+          // filtered by whitelist
+          if (w_a) {
+            if (isType('string')(w_a)) {
+              if (data.name === w_a) return
+            } else if (isType('array')(w_a)) {
+              const w_a_len = (w_a && w_a.length) || 0
+              for (let j = 0; j < w_a_len; j++) {
+                if (data.name === w_a[j]) return 
+              }
+            }
           }
 
-          if (type === 'xmlhttprequest' || type === 'fetchrequest') {
-            // filtered by whitelist
-            if (w_a) {
-              if (isType('string')(w_a)) {
-                if (data.name === w_a) break
-              } else if (isType('array')(w_a)) {
-                const w_a_len = (w_a && w_a.length) || 0
-                for (let j = 0; j < w_a_len; j++) {
-                  if (data.name === w_a[j]) break 
-                }
+          randomRatio(apiRatio) && api_random.push(data)
+          data.duration >= threshold && api_timeout.push(data)
+          if (isType('string')(apis)) {
+            data.name === apis && api_appoint.push(data)
+          } else if (isType('array')(apis)) {
+            (apis as Array<string>).some(v => {
+              if (v === data.name) {
+                api_appoint.push(data)
+                // break the iteration
+                return true
               }
-            }
-  
-            randomRatio(apiRatio) && api_random.push(data)
-            data.duration >= threshold && api_timeout.push(data)
-            if (isType('string')(apis)) {
-              data.name === apis && api_appoint.push(data)
-            } else if (isType('array')(apis)) {
-              (apis as Array<string>).some(v => {
-                if (v === data.name) {
-                  api_appoint.push(data)
-                  // break the iteration
-                  return true
-                }
-                return false
-              })
-            }
-          } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link') {
-            // filtered by whitelist
-            if (w_s) {
-              if (isType('string')(w_s)) {
-                if (data.name === w_s) break
-              } else if (isType('array')(w_s)) {
-                const w_s_len = (w_s && w_s.length) || 0
-                for (let m = 0; m < w_s_len; m++) {
-                  if (data.name === w_s[m]) break 
-                }
-              }
-            }
-  
-            randomRatio(sourceRatio) && source_random.push(data)
-            data.duration >= threshold && source_timeout.push(data)
-            if (isType('string')(sources)) {
-              type === sources && source_appoint.push(data)
-            } else if (isType('array')(sources)) {
-              (sources as Array<string>).some(v => {
-                if (v === type) {
-                  source_appoint.push(data)
-                  // break the iteration
-                  return true
-                }
-                return false
-              })
-            } else if (isType('object')(sources)) {
-              for (const k in <IconfigSources>sources) {
-                if (k === type) {
-                  (<IconfigSources>sources)[k].some(v => {
-                    if (v === data.name) {
-                      source_appoint.push(data)
-                      // break the iteration
-                      return true
-                    }
-                    return false
-                  })
-                }
+              return false
+            })
+          }
+        } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link') {
+          // filtered by whitelist
+          if (w_s) {
+            if (isType('string')(w_s)) {
+              if (data.name === w_s) return
+            } else if (isType('array')(w_s)) {
+              const w_s_len = (w_s && w_s.length) || 0
+              for (let m = 0; m < w_s_len; m++) {
+                if (data.name === w_s[m]) return 
               }
             }
           }
-  
-          yield
+
+          randomRatio(sourceRatio) && source_random.push(data)
+          data.duration >= threshold && source_timeout.push(data)
+          if (isType('string')(sources)) {
+            type === sources && source_appoint.push(data)
+          } else if (isType('array')(sources)) {
+            (sources as Array<string>).some(v => {
+              if (v === type) {
+                source_appoint.push(data)
+                // break the iteration
+                return true
+              }
+              return false
+            })
+          } else if (isType('object')(sources)) {
+            for (const k in <IconfigSources>sources) {
+              if (k === type) {
+                (<IconfigSources>sources)[k].some(v => {
+                  if (v === data.name) {
+                    source_appoint.push(data)
+                    // break the iteration
+                    return true
+                  }
+                  return false
+                })
+              }
+            }
+          }
         }
       }
-  
-      await timeslice(gen as IGeneratorFn)
+
+      if (compatCheck('generator')) {
+        function* gen (): IterableIterator<void> {
+          const len = s.length
+          for (let i = 0; i < len; i++) {
+            sortSource(s[i])
+            yield
+          }
+        }
+        await timeslice(gen as IGeneratorFn)
+      } else {
+        const len = s.length
+        for (let i = 0; i < len; i++) {
+          sortSource(s[i])
+        }
+      }
     } catch (error) {
       const msg = `[SV - getSource]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
       catchError('js', msg)
@@ -253,22 +260,30 @@ export const getExecTiming  = (function () {
         measures = measureCache
       }
 
-      function* gen () {
+      function sortExec (item: PerformanceEntry | MeasureCache) {
+        if (item.entryType === 'measure') {
+          exec.push({
+            name: item.name,
+            duration: +Number.prototype.toFixed.call(item.duration, 3)
+          })
+        }
+      }
+
+      if (compatCheck('generator')) {
+        function* gen () {
+          const len = (measures && measures.length) || 0
+          for (let i = 0; i < len; i++) {
+            sortExec(measures[i])
+          }
+          yield
+        }
+        await timeslice(gen as IGeneratorFn)
+      } else {
         const len = (measures && measures.length) || 0
         for (let i = 0; i < len; i++) {
-          const item = measures[i]
-          if (item.entryType === 'measure') {
-            exec.push({
-              name: item.name,
-              duration: +Number.prototype.toFixed.call(item.duration, 3)
-            })
-          }
+          sortExec(measures[i])
         }
-
-        yield
       }
-      
-      await timeslice(gen as IGeneratorFn)
     } catch (error) {
       const msg = `[SV - getExecTiming]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
       catchError('js', msg)
@@ -479,29 +494,51 @@ export const observeSource = (function () {
      * @param doms NodeList | HTMLCollection
      */
     function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
-      return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
-        try {
+      if (compatCheck('generator')) {
+        return function* (): IterableIterator<Promise<() => void> | (() => false) | false | void> {
+          try {
+            const len = (doms && doms.length) || 0
+            for (let i = 0; i < len; i++) {
+              const dom = doms[i]
+              const type = dom.nodeName.toLowerCase()
+              if (sourceType === type) {
+                const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
+                sourceSrc && sourceAddr.push(sourceSrc)
+              }
+  
+              const children = (dom as Element).children
+              const childLen = (children && children.length) || 0
+              if (childLen > 0) {
+                yield timeslice(iterationDOM(children, sourceAddr) as IGeneratorFn)
+              }
+  
+              yield
+            }
+          } catch (error) {
+            const msg = `[SV - observeSource_iterationDOM]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
+            catchError('js', msg)
+          }
+        }
+      } else {
+        function sortDOM (doms: NodeList | HTMLCollection, sourceStore: string[]) {
           const len = (doms && doms.length) || 0
           for (let i = 0; i < len; i++) {
             const dom = doms[i]
             const type = dom.nodeName.toLowerCase()
             if (sourceType === type) {
               const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
-              sourceSrc && sourceAddr.push(sourceSrc)
+              sourceSrc && sourceStore.push(sourceSrc)
             }
 
             const children = (dom as Element).children
             const childLen = (children && children.length) || 0
-            if (childLen > 0) {
-              yield timeslice(iterationDOM(children, sourceAddr) as IGeneratorFn)
-            }
 
-            yield
+            if (childLen > 0) {
+              sortDOM(children, sourceStore)
+            }
           }
-        } catch (error) {
-          const msg = `[SV - observeSource_iterationDOM]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
-          catchError('js', msg)
         }
+        sortDOM(doms, sourceAddr)
       }
     }
 
