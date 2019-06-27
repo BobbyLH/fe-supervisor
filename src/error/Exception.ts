@@ -1,4 +1,5 @@
-import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
+import { timeslice, compatCheck } from '../utils'
+import { ExceptionType, IErrObj, IErrArr, IErrTotalObj, IGeneratorFn } from '../index.d'
 
 enum ExceptionTypes {
   'js',
@@ -82,16 +83,33 @@ export const HandleException = {
     return res
   },
 
-  dupliError (type: ExceptionType, msg: string): boolean {
+  async dupliError (type: ExceptionType, msg: string): Promise<boolean> {
+    let res = false
     const errs = HandleException.getErrors(type)
     const len = (errs && errs.length) || 0
-    for (let i = 0; i < len; i++) {
-      const item = errs[i];
-      if (item.msg && item.msg === msg) {
-        return true
+    if (compatCheck('generator')) {
+      function* gen () {
+        for (let i = 0; i < len; i++) {
+          const item = errs[i];
+          if (item.msg && item.msg === msg) {
+            res = true
+            return
+          }
+          yield
+        }
       }
+      await timeslice(gen as IGeneratorFn)
+      return res
+    } else {
+      for (let i = 0; i < len; i++) {
+        const item = errs[i];
+        if (item.msg && item.msg === msg) {
+          res = true
+          break
+        }
+      }
+      return res
     }
-    return false
   }
 }
 
