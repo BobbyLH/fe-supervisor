@@ -1,4 +1,4 @@
-import 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { setError, getError, clearError, observeError } from '../index'
 
@@ -100,11 +100,31 @@ describe('Error handles(set, get, clear) test module', function () {
 })
 
 describe('observeError test module', function () {
-  it('In node env', function () {
-    expect(observeError).to.be.a('function')
-  })
+  if (typeof window === 'undefined') {
+    it('In node env', function () {
+      expect(observeError).to.be.a('function')
+    })
+  } else {
+    it('In browser env', function () {
+      const body = document.body
+      expect(observeError(body, function(target, e) {
+        if (target.nodeName === 'link') expect(target).to.be.a('HTMLLinkElement')
+        if (target.nodeName === 'script') expect(target).to.be.a('HTMLScriptElement')
+      }, ['img', 'link', 'script'])).to.be.an('object')
+      const img = new Image()
+      img.src = 'https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/ad/e0/f5/ade0f59d-b5b0-ef09-19de-d3f77b50083c/source/600x600bb.jpg'
 
-  it('In browser env', function () {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = './assets/empty.css'
 
-  })
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = './assets/empty.js'
+
+      body.appendChild(img)
+      body.appendChild(link)
+      body.appendChild(script)
+    })
+  }
 })

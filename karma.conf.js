@@ -10,8 +10,13 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'karma-typescript'],
+    frameworks: ['mocha'],
 
+    client: {
+      mocha: {
+        opts: 'mocha.opts'
+      }
+    },
 
     // list of files / patterns to load in the browser
     files: [
@@ -21,30 +26,57 @@ module.exports = function(config) {
 
     // list of files / patterns to exclude
     exclude: [
-      '**/*.d.ts',
-      '**/*.js'
+      '**/*.d.ts'
     ],
 
     mime: {
       'text/x-typescript': ['ts']
     },
+
+    reporters: ['text', 'coverage'],
+
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.test.ts': ['karma-typescript']
+      'src/**/*.test.ts': ['webpack', 'coverage']
     },
 
-    plugins: [
-      'karma-mocha',
-      'karma-coverage',
-      'karma-typescript',
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
-      'karma-mocha',
-      'karma-opera-launcher',
-      'karma-safari-launcher'
-    ],
+    webpack: {
+      node: { fs: 'empty' },
+      mode: 'development',
+      output: {
+        path: './test',
+        filename: '[chunkhash:8].js',
+      },
+      resolve: {
+        extensions: ['.ts', '.js', '.json']
+      },
+      module: {
+        rules: [
+          {
+            test: /\.ts$/,
+            exclude: /node_modules/,
+            use: [
+              {
+                loader: 'ts-loader',
+                options: {
+                  transpileOnly: true,
+                  compilerOptions: {
+                      target: "ES2015",
+                      module: "commonjs",
+                      lib: ["es5", "es2015", "es2016", "dom"]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
 
+    mime: {
+      'text/x-typescript': ['ts']
+    },
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter

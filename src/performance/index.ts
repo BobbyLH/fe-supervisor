@@ -34,8 +34,8 @@ export const getMemory = (function () {
     } finally {
       return {
         memory: usedRatio || 'N/A',
-        used: used || 'N/A',
-        total: total || 'N/A'
+        used: usedRatio ? used : 'N/A',
+        total: usedRatio ? total : 'N/A'
       }
     }
   }
