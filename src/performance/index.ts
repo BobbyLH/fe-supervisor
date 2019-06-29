@@ -401,7 +401,7 @@ export const clearPerformance = (function () {
 })()
 
 export const observeSource = (function () {
-  if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
+  if (typeof window === 'undefined' || !window.performance) return notSupport
 
   return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer {
     let { sourceType = 'img', timeout = 2000, whitelist = {} } = option || {}
@@ -566,8 +566,8 @@ function compatibleMeasure (tag: string, tagStart: string, tagEnd: string) {
   measureCache.push({ entryType: 'measure', name: tag, duration: Math.abs(endTime - startTime) })
 }
 
-function timingFilter (timing: number): number | NA {
-  if (timing === null || isNaN(timing)) return 'N/A'
+function timingFilter (timing: number | undefined): number | NA {
+  if (timing === null || timing === undefined || isNaN(timing)) return 'N/A'
 
   return timing > 0 ? timing : 0
 }

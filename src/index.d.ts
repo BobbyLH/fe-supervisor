@@ -1,6 +1,3 @@
-import { Observer } from './utils'
-import { SV } from './performance'
-
 type Partial<T> = {
   [P in keyof T]?: T[P];
 }
@@ -141,6 +138,27 @@ export interface ItrackInfo {
   info: object;
 }
 
+declare class Observer {
+  public constructor (target: HTMLElement, callback: (doms: MutationRecord[]) => any)
+  public init (target: HTMLElement, callback: (doms: MutationRecord[]) => any): MutationObserver | null
+  public cancel (): void
+  public setCache (cache: IAnyObj): void
+  public getCache (): IAnyObj[]
+  public clearCache (): void
+}
+
+declare class SV {
+  public constructor (config?: Iconfig)
+  public updateConfig (newConfig: PIconfig): void
+  public getMemory (): false | Imemory
+  public getTiming (): false | Itiming
+  public getSource (): Promise<false | Isource>
+  public getExecTiming(): Promise<false | Iexec>
+  public getPerformanceData (): Promise<false | Iperformance | IAnyObj>
+  public clearPerformance (clearType?: ClearType): boolean
+  public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): false | Observer
+}
+
 // declare
 declare const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>
 declare const getMemory: () => false | Imemory
@@ -149,7 +167,7 @@ declare const getSource: (config?: Iconfig) => Promise<false | Isource>
 declare const getExecTiming: () => Promise<false | Iexec>
 declare const mark: (tag: string) => boolean
 declare const clearPerformance: (clearType?: ClearType) => boolean
-declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer
+declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer
 declare const getEnvInfo: () => false | IenvInfo
 declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
 declare const setError: (err: IErrObj) => void
@@ -165,7 +183,7 @@ export interface ISupervisor {
   getExecTiming: () => Promise<false | Iexec>;
   mark: (tag: string) => boolean;
   clearPerformance: (clearType?: ClearType) => boolean;
-  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer;
+  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer;
   getEnvInfo: () => false | IenvInfo;
   getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
   setError: (err: IErrObj) => void;
@@ -183,25 +201,14 @@ declare namespace $sv {
   const getExecTiming: () => Promise<false | Iexec>
   const mark: (tag: string) => boolean
   const clearPerformance: (clearType?: ClearType) => boolean
-  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => Promise<false> | Observer
+  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer
   const getEnvInfo: () => false | IenvInfo
   const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
   const setError: (err: IErrObj) => void
   const clearError: (type?: ExceptionType) => boolean
   const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
   const makeTrackInfo: (type: string, info: object) => ItrackInfo
-  class SV {
-    private config: Iconfig
-    public constructor (config?: Iconfig)
-    public updateConfig (newConfig: PIconfig): void
-    public getMemory (): false | Imemory
-    public getTiming (): false | Itiming
-    public getSource (): Promise<false | Isource>
-    public getExecTiming(): Promise<false | Iexec>
-    public getPerformanceData (): Promise<false | Iperformance | IAnyObj>
-    public clearPerformance (clearType?: ClearType): boolean
-    public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer
-  }
+  const SV: SV
 }
 
 declare module 'fe-supervisor' {
