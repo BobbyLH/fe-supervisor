@@ -46,7 +46,9 @@ export const HandleException = {
 
     switch (typeIndex) {
       case ExceptionTypes['js']:
-        jsErrors.push(error)
+        // get js call stack, the terminal stack in there but contain complete chain
+        const callstack = new Error().stack
+        jsErrors.push({ ...error, code_site: callstack })
         break
       case ExceptionTypes['api']:
         apiErrors.push(error)

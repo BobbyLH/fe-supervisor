@@ -109,6 +109,7 @@ export interface IErrObj extends IAnyObj {
   sourceType?: string;
   url: string;
   msg?: string;
+  code_site?: string;
 }
 
 export type IErrArr = IErrObj[]
