@@ -1,3 +1,4 @@
+import { getTs } from '../utils/getTs'
 import { HandleException } from '../error/Exception'
 import { ExceptionType } from '../index.d'
 
@@ -11,7 +12,7 @@ export async function catchError (type: ExceptionType, msg: string): Promise<voi
   const isDuplication = await HandleException.dupliError(type, msg)
   if (!isDuplication) {
     HandleException.setErrors({
-      ts: +Date.now(),
+      ts: getTs(),
       type,
       url: location.href,
       msg

@@ -1,5 +1,5 @@
 import { ItrackInfo } from '../index.d'
-import { uuid, storage, catchError } from '../utils'
+import { uuid, storage, catchError, getTs } from '../utils'
 
 export function makeTrackInfo (type: string, info: object): ItrackInfo {
   try {
@@ -15,7 +15,7 @@ export function makeTrackInfo (type: string, info: object): ItrackInfo {
     catchError('js', msg)
   } finally {
     return {
-      ts: +Date.now(),
+      ts: getTs(),
       type,
       info
     }

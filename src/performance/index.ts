@@ -1,6 +1,6 @@
 import { ItimingSource } from './../index.d';
 import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
-import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError, compatCheck } from '../utils'
+import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError, compatCheck, getTs } from '../utils'
 
 interface MarkCache {
   tag: string;
@@ -548,7 +548,7 @@ export const observeSource = (function () {
 })()
 
 function compatibleMark (tag: string) {
-  const ts = +((window.performance.now && ('' + window.performance.now())) || Date.now())
+  const ts = +((window.performance.now && ('' + window.performance.now())) || getTs())
   markCache.push({ tag, ts })
 }
 

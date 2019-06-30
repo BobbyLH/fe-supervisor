@@ -1,3 +1,4 @@
+import { getTs } from '../utils'
 import { IenvInfo } from '../index.d'
 
 export const getEnvInfo = (function () {
@@ -13,7 +14,7 @@ export const getEnvInfo = (function () {
     const referer = document.referrer
 
     const info = {
-      ts: +Date.now(),
+      ts: getTs(),
       os: '',
       browser: '',
       screen_size: (scr.width || 0) + 'x' + (scr.height || 0),

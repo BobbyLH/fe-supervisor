@@ -1,5 +1,5 @@
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
-import { addListener, Observer, catchError } from '../utils'
+import { addListener, Observer, catchError, getTs } from '../utils'
 import { HandleException, errorTag } from './Exception'
 
 (function () {
@@ -9,7 +9,7 @@ import { HandleException, errorTag } from './Exception'
     const { filename, message, error } = e
 
     HandleException.setErrors({
-      ts: +Date.now(),
+      ts: getTs(),
       type: 'js',
       url: filename || '',
       msg: message,
@@ -88,7 +88,7 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
               const target = e.target
               const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
               const errObj: IErrObj = {
-                ts: +Date.now(),
+                ts: getTs(),
                 type: 'source',
                 sourceType,
                 url,
@@ -128,7 +128,7 @@ function handleError (target: HTMLElement, sourceType: string) {
   addListener('error', function (e: ErrorEvent) {
     const url = (e as any).target.src || (e as any).target.href
     HandleException.setErrors({
-      ts: +Date.now(),
+      ts: getTs(),
       type: 'source',
       sourceType,
       url,
