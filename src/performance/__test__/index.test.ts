@@ -99,7 +99,12 @@ describe('Performance test module', function () {
         expect(performance).to.have.property('source_timeout').to.be.an('array')
         expect(performance).to.have.property('dom_complete').to.be.an('number')
         expect(performance).to.have.property('fscreen').to.be.an('number')
-        expect(performance).to.have.property('memory').to.be.an('number')
+        if (performance && performance.memory !== 'N/A') {
+          expect(performance).to.have.property('memory').to.be.an('number')
+        } else {
+          expect(performance).to.have.property('memory').to.be.eql('N/A')
+        }
+
         expect(performance).to.have.property('network').to.be.an('number')
         expect(performance).to.have.property('network_dns').to.be.an('number') 
         expect(performance).to.have.property('network_prev').to.be.an('number') 
