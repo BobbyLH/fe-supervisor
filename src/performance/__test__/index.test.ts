@@ -21,6 +21,7 @@ describe('Performance test module', function () {
       expect(new SV()).to.be.an('object')
     })
   } else {
+    mark('test')
     describe('In browser env', function () {
       it('getMemory', function () {
         const memory = getMemory()
@@ -74,6 +75,124 @@ describe('Performance test module', function () {
         expect(source).to.have.property('source_timeout').to.be.an('array')
       })
 
+      it('getExecTiming', async function () {
+        mark('test')
+        const exec = await getExecTiming()
+        expect(exec).to.be.an('object')
+        expect(exec).to.have.property('exec').to.be.an('array')
+        const execute = exec && exec.exec || []
+        expect(execute).to.have.lengthOf(1)
+        expect(execute[0]).to.have.property('name').to.be.a('string').to.eql('test')
+        expect(execute[0]).to.have.property('duration').to.be.a('number')
+      })
+
+      it('getPerformanceData', async function () {
+        mark('test')
+        const performance = await getPerformanceData()
+        expect(performance).to.be.an('object')
+        expect(performance).to.have.property('api_appoint').to.be.an('array')
+        expect(performance).to.have.property('api_random').to.be.an('array')
+        expect(performance).to.have.property('api_timeout').to.be.an('array')
+        expect(performance).to.have.property('exec').to.be.an('array').to.have.lengthOf(1)
+        expect(performance).to.have.property('source_appoint').to.be.an('array')
+        expect(performance).to.have.property('source_random').to.be.an('array')
+        expect(performance).to.have.property('source_timeout').to.be.an('array')
+        expect(performance).to.have.property('dom_complete').to.be.an('number')
+        expect(performance).to.have.property('fscreen').to.be.an('number')
+        expect(performance).to.have.property('memory').to.be.an('number')
+        expect(performance).to.have.property('network').to.be.an('number')
+        expect(performance).to.have.property('network_dns').to.be.an('number') 
+        expect(performance).to.have.property('network_prev').to.be.an('number') 
+        expect(performance).to.have.property('network_redirect').to.be.an('number') 
+        expect(performance).to.have.property('network_request').to.be.an('number') 
+        expect(performance).to.have.property('network_tcp').to.be.an('number') 
+        expect(performance).to.have.property('render_load').to.be.an('number') 
+        expect(performance).to.have.property('render_ready').to.be.an('number') 
+        expect(performance).to.have.property('total').to.be.an('number') 
+        expect(performance).to.have.property('wscreen').to.be.an('number') 
+      })
+
+      it('mark', async function () {
+        const mark1Res = mark('test')
+        const mark2Res = mark('test1')
+        const mark3Res = mark('test1')
+        expect(mark1Res).to.be.false
+        expect(mark2Res).to.be.true
+        expect(mark3Res).to.be.true
+
+        const exec = await getExecTiming()
+        const execute = exec && exec.exec || []
+        expect(execute).to.have.lengthOf(2)
+        expect(execute[0]).to.have.property('name').to.be.a('string').to.eql('test')
+        expect(execute[0]).to.have.property('duration').to.be.a('number')
+        expect(execute[1]).to.have.property('name').to.be.a('string').to.eql('test1')
+        expect(execute[1]).to.have.property('duration').to.be.a('number')
+      })
+
+      it('clearPerformance', async function () {
+        const mark1Res = mark('test2')
+        const mark2Res = mark('test3')
+        // clear measure record
+        const res1 = clearPerformance('measure')
+        expect(mark1Res).to.be.true
+        expect(mark2Res).to.be.true
+        expect(res1).to.be.true
+        let exec = await getExecTiming()
+        let execute = exec && exec.exec || []
+        expect(execute).to.have.lengthOf(0)
+
+        const mark3Res = mark('test2')
+        expect(mark3Res).to.be.true
+        exec = await getExecTiming()
+        execute = exec && exec.exec || []
+        expect(execute).to.have.lengthOf(1)
+        expect(execute[0]).to.have.property('name').to.be.a('string').to.eql('test2')
+        expect(execute[0]).to.have.property('duration').to.be.a('number')
+
+        // clear mark record
+        const res2 = clearPerformance('mark')
+        const res3 = clearPerformance('measure')
+        const mark4Res = mark('test3')
+        expect(res2).to.be.true
+        expect(res3).to.be.true
+        expect(mark4Res).to.be.true
+        exec = await getExecTiming()
+        execute = exec && exec.exec || []
+        expect(execute).to.have.lengthOf(0)
+
+        // clear source record
+        const res4 = clearPerformance('source')
+        expect(res4).to.be.true
+        const performance = await getPerformanceData({sourceRatio: 1})
+        expect(performance).to.have.property('source_random').to.be.an('array').to.lengthOf(0)
+      })
+
+      it('observeSource', async function () {
+        const body = document.body
+        const newSrc = 'https://is4-ssl.mzstatic.com/image/thumb/Music113/v4/48/8c/2b/488c2be3-c5c4-13da-73c5-1f1077662abc/source/300x300bb.jpg'
+        observeSource(body, function (source_appoint) {
+          expect(source_appoint).to.be.an('array').to.have.lengthOf(1)
+          expect(source_appoint[0]).to.have.property('name').to.eql(newSrc)
+          expect(source_appoint[0]).to.have.property('type').to.eql('img')
+          expect(source_appoint[0]).to.have.property('duration').to.be.a('number')
+        })
+
+        const img: any = document.getElementById('img')
+        img.src = newSrc
+      })
+
+      it('SV', async function () {
+        expect(SV).to.be.a('function').to.have.property('__proto__')
+        expect(SV).to.be.a('function').to.have.property('prototype')
+        expect(SV.prototype).to.be.a('object').to.have.property('constructor').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('clearPerformance').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('getExecTiming').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('getPerformanceData').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('getSource').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('getTiming').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('observeSource').to.be.a('function')
+        expect(SV.prototype).to.be.a('object').to.have.property('updateConfig').to.be.a('function')
+      })
     })
   }
 })

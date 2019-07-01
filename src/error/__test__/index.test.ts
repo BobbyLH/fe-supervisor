@@ -112,6 +112,7 @@ describe('observeError test module', function () {
         if (target.nodeName === 'script') expect(target).to.be.a('HTMLScriptElement')
       }, ['img', 'link', 'script'])).to.be.an('object')
       const img = new Image()
+      img.id = 'img'
       img.src = 'https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/ad/e0/f5/ade0f59d-b5b0-ef09-19de-d3f77b50083c/source/600x600bb.jpg'
 
       const link = document.createElement('link')
