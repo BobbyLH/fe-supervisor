@@ -13,7 +13,7 @@ export const getEnvInfo = (function () {
     const page_url = location.href
     const referer = document.referrer
 
-    const info = {
+    const info: IenvInfo = {
       ts: getTs(),
       os: '',
       browser: '',

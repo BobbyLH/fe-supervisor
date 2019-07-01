@@ -123,12 +123,12 @@ export interface IErrTotalObj {
 // env
 export interface IenvInfo {
   ts: number;
-  os: string;
-  browser: string;
+  os: '' | 'windows' | 'mac' | 'android' | 'ios';
+  browser: '' | 'weixin' | 'weibo_sina' | 'weibo_qq' | 'facebook' | 'twitter' | 'instagram' | 'chrome' | 'firefox' | 'ie' | 'edge' | 'opera' | 'safari' | '360' | 'qq' | 'uc' | 'baidu' | 'sougou' | 'liebao' | 'webkit';
   screen_size: string;
   referer: string;
   page_url: string;
-  device: string;
+  device: 'mobile' | 'pc';
   ua: string;
 }
 
