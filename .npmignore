@@ -14,3 +14,4 @@ yarn.lock
 _config.yml
 .nyc_output
 karma.conf.js
+.travis.yml
