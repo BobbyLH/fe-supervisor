@@ -6,7 +6,6 @@
   "types": "dist/fe-supervisor.d.ts",
   "scripts": {
     "dev": "supervisor -w demo/server/helper/* demo/server/app.js",
-    "test": "npm run test_node",
     "build": "npm run lint && npm run build_branch && npm run build_test && npm run build_version && npm run build_rollup && npm run build_copy && npm run build_git",
     "build:beta": "npm run lint && npm run build_branch && npm run build_test && npm run build_version_beta && npm run build_rollup_beta && npm run build_copy && npm run build_git",
     "build_test": "npm run test_build",

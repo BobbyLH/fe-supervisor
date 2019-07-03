@@ -1,5 +1,7 @@
 # fe-supervisor (The frontend monitor project)
 
+[![npm version](https://badge.fury.io/js/fe-supervisor.svg)](https://badge.fury.io/js/fe-supervisor)
+[![Build Status](https://travis-ci.com/BobbyLH/fe-supervisor.svg?branch=master)](https://travis-ci.com/BobbyLH/fe-supervisor)
 
 ## Quick Start
 

@@ -1,7 +1,13 @@
 language: node_js
 node_js:
   - "8"
+before_install: 
+  - yarn add codecov 
+  - yarn add coverage
 install:
   - yarn
 script:
-  - npm test
+  - npm run lint
+  - npm run test_node
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
