@@ -1,12 +1,18 @@
 language: node_js
 node_js:
   - "8"
+before_install: 
+  - npm i -g codecov
 install:
   - yarn
 script:
   - npm run lint
   - npm run test_node
-  - coverage run 
+  - node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov
+  - codecov
+cache:
+  directories:
+    - node_modules
 after_success:
   - export CODECOV_TOKEN="1a09e5fe-aa3d-4bc7-9360-7e0818fd9461"
   - bash <(curl -s https://codecov.io/bash)
