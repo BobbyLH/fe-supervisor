@@ -1,4 +1,4 @@
-import { notSupport } from './notSupport'
+import { getTs } from './getTs'
 
 const longTaskThreshold = 50
 const singleTaskThreshold = longTaskThreshold / 2
@@ -13,7 +13,7 @@ const notGF: NotFN = function () {
 }
 
 export const timeslice = (function (): NotFN | Gen {
-  if (typeof window === 'undefined' || !window.performance) return notSupport
+  const supportAPI = typeof window !== 'undefined' && window.performance
 
   return function (genF: GeneratorFunction): NotFN | Next {
     if (!genF || typeof genF !== 'function') return notGF
@@ -24,12 +24,12 @@ export const timeslice = (function (): NotFN | Gen {
     return new Promise((resolve, reject) => {
       function next (): void {
         try {
-          const start = performance.now()
+          const start = (supportAPI && performance.now()) || getTs()
           let res = null
     
           do {
             res = gen.next()
-          } while (!res.done && performance.now() - start < singleTaskThreshold)
+          } while (!res.done && ((supportAPI && performance.now()) || getTs()) - start < singleTaskThreshold)
     
           if (res.done) {
             resolve(res.value)

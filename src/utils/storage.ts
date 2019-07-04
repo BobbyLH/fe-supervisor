@@ -138,7 +138,7 @@ export const storage: Istorage | IinitStorage = (function () {
         document.cookie = `${key}="";domain=${domain};max-age=-1`
         const res = handleStorage.cookie.get(key)
 
-        return !!res
+        return !res
       }
     },
     get (key, storeType) {

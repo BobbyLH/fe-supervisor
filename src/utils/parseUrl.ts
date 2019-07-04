@@ -15,7 +15,7 @@ interface Icache {
 } 
 
 export const parseUrl = (function () {
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined') return (url: string) => url
 
   const HTTP_PORT = '80';
   const HTTPS_PORT = '443';

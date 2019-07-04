@@ -20,7 +20,7 @@
     "test_build": "karma start --single-run && npm run test_node",
     "test_node": "nyc mocha --opts mocha.opts",
     "test_headless": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "test_browser": "karma start --browsers Chrome"
+    "test_browser": "karma start --browsers Firefox"
   },
   "pre-commit": [
     "lint",
