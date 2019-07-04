@@ -45,8 +45,8 @@ export const getTiming = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
   return function (): Itiming {
-    let wscreen: Timing, fscreen: Timing, network: Timing, network_prev: Timing, network_redirect: Timing, network_dns: Timing, network_tcp: Timing, network_request: Timing, render_ready: Timing, render_load: Timing, js_complete: Timing, dom_complete: Timing, total: Timing;
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = render_ready = render_load = js_complete = dom_complete = total = 'N/A'
+    let wscreen: Timing, fscreen: Timing, network: Timing, network_prev: Timing, network_redirect: Timing, network_dns: Timing, network_tcp: Timing, network_request: Timing, dom_ready: Timing, dom_load: Timing, render_ready: Timing, render_load: Timing, js_complete: Timing, dom_complete: Timing, total: Timing;
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = dom_ready = dom_load = render_ready = render_load = js_complete = dom_complete = total = 'N/A'
 
     try {
       const p = window.performance
@@ -68,13 +68,17 @@ export const getTiming = (function () {
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
       // 请求耗时
       network_request = timingFilter(t.responseEnd - t.requestStart)
+      // DOM树解析总时长
+      dom_ready = timingFilter(t.domContentLoadedEventStart - t.responseEnd)
+      // DOM树生成总时长
+      dom_load = timingFilter(t.domComplete - t.responseEnd)
       // 渲染至可交互时长(DOM从开始解析到可交互的时长)
       render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
       // 整体渲染完毕时长(DOM从开始解析到加载完毕时长)
       render_load = timingFilter(t.loadEventEnd - t.domLoading)
-      // 所需要的脚本执行完成时长
+      // 从开始到所有的脚本执行完成时长
       js_complete = timingFilter(t.domContentLoadedEventEnd - t.navigationStart)
-      // DOM完全挂载完毕时长
+      // 从开始到所有DOM完全挂载完毕时长
       dom_complete = timingFilter(t.domComplete - t.navigationStart)
       // 总耗时
       total = timingFilter(t.loadEventEnd - t.navigationStart)
@@ -91,6 +95,8 @@ export const getTiming = (function () {
         network_dns,
         network_tcp,
         network_request,
+        dom_ready,
+        dom_load,
         render_ready,
         render_load,
         js_complete,
