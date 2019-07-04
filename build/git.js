@@ -14,6 +14,7 @@ async function autoGit () {
     gitStatus = await git.add('../*')
     gitStatus = await git.commit(`[FE - SUPERVISOR]: ${message}`)
     gitStatus = await git.push('origin', branch)
+    gitStatus = await git.push('origin_github', branch)
     console.log(`[git - status]: ${chalk.green(gitStatus || 'success')}`)
   } catch (e) {
     // handle the error
