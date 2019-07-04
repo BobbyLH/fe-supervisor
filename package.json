@@ -24,7 +24,8 @@
   },
   "pre-commit": [
     "lint",
-    "test_node"
+    "test_node",
+    "test_headless"
   ],
   "keywords": [
     "performance",
