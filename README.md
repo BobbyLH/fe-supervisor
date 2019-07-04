@@ -161,9 +161,9 @@ export default class Detail extends React.PureComponent{
     const { Imgs = null } = this.state
     return (
       <div ref={this.pool}>
-        <button onClick={this.addImg.bind(this)}>点击加图</button>
+        <button onClick={this.addImg.bind(this)}>Load Image</button>
         { Imgs }
-        <button onClick={this.getError.bind(this)}>获取错误信息</button>
+        <button onClick={this.getError.bind(this)}>Get Error Message</button>
       </div>
     )
   }
