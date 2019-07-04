@@ -1,6 +1,10 @@
 language: node_js
 node_js:
   - "8"
+dist: trusty
+sudo: required
+addons:
+  - chrome: stable
 before_install: 
   - npm i -g codecov
 install:
@@ -8,11 +12,13 @@ install:
 script:
   - npm run lint
   - npm run test_node
-  - node_modules/.bin/nyc report --reporter=text-lcov > coverage.lcov
+  - npm run test_headless
+  - ./node_modules/.bin/karma report --reporter=text-lcov > coverage.lcov
   - codecov
 cache:
+  yarn: true
   directories:
     - node_modules
 after_success:
   - export CODECOV_TOKEN="1a09e5fe-aa3d-4bc7-9360-7e0818fd9461"
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -s coverage/

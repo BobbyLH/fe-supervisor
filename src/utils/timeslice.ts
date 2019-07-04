@@ -46,3 +46,5 @@ export const timeslice = (function (): NotFN | Gen {
     })
   }
 })()
+
+export default timeslice

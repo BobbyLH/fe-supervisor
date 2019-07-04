@@ -189,3 +189,5 @@ export const storage: Istorage | IinitStorage = (function () {
 
   return handleStorage
 })()
+
+export default storage

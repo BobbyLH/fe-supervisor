@@ -78,3 +78,6 @@ export const parseUrl = (function () {
     }
   }
 })()
+
+
+export default parseUrl

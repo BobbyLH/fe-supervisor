@@ -4,3 +4,5 @@ export function uuid (): string {
   }
   return (S4()+S4()+'-'+S4()+'-'+S4()+'-'+S4()+'-'+S4()+S4()+S4())
 }
+
+export default uuid

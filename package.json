@@ -19,6 +19,7 @@
     "lint": "eslint --ext .ts src/",
     "test_build": "karma start --single-run && npm run test_node",
     "test_node": "nyc mocha --opts mocha.opts",
+    "test_headless": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "test_browser": "karma start --browsers Chrome"
   },
   "pre-commit": [
@@ -101,7 +102,6 @@
     "exclude": [
       "**/*.d.ts",
       "src/**/*.test.ts",
-      "src/utils/*.ts",
       "src/index.ts"
     ],
     "reporter": [

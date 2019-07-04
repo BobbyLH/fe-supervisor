@@ -28,3 +28,5 @@ export function compatCheck (type: compatType): boolean {
 
   return res
 }
+
+export default compatCheck

@@ -19,3 +19,5 @@ export async function catchError (type: ExceptionType, msg: string): Promise<voi
     })
   }
 }
+
+export default catchError
