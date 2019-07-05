@@ -52,35 +52,35 @@ export const getTiming = (function () {
       const p = window.performance
       const t = p.timing || {}
 
-      // 白屏时长
+      // white screen timing
       wscreen = timingFilter(t.domLoading - t.navigationStart)
-      // 首屏时长
+      // first screem timing
       fscreen = timingFilter(t.domContentLoadedEventStart - t.navigationStart)
-      // 网络总时长
+      // newwork timing
       network = timingFilter(t.responseEnd - t.navigationStart)
-      // 上一个页面unload时长
+      // The timing of unload on the previous page
       network_prev = timingFilter(t.fetchStart - t.navigationStart)
-      // 从定向时长
+      // redirect timing
       network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
-      // DNS解析时长
+      // DNS timing
       network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
-      // tcp时长
+      // tcp timing
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
-      // 请求耗时
+      // request timing
       network_request = timingFilter(t.responseEnd - t.requestStart)
-      // DOM树解析总时长
+      // DOM tree parsing timing
       dom_ready = timingFilter(t.domContentLoadedEventStart - t.responseEnd)
-      // DOM树生成总时长
+      // DOM tree generation timing
       dom_load = timingFilter(t.domComplete - t.responseEnd)
-      // 渲染至可交互时长(DOM从开始解析到可交互的时长)
+      // rendering to interactive timing(Timing from parsing DOM to interactive)
       render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
-      // 整体渲染完毕时长(DOM从开始解析到加载完毕时长)
+      // overall rendering timing(DOM from parsing to loading)
       render_load = timingFilter(t.loadEventEnd - t.domLoading)
-      // 从开始到所有的脚本执行完成时长
+      // all script to execute from start to finish
       js_complete = timingFilter(t.domContentLoadedEventEnd - t.navigationStart)
-      // 从开始到所有DOM完全挂载完毕时长
+      // all DOM mount from start to finish
       dom_complete = timingFilter(t.domComplete - t.navigationStart)
-      // 总耗时
+      // total timing
       total = timingFilter(t.loadEventEnd - t.navigationStart)
     } catch (error) {
       const msg = `[SV - getTiming]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
@@ -111,17 +111,17 @@ export const getSource = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (config?: Iconfig): Promise<Isource> {
-    // 接口请求随机上报
+    // random reporting of API request
     const api_random: TimingSource = []
-    // 接口请求超时上报
+    // timeout reporting of API request
     const api_timeout: TimingSource = []
-    // 接口请求指定上报
+    // specified reporting of API request
     const api_appoint: TimingSource = []
-    // 资源请求随机上报
+    // random reporting of source
     const source_random: TimingSource = []
-    // 资源请求超时上报
+    // timeout reporting of source
     const source_timeout: TimingSource = []
-    // 资源请求指定上报
+    // specified reporting of source
     const source_appoint: TimingSource = []
 
     try {
@@ -254,7 +254,7 @@ export const getExecTiming  = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupportPromisify
 
   return async function (): Promise<Iexec> {    
-    // 代码块执行时长
+    // code execution timing
     const exec: TimingExec = []
 
     try {
@@ -308,15 +308,11 @@ export const getPerformanceData = (function () {
     let memory, timings, sources, execTiming
 
     try {
-      // 简单的同步任务
       const memo = getMemory()
       memory = memo && memo.memory
       timings = getTiming() || {}
-      // 耗时的异步任务
       sources = await (getSource(config) as Promise<Isource>).then(data => data)
       execTiming = await (getExecTiming() as Promise<Iexec>).then(data => data)
-
-      
     } catch (error) {
       const msg = `[SV - getPerformanceData]: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}`
       catchError('js', msg)
@@ -438,12 +434,15 @@ export const observeSource = (function () {
       timerQuery()
 
       /**
-       * 轮询是否所有的资源都执行了onload 或者 onerror
+       * polling whether all resources have onload or onerror
        * @returns {void}
        */
       function timerQuery () {
         setTimeout(async function () {
-          // 超过3秒还未加载, 很可能有错误或超时, 停止轮询, 走超时或错误数据
+          // more than 3 seconds havn't been loaded
+          // there are likely to be errors or timeouts
+          // stop polling
+          // defined out of time or error data
           const sourceData = await (<Promise<Isource>>getSource({
             apiRatio: 0,
             sourceRatio: 0,
@@ -461,9 +460,9 @@ export const observeSource = (function () {
     })
 
     /**
-     * 指定DOM获取其中的资源performance信息
+     * Specify DOM to get the resource performance information
      * @param dom HTMLElement
-     * @param isAsync 是否异步, true的话则不执行callback
+     * @param isAsync Asynchronous? true does not execute callback
      */
     async function getSourceByDom (dom: HTMLElement | Node, isAsync?: boolean) {
       let data: ItimingSource[] = []
@@ -496,7 +495,7 @@ export const observeSource = (function () {
     }
 
     /**
-     * 遍历DOM, 筛选出符合条件的DOM
+     * Iteration DOM, screening out eligible DOM
      * @param doms NodeList | HTMLCollection
      */
     function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
