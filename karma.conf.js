@@ -23,13 +23,18 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.test.ts': ['webpack', 'coverage']
+      'src/**/*.ts': ['webpack'],
+      'src/env/*.ts': ['coverage'],
+      'src/error/*.ts': ['coverage'],
+      'src/performance/*.ts': ['coverage'],
+      'src/track/*.ts': ['coverage'],
+      'src/utils/*.ts': ['coverage']
     },
 
 
     // list of files / patterns to load in the browser
     files: [
-      'src/**/*.test.ts'
+      'src/**/*.ts'
     ],
 
 
