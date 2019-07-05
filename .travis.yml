@@ -5,12 +5,15 @@ dist: trusty
 sudo: required
 addons:
   - chrome: stable
+before_install: 
+  - npm i -g codecov
 install:
   - yarn
 script:
   - npm run lint
   - npm run test_node
   - npm run test_headless
+  - codecov
 cache:
   yarn: true
   directories:
