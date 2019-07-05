@@ -1,0 +1,18 @@
+{
+  "extension": [
+    ".ts",
+    ".tsx"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.d.ts",
+    "src/**/*.test.ts",
+    "src/index.ts"
+  ],
+  "reporter": [
+    "text"
+  ],
+  "all": true
+}

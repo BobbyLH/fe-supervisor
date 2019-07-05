@@ -91,23 +91,5 @@
     "tslib": "^1.9.3",
     "typescript": "^3.5.1",
     "webpack": "^4.35.0"
-  },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "src/**/*.test.ts",
-      "src/index.ts"
-    ],
-    "reporter": [
-      "text"
-    ],
-    "all": true
   }
 }
