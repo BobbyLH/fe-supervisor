@@ -53,18 +53,19 @@ export const getTiming = (function () {
     network_dns: Timing,
     network_tcp: Timing,
     network_request: Timing,
+    dom_loading: Timing,
     dom_interact: Timing,
     dom_ready: Timing,
     dom_load: Timing,
     dom_complete: Timing,
-    render_ready: Timing,
-    render_load: Timing,
     js_ready: Timing,
     js_load: Timing,
     js_complete: Timing,
+    render_ready: Timing,
+    render_load: Timing,
     total: Timing;
 
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = dom_interact = dom_ready = dom_load = dom_complete = render_ready = render_load = js_ready = js_load = js_complete = total = 'N/A'
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = 'N/A'
 
     try {
       const p = window.performance
@@ -86,24 +87,26 @@ export const getTiming = (function () {
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
       // request timing
       network_request = timingFilter(t.responseEnd - t.requestStart)
+      // DOM tree loading timing
+      dom_loading = timingFilter(t.domLoading - t.responseEnd)
       // DOM tree parsing timing
-      dom_interact = timingFilter(t.domInteractive - t.responseEnd)
-      // DOM tree parsing timing + 
-      dom_ready = timingFilter(t.domContentLoadedEventStart - t.responseEnd)
+      dom_interact = timingFilter(t.domInteractive - t.domLoading)
+      // DOM tree parsing timing + embed resource loading&parsing&runing timing
+      dom_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
       // DOM tree generation timing
-      dom_load = timingFilter(t.domComplete - t.responseEnd)
+      dom_load = timingFilter(t.domComplete - t.domLoading)
       // all DOM mount from start to finish
       dom_complete = timingFilter(t.domComplete - t.navigationStart)
-      // rendering to interactive timing(Timing from parsing DOM to interactive)
-      render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
-      // overall rendering timing(DOM from parsing to loading)
-      render_load = timingFilter(t.loadEventEnd - t.domLoading)
       // all script start to runing from load
       js_ready = timingFilter(t.domContentLoadedEventStart - t.domInteractive)
       // all script has been executed from load
       js_load = timingFilter(t.domContentLoadedEventEnd - t.domInteractive)
       // all script has been executed from navigation
       js_complete = timingFilter(t.domContentLoadedEventEnd - t.navigationStart)
+      // rendering to interactive timing(Timing from parsing DOM to interactive)
+      render_ready = timingFilter(t.domContentLoadedEventStart - t.domLoading)
+      // overall rendering timing(DOM from parsing to loading)
+      render_load = timingFilter(t.loadEventEnd - t.domLoading)
       // total timing
       total = timingFilter(t.loadEventEnd - t.navigationStart)
     } catch (error) {
@@ -119,15 +122,16 @@ export const getTiming = (function () {
         network_dns,
         network_tcp,
         network_request,
+        dom_loading,
         dom_interact,
         dom_ready,
         dom_load,
         dom_complete,
-        render_ready,
-        render_load,
         js_ready,
         js_load,
         js_complete,
+        render_ready,
+        render_load,
         total
       }
     }
