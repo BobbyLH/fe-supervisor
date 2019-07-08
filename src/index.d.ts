@@ -52,12 +52,15 @@ export interface Itiming {
   network_dns: Timing;
   network_tcp: Timing;
   network_request: Timing;
+  dom_interact: Timing;
   dom_ready: Timing;
   dom_load: Timing;
+  dom_complete: Timing;
   render_ready: Timing;
   render_load: Timing;
+  js_ready: Timing;
+  js_load: Timing;
   js_complete: Timing;
-  dom_complete: Timing;
   total: Timing;
 }
 
