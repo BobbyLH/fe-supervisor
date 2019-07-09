@@ -52,6 +52,8 @@ export interface Itiming {
   network_dns: Timing;
   network_tcp: Timing;
   network_request: Timing;
+  network_response: Timing;
+  network_interact: Timing;
   dom_loading: Timing;
   dom_interact: Timing;
   dom_ready: Timing;

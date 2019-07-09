@@ -53,6 +53,8 @@ export const getTiming = (function () {
     network_dns: Timing,
     network_tcp: Timing,
     network_request: Timing,
+    network_response: Timing,
+    network_interact: Timing,
     dom_loading: Timing,
     dom_interact: Timing,
     dom_ready: Timing,
@@ -65,7 +67,7 @@ export const getTiming = (function () {
     render_load: Timing,
     total: Timing;
 
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = 'N/A'
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = network_response = network_interact = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = 'N/A'
 
     try {
       const p = window.performance
@@ -86,7 +88,11 @@ export const getTiming = (function () {
       // tcp timing
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
       // request timing
-      network_request = timingFilter(t.responseEnd - t.requestStart)
+      network_request = timingFilter(t.responseStart - t.requestStart)
+      // request timing
+      network_response = timingFilter(t.responseEnd - t.responseStart)
+      // request timing
+      network_interact = timingFilter(t.responseEnd - t.requestStart)
       // DOM tree loading timing
       dom_loading = timingFilter(t.domLoading - t.responseEnd)
       // DOM tree parsing timing
@@ -122,6 +128,8 @@ export const getTiming = (function () {
         network_dns,
         network_tcp,
         network_request,
+        network_response,
+        network_interact,
         dom_loading,
         dom_interact,
         dom_ready,

@@ -51,6 +51,8 @@ describe('Performance test module', function () {
         expect(timing).to.have.property('network_dns').to.be.a('number')
         expect(timing).to.have.property('network_tcp').to.be.a('number')
         expect(timing).to.have.property('network_request').to.be.a('number')
+        expect(timing).to.have.property('network_response').to.be.a('number')
+        expect(timing).to.have.property('network_interact').to.be.a('number')
         expect(timing).to.have.property('dom_loading').to.be.a('number')
         expect(timing).to.have.property('dom_ready').to.be.a('number')
         expect(timing).to.have.property('dom_load').to.be.a('number')
