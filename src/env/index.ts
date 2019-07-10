@@ -31,8 +31,8 @@ export const getEnvInfo = (function () {
     }
 
     const UA = {
-      isAndroid: check(/android/i),
-      isIOS: check(/(ipad|iphone|ipod)/i),
+      isAndroid: check(/android|linux|adr/i),
+      isIOS: check(/\(i[^;]+;( U;)? CPU.+Mac OS X/i),
       isWindows: check(/window/i),
       isMac: check(/mac os x/i),
   
@@ -57,7 +57,7 @@ export const getEnvInfo = (function () {
       isSougouBrowser: check(/metasr/i),
       isLiebaoBrowser: check(/lbbrowser/i),
 
-      isMobile: check(/(iphone|ipod|((?:android)?.*?mobile)|blackberry|nokia)/i),
+      isMobile: check(/AppleWebKit.*Mobile.*|Mobile/i),
       isWebKit: check(/webkit\W/i),
   
       isWeixin: check(/micromessenger/i),
