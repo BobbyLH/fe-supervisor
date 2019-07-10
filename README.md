@@ -4,6 +4,8 @@
 [![npm version](https://badge.fury.io/js/fe-supervisor.svg)](https://badge.fury.io/js/fe-supervisor)
 [![Build Status](https://travis-ci.com/BobbyLH/fe-supervisor.svg?branch=master)](https://travis-ci.com/BobbyLH/fe-supervisor)
 [![codecov](https://codecov.io/gh/BobbyLH/fe-supervisor/branch/master/graph/badge.svg)](https://codecov.io/gh/BobbyLH/fe-supervisor)
+[![install size](https://packagephobia.now.sh/badge?p=fe-supervisor)](https://packagephobia.now.sh/result?p=fe-supervisor)
+[![license](https://img.shields.io/npm/l/fe-supervisor.svg)](https://github.com/BobbyLH/fe-supervisor/blob/master/LICENSE)
 
 ## Quick Start
 
