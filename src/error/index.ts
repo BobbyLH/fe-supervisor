@@ -1,11 +1,12 @@
+import { addListener, getTs } from 'peeler-js'
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj } from '../index.d'
-import { addListener, Observer, catchError, getTs } from '../utils'
+import { Observer, catchError } from '../utils'
 import { HandleException, errorTag } from './Exception'
 
 (function () {
   if (typeof window === 'undefined') return
 
-  addListener('error', function (e: ErrorEvent) {
+  addListener('error', function (e) {
     const { filename, message, error } = e
 
     HandleException.setErrors({
@@ -84,7 +85,7 @@ export function observeError (target: HTMLElement, callback?: (dom: Node | HTMLE
               (<Element>dom).setAttribute(errorTag, 'true')
             }
 
-            addListener('error', function (e: ErrorEvent) {
+            addListener('error', function (e) {
               const target = e.target
               const url = target && ((target as HTMLLinkElement).href || (target as HTMLImageElement | HTMLScriptElement).src) || location.href
               const errObj: IErrObj = {
@@ -125,7 +126,7 @@ function handleError (target: HTMLElement, sourceType: string) {
   if (!target || target.getAttribute(errorTag)) return
 
   target.setAttribute(errorTag, 'true')
-  addListener('error', function (e: ErrorEvent) {
+  addListener('error', function (e) {
     const url = (e as any).target.src || (e as any).target.href
     HandleException.setErrors({
       ts: getTs(),

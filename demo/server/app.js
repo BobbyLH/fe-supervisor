@@ -8,7 +8,7 @@ const net = require('./helper/net')
 
 const server = http.createServer((req, res) => {
   const url = req.url
-  const isJS = url === '/dist/fe-supervisor.sdk.js'
+  const isJS = url === '/dist/fe-supervisor.sdk.0_1_3.js'
   const filePath = path.join(__dirname, isJS ? '../../' : '../', url)
   if (url === '/') {
     res.statusCode = 200

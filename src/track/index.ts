@@ -1,5 +1,6 @@
 import { ItrackInfo } from '../index.d'
-import { uuid, storage, catchError, getTs } from '../utils'
+import { uuid, storage, getTs } from 'peeler-js'
+import { catchError } from '../utils'
 
 export function makeTrackInfo (type: string, info: object): ItrackInfo {
   try {

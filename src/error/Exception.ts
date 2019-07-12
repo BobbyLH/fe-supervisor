@@ -1,5 +1,4 @@
-import { timeslice } from '../utils/timeslice'
-import { compatCheck } from '../utils/compatCheck'
+import { timeslice, compatCheck } from 'peeler-js'
 import { ExceptionType, IErrObj, IErrArr, IErrTotalObj, IGeneratorFn } from '../index.d'
 
 enum ExceptionTypes {

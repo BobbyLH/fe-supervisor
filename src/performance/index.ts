@@ -1,6 +1,7 @@
+import { isType, timeslice, compatCheck, getTs } from 'peeler-js'
 import { ItimingSource } from './../index.d';
 import { NA, Timing, TimingSource, TimingExec, IAnyObj, IconfigSources, Iwhitelist, Iconfig, PIconfig, Imemory, Itiming, Isource, Iexec, Iperformance, IGeneratorFn, ClearType, IobserveSourceOption } from '../index.d'
-import { isType, notSupport, notSupportPromisify, timeslice, Observer, catchError, compatCheck, getTs } from '../utils'
+import { notSupport, notSupportPromisify, Observer, catchError } from '../utils'
 
 interface MarkCache {
   tag: string;

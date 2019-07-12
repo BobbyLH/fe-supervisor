@@ -1,4 +1,4 @@
-import { getTs } from '../utils/getTs'
+import { getTs } from 'peeler-js'
 import { HandleException } from '../error/Exception'
 import { ExceptionType } from '../index.d'
 

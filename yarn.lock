@@ -305,6 +305,14 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime-corejs2@^7.5.4":
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.5.4.tgz#7111dbb344acce1f7dd601786cff40d516b27a96"
+  integrity sha512-sHv74OzyZ18d6tjHU0HmlVES3+l+lydkOMTiKsJSTGWcTBpIMfXLEgduahlJrQjknW9RCQAqLIEdLOHjBmq/hg==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0", "@babel/template@^7.4.0", "@babel/template@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.4.4.tgz#f4b88d1225689a08f5bc3a17483545be9e4ed237"
@@ -4322,6 +4330,13 @@ pbkdf2@^3.0.3:
     ripemd160 "^2.0.1"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+peeler-js@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/peeler-js/-/peeler-js-0.0.7.tgz#7688c3060bdc2a32c44327a081bb0bbd179516db"
+  integrity sha512-TbL0bv56qzlhX5zOC4VTI5K/BMVFWPsOLqFa6OxG28WHhzXrHoAZ69NnNo0YaT435BIdsv5gabtlPf5juiWc5A==
+  dependencies:
+    "@babel/runtime-corejs2" "^7.5.4"
 
 picomatch@^2.0.5:
   version "2.0.7"

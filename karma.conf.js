@@ -24,11 +24,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/**/*.ts': ['webpack'],
-      'src/env/*.ts': ['coverage'],
-      'src/error/*.ts': ['coverage'],
-      'src/performance/*.ts': ['coverage'],
-      'src/track/*.ts': ['coverage'],
-      'src/utils/*.ts': ['coverage']
+      'src/**/*[!test].ts': ['coverage']
     },
 
 

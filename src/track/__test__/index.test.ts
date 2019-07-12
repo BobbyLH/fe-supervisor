@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { makeTrackInfo } from '../index'
-import { storage } from '../../utils'
+import { storage } from 'peeler-js'
 
 describe('track test module', function () {
   it('makeTrackInfo - uv', function () {

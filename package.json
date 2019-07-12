@@ -1,6 +1,6 @@
 {
   "name": "fe-supervisor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.js",
   "types": "dist/fe-supervisor.d.ts",
@@ -37,7 +37,8 @@
   "author": "bobby.li",
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime-corejs2": "^7.4.5"
+    "@babel/runtime-corejs2": "^7.4.5",
+    "peeler-js": "^0.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

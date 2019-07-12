@@ -1,4 +1,4 @@
-import { getTs } from '../utils'
+import { getTs, getUA } from 'peeler-js'
 import { IenvInfo } from '../index.d'
 
 export const getEnvInfo = (function () {
@@ -24,103 +24,85 @@ export const getEnvInfo = (function () {
       ua
     }
 
-    function check (pattern: RegExp): () => boolean {
-      return function() {
-        return (pattern).test(ua)
-      }
-    }
+    const {
+      isMobile,
+      isAndroid,
+      isIOS,
+      isWindows,
+      isMac,
+      isWeixin,
+      isSinaWeibo,
+      isQQWeibo,
+      isFacebook,
+      isTwitter,
+      isInstagram,
+      isChrome,
+      isFirefox,
+      isGecko,
+      isIE,
+      isEdge,
+      isOpera,
+      isSafari,
+      is360se,
+      isQQ,
+      isUCBrowser,
+      isBaiduBrowser,
+      isSougouBrowser,
+      isLiebaoBrowser,
+      isWebKit
+    } = getUA(ua)
 
-    const UA = {
-      isAndroid: check(/android|linux|adr/i),
-      isIOS: check(/\(i[^;]+;( U;)? CPU.+Mac OS X/i),
-      isWindows: check(/window/i),
-      isMac: check(/mac os x/i),
-  
-      isChrome: check(/webkit\W.*(chrome|chromium)\W/i),
-      isFirefox: check(/mozilla.*\Wfirefox\W/i),
-      isGecko: check(/mozilla(?!.*webkit).*\Wgecko\W/i),
-      is360se: check(/360/i),
-      isIE: function() {
-        if (navigator.appName === 'Microsoft Internet Explorer') {
-          return true;
-        } else if (check(/\bTrident\b/)()) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      isEdge: check(/\bEdge\b/i),
-      isOpera: check(/opera.*\Wpresto\W|OPR/i),
-      isSafari: check(/webkit\W(?!.*chrome).*safari\W/i),
-      isUCBrowser: check(/ucbrowser/i),
-      isBaiduBrowser: check(/bidubrowser/i),
-      isSougouBrowser: check(/metasr/i),
-      isLiebaoBrowser: check(/lbbrowser/i),
-
-      isMobile: check(/AppleWebKit.*Mobile.*|Mobile/i),
-      isWebKit: check(/webkit\W/i),
-  
-      isWeixin: check(/micromessenger/i),
-      isSinaWeibo: check(/weibo/i),
-      isQQ: check(/qq/i),
-      isQQWeibo: check(/tencentmicroblog/i),
-
-      isFacebook: check(/fban/i),
-      isTwitter: check(/twitter/i),
-      isInstagram: check(/instagram/i),
-    }
-  
-    if (UA.isMobile()) {
-      if (UA.isAndroid()) {
+    if (isMobile) {
+      if (isAndroid) {
         info.os = 'android'
-      } else if (UA.isIOS()) {
+      } else if (isIOS) {
         info.os = 'ios'
       }
     } else {
-      if (UA.isWindows()) {
+      if (isWindows) {
         info.os = 'windows'
-      } else if (UA.isMac()) {
+      } else if (isMac) {
         info.os = 'mac'
       }
     }
 
-    if (UA.isWeixin()) {
+    if (isWeixin) {
       info.browser = 'weixin'
-    } else if (UA.isSinaWeibo()) {
+    } else if (isSinaWeibo) {
       info.browser = 'weibo_sina'
-    } else if (UA.isQQWeibo()) {
+    } else if (isQQWeibo) {
       info.browser = 'weibo_qq'
-    } else if (UA.isFacebook()) {
+    } else if (isFacebook) {
       info.browser = 'facebook'
-    } else if (UA.isTwitter()) {
+    } else if (isTwitter) {
       info.browser = 'twitter'
-    } else if (UA.isInstagram()) {
+    } else if (isInstagram) {
       info.browser = 'instagram'
-    } else if (UA.isChrome()) {
+    } else if (isChrome) {
       info.browser = 'chrome'
-    } else if (UA.isFirefox() || UA.isGecko()) {
+    } else if (isFirefox || isGecko) {
       info.browser = 'firefox'
-    } else if (UA.isIE()) {
+    } else if (isIE) {
       info.browser = 'ie'
-    } else if (UA.isEdge()) {
+    } else if (isEdge) {
       info.browser = 'edge'
-    } else if (UA.isOpera()) {
+    } else if (isOpera) {
       info.browser = 'opera'
-    } else if (UA.isSafari()) {
+    } else if (isSafari) {
       info.browser = 'safari'
-    } else if (UA.is360se()) {
+    } else if (is360se) {
       info.browser = '360'
-    } else if (UA.isQQ()) {
+    } else if (isQQ) {
       info.browser = 'qq'
-    } else if (UA.isUCBrowser()) {
+    } else if (isUCBrowser) {
       info.browser = 'uc'
-    } else if (UA.isBaiduBrowser()) {
+    } else if (isBaiduBrowser) {
       info.browser = 'baidu'
-    } else if (UA.isSougouBrowser()) {
+    } else if (isSougouBrowser) {
       info.browser = 'sougou'
-    } else if (UA.isLiebaoBrowser()) {
+    } else if (isLiebaoBrowser) {
       info.browser = 'liebao'
-    } else if (UA.isWebKit()) {
+    } else if (isWebKit) {
       info.browser = 'webkit'
     }
   
