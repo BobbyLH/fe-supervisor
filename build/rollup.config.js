@@ -31,6 +31,9 @@ module.exports = [
       banner: '/* fe-supervisor.js */',
       footer: '/* Copyright (c) 2019-2019 Bobby.li \n* MIT License \n*/'
     },
+    external: [
+      'peeler-js'
+    ],
     plugins: [
       resolve({ extensions }),
       commonjs(),
