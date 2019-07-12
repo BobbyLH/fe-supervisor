@@ -16,3 +16,5 @@ _config.yml
 karma.conf.js
 .travis.yml
 coverage
+.nycrc
+mocha.opts

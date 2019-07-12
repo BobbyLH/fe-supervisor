@@ -4326,10 +4326,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-peeler-js@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/peeler-js/-/peeler-js-0.0.7.tgz#7688c3060bdc2a32c44327a081bb0bbd179516db"
-  integrity sha512-TbL0bv56qzlhX5zOC4VTI5K/BMVFWPsOLqFa6OxG28WHhzXrHoAZ69NnNo0YaT435BIdsv5gabtlPf5juiWc5A==
+peeler-js@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/peeler-js/-/peeler-js-0.1.0.tgz#1dc912e6e2e7c7b93df4eaad27da97a5ed4eb2f4"
+  integrity sha512-FbwrED43CvnGESCo5faKU8YFfWe8YhsHFpX4YRtmOti+iXrEhTWZopOyjOG8tpOdzFjm4zGXRraBUXLFsE6GeQ==
   dependencies:
     "@babel/runtime-corejs2" "^7.5.4"
 
