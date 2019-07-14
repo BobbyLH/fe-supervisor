@@ -4324,9 +4324,9 @@ pbkdf2@^3.0.3:
     sha.js "^2.4.8"
 
 peeler-js@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/peeler-js/-/peeler-js-0.1.0.tgz#1dc912e6e2e7c7b93df4eaad27da97a5ed4eb2f4"
-  integrity sha512-FbwrED43CvnGESCo5faKU8YFfWe8YhsHFpX4YRtmOti+iXrEhTWZopOyjOG8tpOdzFjm4zGXRraBUXLFsE6GeQ==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/peeler-js/-/peeler-js-0.1.2.tgz#105f7b7a538bc101cc84eaacb3117e0d49467065"
+  integrity sha512-y6bjTQRllqsYBZqzilbYVB/U1o8j78ST75CmM8wkn9VHJM5Lj9RKlOeGb7s96MChddbnWadd4hPMF8C0zsP2sQ==
   dependencies:
     "@babel/runtime-corejs2" "^7.5.4"
 

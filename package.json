@@ -3,6 +3,7 @@
   "version": "0.1.5",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.js",
+  "module": "dist/fe-supervisor.esm.js",
   "types": "dist/fe-supervisor.d.ts",
   "scripts": {
     "dev": "supervisor -w demo/server/helper/* demo/server/app.js",
