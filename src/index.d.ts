@@ -220,9 +220,7 @@ declare namespace $sv {
   const SV: SV
 }
 
-declare module 'fe-supervisor' {
-  export default $sv
-}
+declare module 'fe-supervisor' {}
 
 export { 
   getPerformanceData,
