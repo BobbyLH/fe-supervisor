@@ -1,11 +1,3 @@
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-}
-
-type Pick<T, K extends keyof T> = {
-  [P in K]: T[P];
-}
-
 // performance
 export type NA = 'N/A'
 export type Timing = number | NA
@@ -148,57 +140,57 @@ export interface ItrackInfo {
 }
 
 declare class Observer {
-  public constructor (target: HTMLElement, callback: (doms: MutationRecord[]) => any)
-  public init (target: HTMLElement, callback: (doms: MutationRecord[]) => any): MutationObserver | null
-  public cancel (): void
-  public setCache (cache: IAnyObj): void
-  public getCache (): IAnyObj[]
-  public clearCache (): void
+  public constructor (target: HTMLElement, callback: (doms: MutationRecord[]) => any);
+  public init (target: HTMLElement, callback: (doms: MutationRecord[]) => any): MutationObserver | null;
+  public cancel (): void;
+  public setCache (cache: IAnyObj): void;
+  public getCache (): IAnyObj[];
+  public clearCache (): void;
 }
 
 declare class SV {
-  public constructor (config?: Iconfig)
-  public updateConfig (newConfig: PIconfig): void
-  public getMemory (): false | Imemory
-  public getTiming (): false | Itiming
-  public getSource (): Promise<false | Isource>
-  public getExecTiming(): Promise<false | Iexec>
-  public getPerformanceData (): Promise<false | Iperformance | IAnyObj>
-  public clearPerformance (clearType?: ClearType): boolean
-  public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): false | Observer
+  public constructor (config?: Iconfig);
+  public updateConfig (newConfig: PIconfig): void;
+  public getMemory (): false | Imemory;
+  public getTiming (): false | Itiming;
+  public getSource (): Promise<false | Isource>;
+  public getExecTiming(): Promise<false | Iexec>;
+  public getPerformanceData (): Promise<false | Iperformance | IAnyObj>;
+  public clearPerformance (clearType?: ClearType): boolean;
+  public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): false | Observer;
 }
 
 // declare
-declare const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>
-declare const getMemory: () => false | Imemory
-declare const getTiming: () => false | Itiming
-declare const getSource: (config?: Iconfig) => Promise<false | Isource>
-declare const getExecTiming: () => Promise<false | Iexec>
-declare const mark: (tag: string) => boolean
-declare const clearPerformance: (clearType?: ClearType) => boolean
-declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer
-declare const getEnvInfo: () => false | IenvInfo
-declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-declare const setError: (err: IErrObj) => void
-declare const clearError: (type?: ExceptionType) => boolean
-declare const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
-declare const makeTrackInfo: (type: string, info: object) => ItrackInfo
+declare const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>;
+declare const getMemory: () => false | Imemory;
+declare const getTiming: () => false | Itiming;
+declare const getSource: (config?: Iconfig) => Promise<false | Isource>;
+declare const getExecTiming: () => Promise<false | Iexec>;
+declare const mark: (tag: string) => boolean;
+declare const clearPerformance: (clearType?: ClearType) => boolean;
+declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer;
+declare const getEnvInfo: () => false | IenvInfo;
+declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
+declare const setError: (err: IErrObj) => void;
+declare const clearError: (type?: ExceptionType) => boolean;
+declare const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
+declare const makeTrackInfo: (type: string, info: object) => ItrackInfo;
 
 export interface ISupervisor {
-  getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>;
-  getMemory: () => false | Imemory;
-  getTiming: () => false | Itiming;
-  getSource: (config?: Iconfig) => Promise<false | Isource>;
-  getExecTiming: () => Promise<false | Iexec>;
-  mark: (tag: string) => boolean;
-  clearPerformance: (clearType?: ClearType) => boolean;
-  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer;
-  getEnvInfo: () => false | IenvInfo;
-  getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
-  setError: (err: IErrObj) => void;
-  clearError: (type?: ExceptionType) => boolean;
-  observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
-  makeTrackInfo: (type: string, info: object) => ItrackInfo;
+  getPerformanceData: typeof getPerformanceData;
+  getMemory: typeof getMemory;
+  getTiming: typeof getTiming;
+  getSource: typeof getSource;
+  getExecTiming: typeof getExecTiming;
+  mark: typeof mark;
+  clearPerformance: typeof clearPerformance;
+  observeSource: typeof observeSource;
+  getEnvInfo: typeof getEnvInfo;
+  getError: typeof getError;
+  setError: typeof setError;
+  clearError: typeof clearError;
+  observeError: typeof observeError;
+  makeTrackInfo: typeof makeTrackInfo;
   SV: typeof SV;
 }
 
@@ -219,8 +211,6 @@ declare namespace $sv {
   const makeTrackInfo: (type: string, info: object) => ItrackInfo
   const SV: SV
 }
-
-declare module 'fe-supervisor' {}
 
 export { 
   getPerformanceData,
