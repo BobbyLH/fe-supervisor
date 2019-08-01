@@ -160,74 +160,20 @@ declare class SV {
   public observeSource (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): false | Observer;
 }
 
-// declare
-declare const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>;
-declare const getMemory: () => false | Imemory;
-declare const getTiming: () => false | Itiming;
-declare const getSource: (config?: Iconfig) => Promise<false | Isource>;
-declare const getExecTiming: () => Promise<false | Iexec>;
-declare const mark: (tag: string) => boolean;
-declare const clearPerformance: (clearType?: ClearType) => boolean;
-declare const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer;
-declare const getEnvInfo: () => false | IenvInfo;
-declare const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
-declare const setError: (err: IErrObj) => void;
-declare const clearError: (type?: ExceptionType) => boolean;
-declare const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
-declare const makeTrackInfo: (type: string, info: object) => ItrackInfo;
-
 export interface ISupervisor {
-  getPerformanceData: typeof getPerformanceData;
-  getMemory: typeof getMemory;
-  getTiming: typeof getTiming;
-  getSource: typeof getSource;
-  getExecTiming: typeof getExecTiming;
-  mark: typeof mark;
-  clearPerformance: typeof clearPerformance;
-  observeSource: typeof observeSource;
-  getEnvInfo: typeof getEnvInfo;
-  getError: typeof getError;
-  setError: typeof setError;
-  clearError: typeof clearError;
-  observeError: typeof observeError;
-  makeTrackInfo: typeof makeTrackInfo;
+  getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>;
+  getMemory: () => false | Imemory;
+  getTiming: () => false | Itiming;
+  getSource: (config?: Iconfig) => Promise<false | Isource>;
+  getExecTiming: () => Promise<false | Iexec>;
+  mark: (tag: string) => boolean;
+  clearPerformance: (clearType?: ClearType) => boolean;
+  observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer;
+  getEnvInfo: () => false | IenvInfo;
+  getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj;
+  setError: (err: IErrObj) => void;
+  clearError: (type?: ExceptionType) => boolean;
+  observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer;
+  makeTrackInfo: (type: string, info: object) => ItrackInfo;
   SV: typeof SV;
 }
-
-declare namespace $sv {
-  const getPerformanceData: (config?: Iconfig) => Promise<false | Iperformance | IAnyObj>
-  const getMemory: () => false | Imemory
-  const getTiming: () => false | Itiming
-  const getSource: (config?: Iconfig) => Promise<false | Isource>
-  const getExecTiming: () => Promise<false | Iexec>
-  const mark: (tag: string) => boolean
-  const clearPerformance: (clearType?: ClearType) => boolean
-  const observeSource: (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption) => false | Observer
-  const getEnvInfo: () => false | IenvInfo
-  const getError: (type?: ExceptionType) => IErrObj[] | IErrTotalObj
-  const setError: (err: IErrObj) => void
-  const clearError: (type?: ExceptionType) => boolean
-  const observeError: (target: HTMLElement, callback?: (dom: Node | HTMLElement, e: ErrorEvent) => any, observeDom?: string | string[]) => Observer
-  const makeTrackInfo: (type: string, info: object) => ItrackInfo
-  const SV: SV
-}
-
-export { 
-  getPerformanceData,
-  getMemory,
-  getTiming,
-  getSource,
-  getExecTiming,
-  mark,
-  clearPerformance,
-  observeSource,
-  getEnvInfo,
-  getError,
-  setError,
-  clearError,
-  makeTrackInfo,
-  SV,
-  $sv
-}
-
-export as namespace $sv

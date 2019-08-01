@@ -37,4 +37,5 @@ function mkdir (dist, popDist = []) {
   return true
 }
 
-copyFile(path.join(__dirname, '../src/fe-supervisor.d.ts'), path.join(__dirname, '../dist/fe-supervisor.d.ts'))
+copyFile(path.join(__dirname, '../src/fe-supervisor.d.ts'), path.join(__dirname, '../dist/fe-supervisor.d.ts'));
+copyFile(path.join(__dirname, '../src/$sv.d.ts'), path.join(__dirname, '../dist/$sv.d.ts'));
