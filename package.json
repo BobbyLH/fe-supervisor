@@ -1,6 +1,6 @@
 {
   "name": "fe-supervisor",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "The frontend monitor project",
   "main": "dist/fe-supervisor.js",
   "module": "dist/fe-supervisor.esm.js",
@@ -40,7 +40,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime-corejs2": "^7.4.5",
-    "peeler-js": "^0.1.0"
+    "peeler-js": "^0.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
