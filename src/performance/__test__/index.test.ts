@@ -63,8 +63,6 @@ describe('Performance test module', function () {
         expect(timing).to.have.property('render_ready').to.be.a('number')
         expect(timing).to.have.property('render_load').to.be.a('number')
         expect(timing).to.have.property('total').to.be.a('number')
-        expect(timing).to.have.property('FP')
-        expect(timing).to.have.property('FCP')
       })
       
       it('getSource', async function () {
@@ -82,6 +80,7 @@ describe('Performance test module', function () {
         expect(source_appoint[0]).to.have.property('type').to.be.a('string')
         expect(source).to.have.property('source_random').to.be.an('array')
         expect(source).to.have.property('source_timeout').to.be.an('array')
+        expect(source).to.have.property('others').to.be.an('array')
       })
 
       it('getExecTiming', async function () {

@@ -66,30 +66,13 @@ export const getTiming = (function () {
     js_complete: Timing,
     render_ready: Timing,
     render_load: Timing,
-    total: Timing,
-    FP: Timing,
-    FCP: Timing;
+    total: Timing;
 
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = network_response = network_interact = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = FP = FCP = 'N/A';
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = network_response = network_interact = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = 'N/A';
 
     try {
       const p = window.performance
       const t = p.timing || {}
-      const s = (p.getEntriesByType && p.getEntriesByType('paint')) || (p.getEntries && p.getEntries()) || []
-
-      const len = s.length;
-      for (let i = 0; i < len; i++) {
-        const { entryType, name, startTime } = s[i];
-        if (entryType === 'paint') {
-          if (name === 'first-paint') {
-            FP = startTime;
-          } else if (name === 'first-contentful-paint') {
-            FCP = startTime;
-          };
-
-          if (typeof FP === 'number' && typeof FCP === 'number') break;
-        }
-      }
 
       // white screen timing
       wscreen = timingFilter(t.domLoading - t.navigationStart)
@@ -158,9 +141,7 @@ export const getTiming = (function () {
         js_complete,
         render_ready,
         render_load,
-        total,
-        FP,
-        FCP
+        total
       }
     }
   }
@@ -182,6 +163,8 @@ export const getSource = (function () {
     const source_timeout: TimingSource = []
     // specified reporting of source
     const source_appoint: TimingSource = []
+    // others source
+    const others: IAnyObj[] = []
 
     try {
       const {
@@ -201,12 +184,13 @@ export const getSource = (function () {
       const threshold = timeout
   
       function sortSource (item: PerformanceEntry) {
-        const type = (item as any).initiatorType || ''
+        const entryType = item.entryType || '';
+        const type = (item as any).initiatorType || '';
         const data = {
           name: item.name,
           duration: +Number.prototype.toFixed.call(item.duration, 2),
           type
-        }
+        };
 
         if (type === 'xmlhttprequest' || type === 'fetchrequest') {
           // filtered by whitelist
@@ -275,6 +259,26 @@ export const getSource = (function () {
               }
             }
           }
+        } else {
+          if (entryType === 'paint') {
+            const { startTime } = item;
+            switch (name) {
+              case 'first-paint':
+                others.push({
+                  ...data,
+                  type: 'FP',
+                  startTime
+                })
+                break;
+              case 'first-contentful-paint':
+                others.push({
+                  ...data,
+                  type: 'FCP',
+                  startTime
+                })
+                break;
+            }
+          }
         }
       }
 
@@ -303,7 +307,8 @@ export const getSource = (function () {
         api_appoint,
         source_random,
         source_timeout,
-        source_appoint
+        source_appoint,
+        others
       }
     }
   }

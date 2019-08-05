@@ -57,8 +57,6 @@ export interface Itiming {
   render_ready: Timing;
   render_load: Timing;
   total: Timing;
-  FP: Timing;
-  FCP: Timing;
 }
 
 export interface ItimingSource {
@@ -79,6 +77,7 @@ export interface Isource {
   source_random: TimingSource;
   source_timeout: TimingSource;
   source_appoint: TimingSource;
+  others: IAnyObj[];
 }
 
 export interface Iexec {

@@ -58,8 +58,6 @@ declare module 'fe-supervisor' {
     render_ready: Timing;
     render_load: Timing;
     total: Timing;
-    FP: Timing;
-    FCP: Timing;
   }
 
   export interface ItimingSource {
@@ -80,6 +78,7 @@ declare module 'fe-supervisor' {
     source_random: TimingSource;
     source_timeout: TimingSource;
     source_appoint: TimingSource;
+    others: IAnyObj[];
   }
 
   export interface Iexec {
