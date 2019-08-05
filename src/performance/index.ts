@@ -66,13 +66,30 @@ export const getTiming = (function () {
     js_complete: Timing,
     render_ready: Timing,
     render_load: Timing,
-    total: Timing;
+    total: Timing,
+    FP: Timing,
+    FCP: Timing;
 
-    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = network_response = network_interact = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = 'N/A'
+    wscreen = fscreen = network = network_prev = network_redirect = network_dns = network_tcp = network_request = network_response = network_interact = dom_loading = dom_interact = dom_ready = dom_load = dom_complete = js_ready = js_load = js_complete = render_ready = render_load = total = FP = FCP = 'N/A';
 
     try {
       const p = window.performance
       const t = p.timing || {}
+      const s = (p.getEntriesByType && p.getEntriesByType('paint')) || (p.getEntries && p.getEntries()) || []
+
+      const len = s.length;
+      for (let i = 0; i < len; i++) {
+        const { entryType, name, startTime } = s[i];
+        if (entryType === 'paint') {
+          if (name === 'first-paint') {
+            FP = startTime;
+          } else if (name === 'first-contentful-paint') {
+            FCP = startTime;
+          };
+
+          if (typeof FP === 'number' && typeof FCP === 'number') break;
+        }
+      }
 
       // white screen timing
       wscreen = timingFilter(t.domLoading - t.navigationStart)
@@ -141,7 +158,9 @@ export const getTiming = (function () {
         js_complete,
         render_ready,
         render_load,
-        total
+        total,
+        FP,
+        FCP
       }
     }
   }

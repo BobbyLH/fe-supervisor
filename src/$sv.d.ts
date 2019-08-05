@@ -58,6 +58,8 @@ declare namespace $sv {
     render_ready: Timing;
     render_load: Timing;
     total: Timing;
+    FP: Timing;
+    FCP: Timing;
   }
 
   interface ItimingSource {

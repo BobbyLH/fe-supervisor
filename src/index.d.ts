@@ -57,6 +57,8 @@ export interface Itiming {
   render_ready: Timing;
   render_load: Timing;
   total: Timing;
+  FP: Timing;
+  FCP: Timing;
 }
 
 export interface ItimingSource {

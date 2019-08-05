@@ -63,6 +63,8 @@ describe('Performance test module', function () {
         expect(timing).to.have.property('render_ready').to.be.a('number')
         expect(timing).to.have.property('render_load').to.be.a('number')
         expect(timing).to.have.property('total').to.be.a('number')
+        expect(timing).to.have.property('FP')
+        expect(timing).to.have.property('FCP')
       })
       
       it('getSource', async function () {

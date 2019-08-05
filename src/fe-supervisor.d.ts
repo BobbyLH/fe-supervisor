@@ -58,6 +58,8 @@ declare module 'fe-supervisor' {
     render_ready: Timing;
     render_load: Timing;
     total: Timing;
+    FP: Timing;
+    FCP: Timing;
   }
 
   export interface ItimingSource {
