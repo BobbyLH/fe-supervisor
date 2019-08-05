@@ -180,7 +180,7 @@ export const getSource = (function () {
       const w_s = (<Iwhitelist>whitelist).source || ''
   
       const p = window.performance
-      const s = (p.getEntriesByType && p.getEntriesByType('resource')) || (p.getEntries && p.getEntries()) || []
+      const s = (p.getEntries && p.getEntries()) || []
       // 超时门槛值 默认值2000毫秒
       const threshold = timeout
   
@@ -206,6 +206,7 @@ export const getSource = (function () {
             }
           }
 
+          // according to api ratio random obtain api
           randomRatio(apiRatio) && api_random.push(data)
           data.duration >= threshold && api_timeout.push(data)
           if (isType('string')(apis)) {
