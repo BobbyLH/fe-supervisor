@@ -26,6 +26,7 @@ declare module 'fe-supervisor' {
     sources?: IconfigSources | string[] | string;
     timeout?: number; // timeout threshold(millisecond) - default 2000
     whitelist?: Iwhitelist;
+    paintTiming?: boolean;
   }
 
   export type PIconfig = Partial<Iconfig>
@@ -64,6 +65,7 @@ declare module 'fe-supervisor' {
     name: string;
     duration: number;
     type: string;
+    startTime?: number;
   }
 
   export interface ItimingExec {
@@ -78,7 +80,7 @@ declare module 'fe-supervisor' {
     source_random: TimingSource;
     source_timeout: TimingSource;
     source_appoint: TimingSource;
-    others: IAnyObj[];
+    others: TimingSource;
   }
 
   export interface Iexec {

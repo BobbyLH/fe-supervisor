@@ -25,6 +25,7 @@ export interface Iconfig {
   sources?: IconfigSources | string[] | string;
   timeout?: number; // timeout threshold(millisecond) - default 2000
   whitelist?: Iwhitelist;
+  paintTiming?: boolean;
 }
 
 export type PIconfig = Partial<Iconfig>
@@ -63,6 +64,7 @@ export interface ItimingSource {
   name: string;
   duration: number;
   type: string;
+  startTime?: number;
 }
 
 export interface ItimingExec {
@@ -77,7 +79,7 @@ export interface Isource {
   source_random: TimingSource;
   source_timeout: TimingSource;
   source_appoint: TimingSource;
-  others: IAnyObj[];
+  others: TimingSource;
 }
 
 export interface Iexec {

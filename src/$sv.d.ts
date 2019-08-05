@@ -26,6 +26,7 @@ declare namespace $sv {
     sources?: IconfigSources | string[] | string;
     timeout?: number; // timeout threshold(millisecond) - default 2000
     whitelist?: Iwhitelist;
+    paintTiming?: boolean;
   }
 
   type PIconfig = Partial<Iconfig>
@@ -64,6 +65,7 @@ declare namespace $sv {
     name: string;
     duration: number;
     type: string;
+    startTime?: number;
   }
 
   interface ItimingExec {
@@ -78,7 +80,7 @@ declare namespace $sv {
     source_random: TimingSource;
     source_timeout: TimingSource;
     source_appoint: TimingSource;
-    others: IAnyObj[];
+    others: TimingSource;
   }
 
   interface Iexec {

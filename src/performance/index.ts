@@ -164,7 +164,7 @@ export const getSource = (function () {
     // specified reporting of source
     const source_appoint: TimingSource = []
     // others source
-    const others: IAnyObj[] = []
+    const others: TimingSource = []
 
     try {
       const {
@@ -173,7 +173,8 @@ export const getSource = (function () {
         apis = '',
         sources = '',
         timeout = 2000,
-        whitelist = {}
+        whitelist = {},
+        paintTiming = false
       } = config || {}
       const w_a = (<Iwhitelist>whitelist).api || ''
       const w_s = (<Iwhitelist>whitelist).source || ''
@@ -260,23 +261,24 @@ export const getSource = (function () {
             }
           }
         } else {
-          if (entryType === 'paint') {
+          if (paintTiming && entryType === 'paint') {
             const { startTime } = item;
-            switch (name) {
-              case 'first-paint':
-                others.push({
-                  ...data,
-                  type: 'FP',
-                  startTime
-                })
-                break;
-              case 'first-contentful-paint':
-                others.push({
-                  ...data,
-                  type: 'FCP',
-                  startTime
-                })
-                break;
+            let type = '';
+            if (name === 'first-paint' || name === 'first-contentful-paint') {
+              switch (name) {
+                case 'first-paint':
+                  type = 'FP';
+                  break;
+                case 'first-contentful-paint':
+                  type = 'FCP';
+                  break;
+              }
+
+              others.push({
+                ...data,
+                type,
+                startTime
+              })
             }
           }
         }
