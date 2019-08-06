@@ -67,9 +67,11 @@ describe('Performance test module', function () {
       
       it('getSource', async function () {
         const source = await getSource({
-          sources: { script: ['http://localhost:9876/context.js'] }
+          sources: { script: ['http://localhost:9876/context.js'] },
+          paintTiming: true
         })
         const source_appoint = (<any>source)['source_appoint']
+
         expect(source).to.be.an('object')
         expect(source).to.have.property('api_appoint').to.be.an('array')
         expect(source).to.have.property('api_random').to.be.an('array')
