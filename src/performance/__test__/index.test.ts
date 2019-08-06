@@ -184,16 +184,42 @@ describe('Performance test module', function () {
 
       it('observeSource', async function () {
         const body = document.body
-        const newSrc = 'https://is4-ssl.mzstatic.com/image/thumb/Music113/v4/48/8c/2b/488c2be3-c5c4-13da-73c5-1f1077662abc/source/300x300bb.jpg'
+        const newImgSrc = 'https://is4-ssl.mzstatic.com/image/thumb/Music113/v4/48/8c/2b/488c2be3-c5c4-13da-73c5-1f1077662abc/source/300x300bb.jpg'
+        const newLinkHref = 'https://s1.himalaya.com/styles/1db5f.css'
+        const newScriptSrc = 'https://www.googletagmanager.com/gtm.js?id=GTM-NSBL6G3'
         observeSource(body, function (source_appoint) {
-          expect(source_appoint).to.be.an('array').to.have.lengthOf(1)
-          expect(source_appoint[0]).to.have.property('name').to.eql(newSrc)
-          expect(source_appoint[0]).to.have.property('type').to.eql('img')
-          expect(source_appoint[0]).to.have.property('duration').to.be.a('number')
+          expect(source_appoint).to.be.an('array').to.have.lengthOf(3)
+          const len = source_appoint.length;
+          for (let i = 0; i < len; i++) {
+            const item = source_appoint[i];
+            const type = item.type;
+            expect(item).to.have.property('duration').to.be.a('number')
+            switch (type) {
+              case 'img':
+                expect(item).to.have.property('name').to.eql(newImgSrc)
+                break
+              case 'link':
+                expect(item).to.have.property('name').to.eql(newLinkHref)
+                break
+              case 'script':
+                expect(item).to.have.property('name').to.eql(newScriptSrc)
+                break
+            }
+          }
+        }, {
+          sourceType: ['script', 'img', 'link']
         })
 
+        const div: any = document.getElementById('div')
         const img: any = document.getElementById('img')
-        img.src = newSrc
+        const link: any = document.createElement('link')
+        const script: any = document.createElement('script')
+        img.src = newImgSrc
+        link.rel = 'stylesheet'
+        link.href = newLinkHref
+        script.src = newScriptSrc
+        div.appendChild(link)
+        div.appendChild(script)
       })
 
       it('SV', async function () {

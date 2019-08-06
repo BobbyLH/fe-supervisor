@@ -98,7 +98,7 @@ export interface IGeneratorFn extends GeneratorFunction {
 export type ClearType = 'source' | 'mark' | 'measure' | 'all'
 
 export interface IobserveSourceOption {
-  sourceType?: string;
+  sourceType?: string | string[];
   timeout?: number;
   whitelist?: Iwhitelist;
 }

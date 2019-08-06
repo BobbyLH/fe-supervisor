@@ -99,7 +99,7 @@ declare namespace $sv {
   type ClearType = 'source' | 'mark' | 'measure' | 'all'
 
   interface IobserveSourceOption {
-    sourceType?: string;
+    sourceType?: string | string[];
     timeout?: number;
     whitelist?: Iwhitelist;
   }

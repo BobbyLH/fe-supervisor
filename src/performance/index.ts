@@ -222,7 +222,7 @@ export const getSource = (function () {
               return false
             })
           }
-        } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link') {
+        } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link' || type === 'css') {
           // sources
           // filtered by whitelist
           if (w_s) {
@@ -242,7 +242,7 @@ export const getSource = (function () {
           if (isType('string')(sources)) {
             type === sources && source_appoint.push(data)
           } else if (isType('array')(sources)) {
-            (sources as Array<string>).some(v => {
+            sources.some(v => {
               if (v === type) {
                 source_appoint.push(data)
                 // break the iteration
@@ -251,9 +251,9 @@ export const getSource = (function () {
               return false
             })
           } else if (isType('object')(sources)) {
-            for (const k in <IconfigSources>sources) {
+            for (const k in sources) {
               if (k === type) {
-                (<IconfigSources>sources)[k].some(v => {
+                sources[k].some(v => {
                   if (v === data.name) {
                     source_appoint.push(data)
                     // break the iteration
@@ -477,7 +477,7 @@ export const observeSource = (function () {
 
   return function (target: HTMLElement, callback: (source_appoint: IAnyObj[]) => any, option?: IobserveSourceOption): Observer {
     let { sourceType = 'img', timeout = 2000, whitelist = {} } = option || {}
-    sourceType = sourceType.toLowerCase()
+    sourceType = isType('string')(sourceType) ? [sourceType.toLowerCase()] : [...sourceType.map(type => type.toLowerCase())]
     getSourceByDom(target)
 
     const observer = new Observer(target, async function (mutationRecords) {
@@ -485,22 +485,27 @@ export const observeSource = (function () {
       let frequence = 200
 
       const len = (mutationRecords && mutationRecords.length) || 0
-      const sourceAddr: string[] = []
+      const sourceAddr: IconfigSources = {}
       for (let i = 0; i < len; i++) {
-        const item = mutationRecords[i]
-        const recordType = mutationRecords[i].type
+        const item = mutationRecords[i];
+        const recordType = item.type;
         switch (recordType) {
           case 'childList':
             const addNodes = item.addedNodes
             await timeslice(iterationDOM(addNodes, sourceAddr) as IGeneratorFn)
             break
           case 'attributes':
-            const attrName = item.attributeName
-            const target: any = item.target
-            attrName && sourceAddr.push(target[attrName])
+            const attrName = item.attributeName;
+            const target: any = item.target;
+            const type: string = target.tagName && target.tagName.toLowerCase() || 'img';
+            if (attrName) {
+              !sourceAddr[type] && (sourceAddr[type] = []);
+              sourceAddr[type].push(target[attrName])
+            }
             break
         }
       }
+
       timerQuery()
 
       /**
@@ -516,10 +521,15 @@ export const observeSource = (function () {
           const sourceData = await (<Promise<Isource>>getSource({
             apiRatio: 0,
             sourceRatio: 0,
-            sources: { [`${sourceType}`]: sourceAddr },
+            sources: sourceAddr,
             whitelist
           })).then(data => data.source_appoint)
-          if ((sourceData && sourceAddr && sourceData.length === sourceAddr.length) || spendTime >= timeout) {
+          let addrLen = 0;
+          for (const k in sourceAddr) {
+            addrLen += sourceAddr[k].length;
+          };
+
+          if ((sourceData && sourceData.length === addrLen) || spendTime >= timeout) {
             return callback && callback(sourceData)
           } else {
             spendTime += frequence
@@ -532,16 +542,18 @@ export const observeSource = (function () {
     /**
      * Specify DOM to get the resource performance information
      * @param dom HTMLElement
-     * @param isAsync Asynchronous? true does not execute callback
+     * @param isAsync Asynchronous? true means does not execute callback
      */
     async function getSourceByDom (dom: HTMLElement | Node, isAsync?: boolean) {
       let data: ItimingSource[] = []
 
       try {
-        const sourceAddr: string[] = []
-        if (dom.nodeName.toLowerCase() === sourceType) {
-          const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
-          sourceSrc && sourceAddr.push(sourceSrc)
+        const type = dom.nodeName.toLowerCase();
+        const sourceAddr: IconfigSources = {};
+        if (~sourceType.indexOf(type)) {
+          const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || '';
+          !sourceAddr[type] && (sourceAddr[type] = []);
+          sourceSrc && sourceAddr[type].push(sourceSrc);
         }
         const doms = (dom as HTMLElement).children
         if (doms && doms.length > 0) {
@@ -551,7 +563,7 @@ export const observeSource = (function () {
         data = await (<Promise<Isource>>getSource({
           apiRatio: 0,
           sourceRatio: 0,
-          sources: { [`${sourceType}`]: sourceAddr },
+          sources: sourceAddr,
           whitelist
         })).then(data => data.source_appoint)
     
@@ -568,15 +580,16 @@ export const observeSource = (function () {
      * Iteration DOM, screening out eligible DOM
      * @param doms NodeList | HTMLCollection
      */
-    function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: string[]) {
-      function sortDOM (doms: NodeList | HTMLCollection, sourceStore: string[]) {
+    function iterationDOM (doms: NodeList | HTMLCollection, sourceAddr: IconfigSources) {
+      function sortDOM (doms: NodeList | HTMLCollection, sourceStore: IconfigSources) {
         const len = (doms && doms.length) || 0
         for (let i = 0; i < len; i++) {
           const dom = doms[i]
           const type = dom.nodeName.toLowerCase()
-          if (sourceType === type) {
-            const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
-            sourceSrc && sourceStore.push(sourceSrc)
+          if (~sourceType.indexOf(type)) {
+            const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || '';
+            !sourceStore[type] && (sourceStore[type] = []);
+            sourceSrc && sourceStore[type].push(sourceSrc);
           }
 
           const children = (dom as Element).children
@@ -595,9 +608,10 @@ export const observeSource = (function () {
             for (let i = 0; i < len; i++) {
               const dom = doms[i]
               const type = dom.nodeName.toLowerCase()
-              if (sourceType === type) {
-                const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || ''
-                sourceSrc && sourceAddr.push(sourceSrc)
+              if (~sourceType.indexOf(type)) {
+                const sourceSrc = (<HTMLImageElement | HTMLScriptElement>dom).src || (<HTMLLinkElement>dom).href || '';
+                !sourceAddr[type] && (sourceAddr[type] = []);
+                sourceSrc && sourceAddr[type].push(sourceSrc);
               }
   
               const children = (dom as Element).children

@@ -116,16 +116,22 @@ describe('observeError test module', function () {
       img.src = 'https://is5-ssl.mzstatic.com/image/thumb/Music123/v4/ad/e0/f5/ade0f59d-b5b0-ef09-19de-d3f77b50083c/source/600x600bb.jpg'
 
       const link = document.createElement('link')
+      link.id = 'link'
       link.rel = 'stylesheet'
       link.href = './assets/empty.css'
 
       const script = document.createElement('script')
+      script.id = 'script'
       script.type = 'text/javascript'
       script.src = './assets/empty.js'
+
+      const div = document.createElement('div')
+      div.id = 'div'
 
       body.appendChild(img)
       body.appendChild(link)
       body.appendChild(script)
+      body.appendChild(div)
     })
   }
 })

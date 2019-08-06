@@ -54,6 +54,8 @@ interface config {
   apis?: string[] | string;
   sources?: IconfigSources | string[] | string;
   timeout?: number; // timeout threshold(millisecond) - default 2000
+  whitelist?: Iwhitelist;
+  paintTiming?: boolean;
 }
 ```
 
@@ -81,6 +83,8 @@ interface config {
   apis?: string[] | string;
   sources?: IconfigSources | string[] | string;
   timeout?: number; // timeout threshold(millisecond) - default 2000
+  whitelist?: Iwhitelist;
+  paintTiming?: boolean;
 }
 ```
 
@@ -98,7 +102,7 @@ sv.getExecTiming().then(data => console.log(data))
 #### clearPerformance()
 Clear performance data.
 
-#### observeSource(target, callback, sourceType?)
+#### observeSource(target, callback, option?: IobserveSourceOption)
 get source timing information by refer dom.
 ```javascript
 import sv from 'fe-supervisor'
@@ -106,7 +110,16 @@ import sv from 'fe-supervisor'
 const sec = document.querySelect('section')
 sv.observeSource(sec, function (source) {
   console.log('source', source)
-}, 'img')
+}, {
+  sourceType: ['script', 'img', 'link']
+})
+```
+```typescript
+interface IobserveSourceOption {
+  sourceType?: string | string[];
+  timeout?: number;
+  whitelist?: Iwhitelist;
+}
 ```
 
 #### getEnvInfo()
