@@ -194,6 +194,7 @@ export const getSource = (function () {
         };
 
         if (type === 'xmlhttprequest' || type === 'fetchrequest') {
+          // apis
           // filtered by whitelist
           if (w_a) {
             if (isType('string')(w_a)) {
@@ -206,7 +207,7 @@ export const getSource = (function () {
             }
           }
 
-          // according to api ratio random obtain api
+          // random obtain apis by api ratio
           randomRatio(apiRatio) && api_random.push(data)
           data.duration >= threshold && api_timeout.push(data)
           if (isType('string')(apis)) {
@@ -222,6 +223,7 @@ export const getSource = (function () {
             })
           }
         } else if (type === 'script' || type === 'css' || type === 'img' || type === 'link') {
+          // sources
           // filtered by whitelist
           if (w_s) {
             if (isType('string')(w_s)) {
@@ -234,6 +236,7 @@ export const getSource = (function () {
             }
           }
 
+          // random obtain sources by source ratio 
           randomRatio(sourceRatio) && source_random.push(data)
           data.duration >= threshold && source_timeout.push(data)
           if (isType('string')(sources)) {
@@ -265,8 +268,8 @@ export const getSource = (function () {
           if (paintTiming && entryType === 'paint') {
             const { startTime } = item;
             let type = '';
-            if (name === 'first-paint' || name === 'first-contentful-paint') {
-              switch (name) {
+            if (data.name === 'first-paint' || data.name === 'first-contentful-paint') {
+              switch (data.name) {
                 case 'first-paint':
                   type = 'FP';
                   break;
