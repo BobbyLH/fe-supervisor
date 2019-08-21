@@ -10,6 +10,7 @@ then
   git commit -m "${name}: ${version}"
   git push
   git push origin_github master
+  git push origin_gitlab master
   echo -e "\033[32m \ngit success: ${version}\n \033[0m"
 else
   echo -e "\033[31m \ngit failed: ${version}\n \033[0m"
