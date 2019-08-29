@@ -82,17 +82,17 @@ export const getTiming = (function () {
       network = timingFilter(t.responseEnd - t.navigationStart)
       // The timing of unload on the previous page
       network_prev = timingFilter(t.fetchStart - t.navigationStart)
-      // redirect timing
+      // network redirect timing
       network_redirect = timingFilter(t.redirectEnd - t.redirectStart)
-      // DNS timing
+      // network DNS timing
       network_dns = timingFilter(t.domainLookupEnd - t.domainLookupStart)
-      // tcp timing
+      // network tcp timing
       network_tcp = timingFilter(t.connectEnd - t.connectStart)
-      // request timing
+      // network request timing
       network_request = timingFilter(t.responseStart - t.requestStart)
-      // request timing
+      // network response timing
       network_response = timingFilter(t.responseEnd - t.responseStart)
-      // request timing
+      // network interact timing
       network_interact = timingFilter(t.responseEnd - t.requestStart)
       // DOM tree loading timing
       dom_loading = timingFilter(t.domLoading - t.responseEnd)
