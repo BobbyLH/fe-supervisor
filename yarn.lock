@@ -298,10 +298,18 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.3.2"
 
-"@babel/runtime-corejs2@^7.4.5", "@babel/runtime-corejs2@^7.5.4":
+"@babel/runtime-corejs2@^7.4.5":
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.5.4.tgz#7111dbb344acce1f7dd601786cff40d516b27a96"
   integrity sha512-sHv74OzyZ18d6tjHU0HmlVES3+l+lydkOMTiKsJSTGWcTBpIMfXLEgduahlJrQjknW9RCQAqLIEdLOHjBmq/hg==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
+"@babel/runtime-corejs2@^7.5.4":
+  version "7.5.5"
+  resolved "http://hnpm.hupu.io/@babel%2fruntime-corejs2/-/runtime-corejs2-7.5.5.tgz#c3214c08ef20341af4187f1c9fbdc357fbec96b2"
+  integrity sha512-FYATQVR00NSNi7mUfpPDp7E8RYMXDuO8gaix7u/w3GekfUinKgX1AcTxs7SoiEmoEW9mbpjrwqWSW6zCmw5h8A==
   dependencies:
     core-js "^2.6.5"
     regenerator-runtime "^0.13.2"
@@ -4323,10 +4331,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-peeler-js@^0.1.4:
-  version "0.1.4"
-  resolved "http://hnpm.hupu.io/peeler-js/-/peeler-js-0.1.4.tgz#3be294fd2116ca78e8049b204746478dffa5c545"
-  integrity sha512-Katf4F1cM9bqZSCKg0hXtRi6rqGlwts3kdYsnUIYPhDzhLI+Rew6l+IBTys/eW3CRh7J+uTeYKMCm+yjQYOPXQ==
+peeler-js@^0.1.6:
+  version "0.1.6"
+  resolved "http://hnpm.hupu.io/peeler-js/-/peeler-js-0.1.6.tgz#d04e6f0dd3f258264d50e517405974b12300999b"
+  integrity sha512-JMCmYNkqMZEX6Usd2CmOeYoHT5V+rlvTNMlwwJH1Q/5U5wTC81H6zzkAj6lw1+dPY4sdMfGqrGEinNFep4Q7Bw==
   dependencies:
     "@babel/runtime-corejs2" "^7.5.4"
 
