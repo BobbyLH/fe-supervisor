@@ -78,9 +78,9 @@ module.exports = function(config) {
                 options: {
                   transpileOnly: true,
                   compilerOptions: {
-                      target: "ES2015",
-                      module: "commonjs",
-                      lib: ["es5", "es2015", "es2016", "dom"]
+                    target: 'ES2015',
+                    module: 'commonjs',
+                    lib: ['es5', 'es2015', 'es2016', 'dom']
                   }
                 }
               }
