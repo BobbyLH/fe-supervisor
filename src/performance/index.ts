@@ -21,11 +21,12 @@ export const getMemory = (function () {
   if (typeof window === 'undefined' || !window.performance) return notSupport
 
   return function (): Imemory {
-    let used, total, usedRatio
+    let limit, used, total, usedRatio
 
     try {
       const p = window.performance
       const m = (p as any).memory || {}
+      limit = m.jsHeapSizeLimit || 1
       used = m.usedJSHeapSize || 0
       total = m.totalJSHeapSize || 1
       usedRatio = +Number.prototype.toFixed.call(used / total, 3)
@@ -34,6 +35,7 @@ export const getMemory = (function () {
       catchError('js', msg)
     } finally {
       return {
+        limit,
         memory: usedRatio || 'N/A',
         used: usedRatio ? used : 'N/A',
         total: usedRatio ? total : 'N/A'

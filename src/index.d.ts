@@ -31,6 +31,7 @@ export interface Iconfig {
 export type PIconfig = Partial<Iconfig>
 
 export interface Imemory {
+  limit: number;
   memory: number | NA;
   used: number | NA;
   total: number | NA;

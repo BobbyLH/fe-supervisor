@@ -32,6 +32,7 @@ declare namespace $sv {
   type PIconfig = Partial<Iconfig>
 
   interface Imemory {
+    limit: number;
     memory: number | NA;
     used: number | NA;
     total: number | NA;
