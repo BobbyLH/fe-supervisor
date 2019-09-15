@@ -29,10 +29,12 @@ describe('Performance test module', function () {
 
         expect(memory).to.be.an('object')
         if (memory.memory !== 'N/A') {
+          expect(memory).to.have.property('limit').to.be.a('number')
           expect(memory).to.have.property('memory').to.be.a('number')
           expect(memory).to.have.property('used').to.be.a('number')
           expect(memory).to.have.property('total').to.be.a('number')
         } else {
+          expect(memory).to.have.property('limit').to.be.a('number')
           expect(memory).to.have.property('memory').to.be.eql('N/A')
           expect(memory).to.have.property('used').to.be.eql('N/A')
           expect(memory).to.have.property('total').to.be.eql('N/A')
